@@ -1,0 +1,180 @@
+{
+  "profile": "प्रोफाइल",
+  "personalDetails": "वैयक्तिक माहिती",
+  "providerDetails": "प्रदाता माहिती",
+  "kycDetails": "केवायसी तपशील",
+
+  "name": "नाव",
+  "mobile": "मोबाईल नंबर",
+  "email": "ईमेल",
+  "gender": "लिंग",
+
+  "male": "पुरुष",
+  "female": "महिला",
+  "other": "इतर",
+
+  "areYouProvider": "आपण प्रदाता आहात का?",
+  "yes": "होय",
+  "no": "नाही",
+
+  "kycStatus": "केवायसी स्थिती",
+  "aadhaar": "आधार",
+  "pan": "पॅन",
+  "notAdded": "जोडलेले नाही",
+  "notVerified": "तपासणी पूर्ण नाही",
+
+  "landPreparation": "पूर्वमशागत",
+  "sowingPlanting": "पेरणी आणि लागवड",
+  "cropCare": "पीक निगा",
+  "harvestingProcessing": "कापणी आणि प्रक्रिया",
+  "labor": "मजुरी",
+  "transport": "वाहतूक",
+  "otherServices": "इतर सेवा",
+
+  "plowing": "नांगरणी",
+  "cultivation": "मशागत",
+  "harrowing": "वखरणी",
+  "ridgeMaking": "वाफा",
+  "rotavator": "रोटावेटर",
+  "landLeveling": "जमीन सपाटीकरण",
+  "soilMovement": "मातीची हालचाल",
+
+  "sowing": "पेरणी",
+
+  "spraying": "फवारणी",
+  "fertilizersPesticides": "खते आणि कीटकनाशके",
+
+  "cropCollection": "पीक काढणे",
+  "harvesting": "कापणी",
+  "thinningCrops": "पीक सोंगने",
+  "uprootingCrops": "पीक उकडणे",
+  "weeding": "पीक घासणे",
+
+  "trashCollection": "कचरा वेचणे",
+  "hamali": "हमाली",
+  "maleLabor": "पुरुष मजुरी",
+  "femaleLabor": "महिला मजुरी",
+  "drainageMaking": "नाली करणे",
+  "digging": "खोदकाम",
+  "agriculturalPlowing": "कृषी नांगरणी",
+
+  "manualSprayer": "हाताने चालवायचा फवारणी पंप",
+    "manualSprayerCapacity": "हाताने चालवायचा फवारणी पंप (16–18 लि.)",
+    "manualSprayerDesc": "लहान शेतजमीन व भाजीपाला पिकांसाठी उपयुक्त. कीटकनाशक व द्रव खत फवारणीसाठी योग्य.",
+
+    "batterySprayer": "बॅटरी चालित फवारणी पंप",
+    "batterySprayerDesc": "कमी मेहनतीत समसमान कीटकनाशक व खत फवारणीसाठी बॅटरीवर चालणारा पंप.",
+
+    "powerSprayer": "पेट्रोल पॉवर फवारणी पंप",
+    "powerSprayerDesc": "कापूस, ऊस, फळबागा व मोठ्या शेतांसाठी उच्च दाबाची फवारणी सेवा.",
+
+    "boomSprayer": "ट्रॅक्टरवर बसवलेला बूम फवारणी पंप",
+    "boomSprayerDesc": "मोठ्या क्षेत्रासाठी रुंद कव्हरेजसह समसमान कीटकनाशक व खत फवारणी.",
+
+    "mistBlower": "मिस्ट ब्लोअर / धूर फवारणी यंत्र",
+    "mistBlowerDesc": "फळबागा, मळे व कीड नियंत्रणासाठी बारीक धुरासारखी फवारणी करणारे यंत्र.",
+
+    "droneSpraying": "ड्रोनद्वारे फवारणी सेवा",
+    "droneSprayingDesc": "ड्रोनच्या सहाय्याने अचूक व जलद कीटकनाशक व खत फवारणी. पिकांचे नुकसान कमी होते.",
+
+     "manualCollection": "हाताने गोळा करणे",
+      "manualCollectionDesc": "शेतकऱ्यांनी शेतातील उरलेले पीक अवशेष हाताने गोळा करणे.",
+
+      "mechanicalCollector": "यंत्रसामग्री गोळा करणारे",
+      "mechanicalCollectorDesc": "लहान मशीन किंवा ट्रॅक्टरवर बसवलेले यंत्र पीक अवशेष जलद गोळा करण्यासाठी.",
+
+      "balerService": "बेलर सेवा",
+      "balerServiceDesc": "उरलेले पीक अवशेष गाठीत (bales) रूपांतरित करून हाताळणी आणि साठवण सुलभ करणे.",
+
+      "transportService": "वाहतूक सेवा",
+      "transportServiceDesc": "गोळा केलेले पीक अवशेष शेतातून साठवण किंवा कंपोस्ट साइटवर नेण्यासाठी ट्रॅक्टर व ट्रॉली वापरणे.",
+
+      "shredderService": "श्रेडर सेवा",
+      "shredderServiceDesc": "पीक अवशेष लहान तुकडे करून मातीमध्ये मिसळणे किंवा कंपोस्टिंगसाठी तयार करणे.",
+
+
+       "manualSowing": "हाताने पेरणी",
+        "manualSowingDesc": "शेतकऱ्यांनी शेतात बियाणे हाताने पेरणे, लहान क्षेत्रे व भाजीपाला पिकांसाठी योग्य.",
+
+        "seedDrillSowing": "सीड ड्रिल पेरणी",
+        "seedDrillSowingDesc": "ट्रॅक्टरवर बसवलेली सीड ड्रिल बियाणे समसमान पेरते व योग्य अंतर राखते.",
+
+        "transplanting": "रोपण",
+        "transplantingDesc": "तयार शेतात रोपे हाताने किंवा अर्ध-स्वयंचलित पद्धतीने लावणे.",
+
+        "broadcastSowing": "ब्रॉडकास्ट पेरणी",
+        "broadcastSowingDesc": "मोठ्या क्षेत्रावर बियाणे समसमान पसरवून पेरले जाते.",
+
+        "fertilizerSowing": "पेरणी दरम्यान खताची फवारणी",
+        "fertilizerSowingDesc": "पेरणी व खत एकत्र करून चांगले उत्पादन मिळवणे.",
+
+
+         "manualHarvesting": "हाताने कापणी",
+          "manualHarvestingDesc": "शेतकऱ्यांनी शेतातील पीक हाताने कापणे व गोळा करणे, लहान शेतांसाठी योग्य.",
+
+          "mechanicalReaper": "यांत्रिक रिपर",
+          "mechanicalReaperDesc": "लहान मशीन किंवा ट्रॅक्टरवर बसवलेले रिपर धान्याचे पीक जलद कापणीसाठी.",
+
+          "combineHarvester": "कंबाईन हार्वेस्टर",
+          "combineHarvesterDesc": "एकाच मार्गाने पीक कापणे, थ्रेशिंग आणि विन्नोइंग करणारे यंत्र, मोठ्या शेतांसाठी योग्य.",
+
+          "harvestTransport": "पीक वाहतूक सेवा",
+          "harvestTransportDesc": "शेतातून साठवण किंवा गोदामात पीक वाहतुकीसाठी ट्रॅक्टर व ट्रॉली.",
+
+          "postHarvestHandling": "उत्पादन नंतर हाताळणी",
+          "postHarvestHandlingDesc": "पीक निवडणे, साफ करणे आणि बाजार किंवा साठवणेसाठी तयार करणे.",
+
+
+           "manualLoading": "हाताने लोडिंग",
+            "manualLoadingDesc": "शेतकऱ्यांनी पीक ट्रॉली, ट्रक किंवा साठवणीत हाताने लोड करणे.",
+
+            "manualUnloading": "हाताने अनलोडिंग",
+            "manualUnloadingDesc": "शेतकऱ्यांनी ट्रॉली, ट्रक किंवा साठवणीतून पीक हाताने उतरवणे.",
+
+            "mechanicalLoader": "यांत्रिक लोडर",
+            "mechanicalLoaderDesc": "लहान मशीन किंवा फॉर्कलिफ्ट पीक जलद लोड आणि अनलोड करण्यासाठी.",
+
+            "trolleyLoading": "ट्रॅक्टर ट्रॉली लोडिंग",
+            "trolleyLoadingDesc": "पीक ट्रॅक्टर ट्रॉलीवर लोड करून साठवणीकडे नेणे.",
+
+            "warehouseHandling": "गोदाम हाताळणी",
+            "warehouseHandlingDesc": "पीक साठवणीनंतर गोदामात व्यवस्थित ठेवणे आणि स्टॅक करणे.",
+
+            "recently_searched_categories": "अलीकडे शोधलेल्या श्रेणी",
+            "all_categories": "सर्व श्रेणी",
+            "primary_category_services": "प्राथमिक श्रेणी / सेवा",
+            "add_more_services": "आपण आणखी सेवा जोडू इच्छिता का?",
+            "price_type": "प्रति {unit}",
+             "@price_type": {
+               "description": "किंमत प्रकार (दिवस, तास, एकर)"
+             },
+
+              "price_day": "/दिवस",
+               "price_hour": "/तास",
+               "price_acre": "/एकर",
+               "price_trip": "/फेरी",
+               "price_from": "/पासून",
+               "selected_main_categories": "निवडलेले मुख्य वर्ग",
+               "chosen_sub_categories_prices": "निवडलेले उपवर्ग आणि लागू दर",
+              "search_category": "श्रेणीनुसार शोधा",
+               "category": "श्रेणीनुसार",
+               "search_sub_category": "उप-श्रेणीनुसार शोधा",
+               "subcategory": "उप-श्रेणीनुसार",
+               "otherDetails": "इतर तपशील",
+               "selectSubService": "उप-सेवा निवडा",
+               "selectAtLeastOneService": "कृपया पुढे जाण्यासाठी किमान एक श्रेणी निवडा.",
+               "price": "किंमत",
+                "home": "मुख्यपृष्ठ",
+                   "my_history": "माझा इतिहास",
+                   "services": "सेवा",
+                   "profile": "प्रोफाइल",
+                   "next": "पुढे",
+                   "pick_up_location": "पिकअप स्थान",
+                   "select_location": "स्थान निवडा",
+                   "explore_all_services": "सर्व सेवा शोधा",
+                   "popular_near_you": "आपल्या जवळील लोकप्रिय",
+                    "select_price_type": "किंमत प्रकार निवडा"
+
+
+
+}
