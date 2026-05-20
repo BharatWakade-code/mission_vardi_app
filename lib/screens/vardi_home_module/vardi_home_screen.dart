@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
+import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
-
 
 class FarmerHomeScreen extends StatefulWidget {
   const FarmerHomeScreen({super.key});
@@ -32,7 +32,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   int quoteIndex = 0;
   final List<Map<String, String>> quotes = [
     {
-      "en": "“Duty, Honor, Courage. The uniform is not a job, it's a responsibility.”",
+      "en":
+          "“Duty, Honor, Courage. The uniform is not a job, it's a responsibility.”",
       "mr": "“कर्तव्य, सन्मान, धाडस. वर्दी ही नोकरी नाही, ती एक जबाबदारी आहे.”"
     },
     {
@@ -40,7 +41,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
       "mr": "“सराव करताना जास्त घाम गाळा, जेणेकरून युद्धात कमी रक्त सांडेल.”"
     },
     {
-      "en": "“Success isn't given. It's earned. On the track and in the books.”",
+      "en":
+          "“Success isn't given. It's earned. On the track and in the books.”",
       "mr": "“यश मिळत नाही, ते मिळवावे लागते. धावपट्टीवर आणि पुस्तकांमध्ये.”"
     }
   ];
@@ -55,6 +57,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<VardiHomeCubit>().getPDFNotesAndSolvedPapers();
+
     // Ticking seconds countdown
     countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
@@ -91,8 +95,11 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
-    final themeColor = isDarkMode ? const Color(0xFF121212) : Constants.scaffoldBackgroundColour;
+    final isMarathi =
+        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    final themeColor = isDarkMode
+        ? const Color(0xFF121212)
+        : Constants.scaffoldBackgroundColour;
 
     return Scaffold(
       backgroundColor: themeColor,
@@ -108,7 +115,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 Container(
                   width: double.infinity,
                   margin: const EdgeInsets.only(bottom: 15),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   decoration: BoxDecoration(
                     color: Colors.red.shade400,
                     borderRadius: BorderRadius.circular(10),
@@ -119,8 +127,13 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          isMarathi ? "तुम्ही ऑफलाइन आहात. साठवलेला डेटा दर्शविला जात आहे." : "Offline Mode Active. Showing cached study assets.",
-                          style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                          isMarathi
+                              ? "तुम्ही ऑफलाइन आहात. साठवलेला डेटा दर्शविला जात आहे."
+                              : "Offline Mode Active. Showing cached study assets.",
+                          style: commonTextStyle.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
                         ),
                       ),
                     ],
@@ -140,26 +153,36 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.system_update_alt, color: Colors.amber, size: 28),
+                      const Icon(Icons.system_update_alt,
+                          color: Colors.amber, size: 28),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              isMarathi ? "नवीन अपडेट उपलब्ध (v2.0)" : "App Update Available (v2.0)",
-                              style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.amber.shade900),
+                              isMarathi
+                                  ? "नवीन अपडेट उपलब्ध (v2.0)"
+                                  : "App Update Available (v2.0)",
+                              style: commonTextStyle.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: Colors.amber.shade900),
                             ),
                             Text(
-                              isMarathi ? "नवीन प्रश्नपत्रिका आणि जलद मॉक टेस्ट समाविष्ट!" : "Contains 2026 Solved Papers & Speed Timers.",
-                              style: commonTextStyle.copyWith(fontSize: 11, color: Colors.amber.shade900),
+                              isMarathi
+                                  ? "नवीन प्रश्नपत्रिका आणि जलद मॉक टेस्ट समाविष्ट!"
+                                  : "Contains 2026 Solved Papers & Speed Timers.",
+                              style: commonTextStyle.copyWith(
+                                  fontSize: 11, color: Colors.amber.shade900),
                             ),
                           ],
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close, size: 18),
-                        onPressed: () => setState(() => isUpdateDismissed = true),
+                        onPressed: () =>
+                            setState(() => isUpdateDismissed = true),
                       )
                     ],
                   ),
@@ -174,7 +197,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: Colors.grey.shade200),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10),
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.02), blurRadius: 10),
                   ],
                 ),
                 child: Column(
@@ -182,10 +206,13 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.event, color: Constants.primaryBlueColour, size: 20),
+                        Icon(Icons.event,
+                            color: Constants.primaryBlueColour, size: 20),
                         const SizedBox(width: 8),
                         Text(
-                          isMarathi ? "पोलीस भरती लेखी परीक्षा countdown" : "Maharashtra Police Bharti Exam Timer",
+                          isMarathi
+                              ? "पोलीस भरती लेखी परीक्षा countdown"
+                              : "Maharashtra Police Bharti Exam Timer",
                           style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -198,10 +225,14 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _timerDigit(daysLeft.toString(), isMarathi ? "दिवस" : "Days"),
-                        _timerDigit(hoursLeft.toString().padLeft(2, '0'), isMarathi ? "तास" : "Hrs"),
-                        _timerDigit(minutesLeft.toString().padLeft(2, '0'), isMarathi ? "मिनिटे" : "Mins"),
-                        _timerDigit(secondsLeft.toString().padLeft(2, '0'), isMarathi ? "सेकंद" : "Secs"),
+                        _timerDigit(
+                            daysLeft.toString(), isMarathi ? "दिवस" : "Days"),
+                        _timerDigit(hoursLeft.toString().padLeft(2, '0'),
+                            isMarathi ? "तास" : "Hrs"),
+                        _timerDigit(minutesLeft.toString().padLeft(2, '0'),
+                            isMarathi ? "मिनिटे" : "Mins"),
+                        _timerDigit(secondsLeft.toString().padLeft(2, '0'),
+                            isMarathi ? "सेकंद" : "Secs"),
                       ],
                     ),
                   ],
@@ -227,11 +258,15 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isMarathi ? "💡 आजचे प्रेरणादायी विचार" : "💡 Daily Motivation",
+                          isMarathi
+                              ? "💡 आजचे प्रेरणादायी विचार"
+                              : "💡 Daily Motivation",
                           style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
-                            color: isDarkMode ? Colors.amber : Colors.blue.shade900,
+                            color: isDarkMode
+                                ? Colors.amber
+                                : Colors.blue.shade900,
                           ),
                         ),
                         GestureDetector(
@@ -240,13 +275,19 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                               quoteIndex = (quoteIndex + 1) % quotes.length;
                             });
                           },
-                          child: Icon(Icons.refresh, size: 18, color: isDarkMode ? Colors.amber : Colors.blue.shade900),
+                          child: Icon(Icons.refresh,
+                              size: 18,
+                              color: isDarkMode
+                                  ? Colors.amber
+                                  : Colors.blue.shade900),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      isMarathi ? quotes[quoteIndex]["mr"]! : quotes[quoteIndex]["en"]!,
+                      isMarathi
+                          ? quotes[quoteIndex]["mr"]!
+                          : quotes[quoteIndex]["en"]!,
                       textAlign: TextAlign.center,
                       style: commonTextStyle.copyWith(
                         fontStyle: FontStyle.italic,
@@ -265,7 +306,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    isMarathi ? "जिल्हास्तरीय भरती अपडेट्स" : "District Bharti Alerts",
+                    isMarathi
+                        ? "जिल्हास्तरीय भरती अपडेट्स"
+                        : "District Bharti Alerts",
                     style: commonTextStyle.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -274,7 +317,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   ),
                   DropdownButton<String>(
                     value: selectedDistrict,
-                    dropdownColor: isDarkMode ? const Color(0xFF222222) : Colors.white,
+                    dropdownColor:
+                        isDarkMode ? const Color(0xFF222222) : Colors.white,
                     style: commonTextStyle.copyWith(
                       color: Constants.primaryBlueColour,
                       fontWeight: FontWeight.bold,
@@ -287,7 +331,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                         });
                       }
                     },
-                    items: ["Mumbai", "Nagpur", "Pune", "Thane"].map((String d) {
+                    items:
+                        ["Mumbai", "Nagpur", "Pune", "Thane"].map((String d) {
                       return DropdownMenuItem<String>(
                         value: d,
                         child: Text(d),
@@ -302,7 +347,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
               // 📚 Digital PDF Notes Library & Solved Papers
               Text(
-                isMarathi ? "अभ्यास साहित्य आणि पेपर्स" : "PDF Notes & Solved Papers",
+                isMarathi
+                    ? "अभ्यास साहित्य आणि पेपर्स"
+                    : "PDF Notes & Solved Papers",
                 style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -315,7 +362,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
               // 📊 District-wise Leaderboard
               Text(
-                isMarathi ? "जिल्हानुसार आघाडीवर (Leaderboard)" : "District-wise Leaderboard",
+                isMarathi
+                    ? "जिल्हानुसार आघाडीवर (Leaderboard)"
+                    : "District-wise Leaderboard",
                 style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -353,11 +402,13 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+          style: commonTextStyle.copyWith(
+              fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
+
   // App Toggles and Localization
   CustomAppBar homeAppBar(bool isMarathi) {
     return const CustomAppBar(
@@ -370,13 +421,21 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   Widget _districtNewsFeed(bool isMarathi) {
     String message = "";
     if (selectedDistrict == "Mumbai") {
-      message = isMarathi ? "मुंबई पोलीस भरती मैदानी चाचणी वेळापत्रक जाहीर. २ जूनपासून सुरू." : "Mumbai Police Bharti Ground Test dates released. Starting June 2nd.";
+      message = isMarathi
+          ? "मुंबई पोलीस भरती मैदानी चाचणी वेळापत्रक जाहीर. २ जूनपासून सुरू."
+          : "Mumbai Police Bharti Ground Test dates released. Starting June 2nd.";
     } else if (selectedDistrict == "Nagpur") {
-      message = isMarathi ? "नागपूर विभाग लेखी परीक्षेसाठी नवीन मार्गदर्शक सूचना जारी." : "Nagpur division written exam guidelines updated.";
+      message = isMarathi
+          ? "नागपूर विभाग लेखी परीक्षेसाठी नवीन मार्गदर्शक सूचना जारी."
+          : "Nagpur division written exam guidelines updated.";
     } else if (selectedDistrict == "Pune") {
-      message = isMarathi ? "पुणे पोलीस आयुक्तालय: १५,००० उमेदवारांची यादी अंतिम टप्प्यात." : "Pune Commissionary: list of 15k candidates in final validation phase.";
+      message = isMarathi
+          ? "पुणे पोलीस आयुक्तालय: १५,००० उमेदवारांची यादी अंतिम टप्प्यात."
+          : "Pune Commissionary: list of 15k candidates in final validation phase.";
     } else {
-      message = isMarathi ? "ठाणे शारीरिक चाचणीसाठी प्रवेशपत्रे उद्यापासून उपलब्ध होतील." : "Thane ground test admit cards downloadable from tomorrow.";
+      message = isMarathi
+          ? "ठाणे शारीरिक चाचणीसाठी प्रवेशपत्रे उद्यापासून उपलब्ध होतील."
+          : "Thane ground test admit cards downloadable from tomorrow.";
     }
 
     return Container(
@@ -394,7 +453,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               color: Colors.red.shade100,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.notifications_active, color: Colors.red, size: 20),
+            child: const Icon(Icons.notifications_active,
+                color: Colors.red, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -403,12 +463,17 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               children: [
                 Text(
                   "$selectedDistrict Bharti Alert",
-                  style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13, color: isDarkMode ? Colors.white : Colors.black87),
+                  style: commonTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: isDarkMode ? Colors.white : Colors.black87),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   message,
-                  style: commonTextStyle.copyWith(fontSize: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
+                  style: commonTextStyle.copyWith(
+                      fontSize: 12,
+                      color: isDarkMode ? Colors.white70 : Colors.black54),
                 ),
               ],
             ),
@@ -420,26 +485,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
   // PDF Notes library with search simulation
   Widget _pdfNotesLibrary(bool isMarathi) {
-    final List<Map<String, String>> papers = [
-      {
-        "title": "Police Bharti 2024 Solved Paper",
-        "titleMr": "पोलीस भरती २०२४ सोडवलेली प्रश्नपत्रिका",
-        "desc": "Official answers and solved math logic",
-        "descMr": "अधिकृत उत्तरे आणि गणित स्पष्टीकरण"
-      },
-      {
-        "title": "Marathi Grammar Complete Syllabus",
-        "titleMr": "मराठी व्याकरण संपूर्ण अभ्यासक्रम",
-        "desc": "Basic to advanced grammar handbook",
-        "descMr": "सविस्तर व्याकरण नियम आणि उदाहरणे"
-      },
-      {
-        "title": "Maharashtra GK & History Notes",
-        "titleMr": "महाराष्ट्र सामान्य ज्ञान आणि इतिहास",
-        "desc": "Essential capsule notes for GK section",
-        "descMr": "चालू घडामोडी आणि चालू इतिहास"
-      }
-    ];
+    final state = context.watch<VardiHomeCubit>().state;
+    final papers = state.data ?? [];
 
     return Column(
       children: [
@@ -460,8 +507,11 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               });
             },
             decoration: InputDecoration(
-              hintText: isMarathi ? "पीडीएफ नोट्स आणि पेपर्स शोधा..." : "Search Notes & PDFs...",
-              hintStyle: commonTextStyle.copyWith(fontSize: 13, color: Colors.grey),
+              hintText: isMarathi
+                  ? "पीडीएफ नोट्स आणि पेपर्स शोधा..."
+                  : "Search Notes & PDFs...",
+              hintStyle:
+                  commonTextStyle.copyWith(fontSize: 13, color: Colors.grey),
               prefixIcon: const Icon(Icons.search, size: 20),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.only(bottom: 5),
@@ -477,13 +527,6 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final item = papers[index];
-            final titleStr = isMarathi ? item["titleMr"]! : item["title"]!;
-            final descStr = isMarathi ? item["descMr"]! : item["desc"]!;
-
-            // Search filter
-            if (searchQuery.isNotEmpty && !titleStr.toLowerCase().contains(searchQuery)) {
-              return const SizedBox.shrink();
-            }
 
             return Container(
               padding: const EdgeInsets.all(12),
@@ -501,13 +544,18 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          titleStr,
-                          style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13, color: isDarkMode ? Colors.white : Colors.black87),
+                          item.title ?? '',
+                          style: commonTextStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color:
+                                  isDarkMode ? Colors.white : Colors.black87),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          descStr,
-                          style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey),
+                          item.description ?? '',
+                          style: commonTextStyle.copyWith(
+                              fontSize: 11, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -515,15 +563,20 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Constants.primaryBlueColour,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                     ),
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(isMarathi ? "पीडीएफ डाउनलोड पूर्ण झाले आणि सुरक्षितपणे सेव्ह केले!" : "PDF downloaded and saved offline successfully!")),
+                        SnackBar(
+                            content: Text(isMarathi
+                                ? "पीडीएफ डाउनलोड पूर्ण झाले आणि सुरक्षितपणे सेव्ह केले!"
+                                : "PDF downloaded and saved offline successfully!")),
                       );
                     },
-                    child: const Icon(Icons.download, color: Colors.white, size: 18),
+                    child: const Icon(Icons.download,
+                        color: Colors.white, size: 18),
                   ),
                 ],
               ),
@@ -564,15 +617,23 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               children: [
                 Text(
                   "#${index + 1}",
-                  style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13, color: isDarkMode ? Colors.white70 : Colors.black87),
+                  style: commonTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: isDarkMode ? Colors.white70 : Colors.black87),
                 ),
                 const SizedBox(width: 10),
-                Icon(Icons.stars, color: isTopRank ? Colors.amber : Colors.grey.shade400, size: 20),
+                Icon(Icons.stars,
+                    color: isTopRank ? Colors.amber : Colors.grey.shade400,
+                    size: 20),
               ],
             ),
             title: Text(
               item["name"]!,
-              style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13, color: isDarkMode ? Colors.white : Colors.black87),
+              style: commonTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: isDarkMode ? Colors.white : Colors.black87),
             ),
             subtitle: Text(
               "${isMarathi ? 'जिल्हा' : 'District'}: ${item["district"]}",
@@ -580,7 +641,10 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
             ),
             trailing: Text(
               item["score"]!,
-              style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, color: Constants.primaryBlueColour, fontSize: 13),
+              style: commonTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Constants.primaryBlueColour,
+                  fontSize: 13),
             ),
           );
         },

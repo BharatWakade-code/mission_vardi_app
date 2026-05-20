@@ -55,32 +55,7 @@ class Constants {
 
 class ApiUrls {
    static String login ="/api/mobile/auth/send-otp";
-   static String verifyOtp ="/api/mobile/auth/verify-otp";
-   static String providerRegister ="/api/mobile/auth/register";
-   static String getServiceCategories ="/api/mobile/categories/services";
-
-   ///Profile
-   static String getProfileByID ="/api/mobile/users/id";
-   static String updateSetAvailability ="/api/mobile/users/availability";
-   static String updateProfile ="/api/mobile/users/profile";
-   static String updateProfileImage ="/api/mobile/users/profile-image";
-
-   ///Address
-   static String getAllAddress ="/api/mobile/users/addresses";
-   static String updateAddress ="/api/mobile/users/update/addresses";
-   static String deleteAddress ="/api/mobile/users/delete/addresses";
-   static String setDefaultAddress ="/api/mobile/users/default/addresses";
-   static String addAddress ="/api/mobile/users/addresses";
-
-   ///Global
-   static String getAllCropList ="/api/mobile/users/crop";
-   static String getAllRateLimitList ="/api/mobile/users/rate-type";
-   static String updateRateBasis ="/api/mobile/users/rates";
-   static String deleteRateBasis ="/api/mobile/users/delete/rate";
-
-
-   static String updateKyc ="/api/mobile/users/kyc-document";
-   static String deleteDocument ="/api/mobile/users/delete/kyc-document";
+   static String getPdfNotesAndSolvedPapers ="/notes";
 
 }
 

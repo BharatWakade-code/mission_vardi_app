@@ -23,9 +23,9 @@ class ApiClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = CommonHiveData.getString('token') ?? '';
-          if (token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
+          // if (token.isNotEmpty) {
+          //   options.headers['Authorization'] = 'Bearer $token';
+          // }
           options.headers['Accept'] = 'application/json';
           print("REQUEST[${options.method}] => ${options.path}");
           print("HEADERS: ${options.headers}");

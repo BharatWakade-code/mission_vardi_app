@@ -19,6 +19,7 @@ import '../../screens/quizzes_module/repository/quizzes_repository.dart'
     as _i707;
 import '../../screens/vardi_dashboard_module/vardi_dashboard_cubit.dart'
     as _i319;
+import '../../screens/vardi_home_module/data/home_repository.dart' as _i421;
 import '../../screens/vardi_home_module/vardi_home_cubit.dart' as _i672;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -33,9 +34,11 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.factory<_i928.LanguageCubit>(() => _i928.LanguageCubit());
-    gh.factory<_i319.VardiDashboardCubit>(() => _i319.VardiDashboardCubit());
-    gh.factory<_i672.VardiHomeCubit>(() => _i672.VardiHomeCubit());
     gh.factory<_i585.QuizzesDataSource>(() => _i585.QuizzesDataSource());
+    gh.factory<_i319.VardiDashboardCubit>(() => _i319.VardiDashboardCubit());
+    gh.factory<_i421.HomeRepository>(() => _i421.HomeRepository());
+    gh.factory<_i672.VardiHomeCubit>(
+        () => _i672.VardiHomeCubit(gh<_i421.HomeRepository>()));
     gh.factory<_i707.QuizzesRepository>(
         () => _i707.QuizzesRepository(gh<_i585.QuizzesDataSource>()));
     gh.factory<_i932.QuizzesCubit>(

@@ -27,11 +27,11 @@ Future<void> main() async {
   await Hive.initFlutter();
   await CommonHiveData.init();
 
-  // try {
-  //   await dotenv.load(fileName: ".env");
-  // } catch (e) {
-  //   throw Exception('Error loading .env file: $e');
-  // }
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    throw Exception('Error loading .env file: $e');
+  }
 
   runApp(
     MultiBlocProvider(
