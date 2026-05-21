@@ -52,4 +52,6 @@ class VardiHomeCubit extends Cubit<VardiHomeState> {
       ));
     }
   }
+
+
 }

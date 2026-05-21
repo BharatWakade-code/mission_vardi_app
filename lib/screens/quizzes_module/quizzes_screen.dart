@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
@@ -7,41 +8,41 @@ import 'package:mission_vardi/screens/quizzes_module/quiz_play_screen.dart';
 import 'package:mission_vardi/utils/common_widgets/banner_ad_widget.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 
-class QuizzesScreen extends StatelessWidget {
+class QuizzesScreen extends StatefulWidget {
   const QuizzesScreen({super.key});
 
-  void _startAndPushQuiz(BuildContext context, {String? category, String? mode}) {
-    final cubit = context.read<QuizzesCubit>();
-    if (mode != null) {
-      cubit.changePracticeMode(mode);
-    }
-    cubit.startQuiz(category: category);
+  @override
+  State<QuizzesScreen> createState() => _QuizzesScreenState();
+}
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: cubit,
-          child: const QuizPlayScreen(),
-        ),
-      ),
-    );
+class _QuizzesScreenState extends State<QuizzesScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<QuizzesCubit>().getQuizzesList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    final isMarathi =
+        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: isMarathi ? 'परीक्षा आणि सराव केंद्र' : 'Exam & Practice Center',
+        titleText:
+            isMarathi ? 'परीक्षा आणि सराव केंद्र' : 'Exam & Practice Center',
         titleIcon: Icons.quiz,
       ),
       body: BlocBuilder<QuizzesCubit, QuizzesState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           return SingleChildScrollView(
@@ -50,7 +51,7 @@ class QuizzesScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Banner / Streak indicator
+                  /// Banner
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -76,7 +77,11 @@ class QuizzesScreen extends StatelessWidget {
                             color: Colors.white.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.flash_on, color: Colors.amber, size: 28),
+                          child: const Icon(
+                            Icons.flash_on,
+                            color: Colors.amber,
+                            size: 28,
+                          ),
                         ),
                         const SizedBox(width: 15),
                         Expanded(
@@ -84,7 +89,9 @@ class QuizzesScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                isMarathi ? "दैनिक आव्हान क्विझ उपलब्ध!" : "Daily Challenge Available!",
+                                isMarathi
+                                    ? "दैनिक आव्हान क्विझ उपलब्ध!"
+                                    : "Daily Challenge Available!",
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -93,7 +100,9 @@ class QuizzesScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                isMarathi ? "पूर्ण करा आणि दुपटीने गुण मिळवा" : "Complete and win 2x Coins",
+                                isMarathi
+                                    ? "पूर्ण करा आणि दुपटीने गुण मिळवा"
+                                    : "Complete and win 2x Coins",
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white70,
                                   fontSize: 12,
@@ -109,7 +118,7 @@ class QuizzesScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          onPressed: () => _startAndPushQuiz(context, mode: "Timed", category: "All"),
+                          onPressed: () {},
                           child: Text(
                             isMarathi ? "सुरू करा" : "Start",
                             style: commonTextStyle.copyWith(
@@ -121,28 +130,42 @@ class QuizzesScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 20),
 
-                  // Practice mode selector
+                  /// Practice mode
                   Text(
                     isMarathi ? "सराव प्रकार निवडा" : "Select Practice Mode",
-                    style: commonTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: commonTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+
                   const SizedBox(height: 10),
+
                   Row(
                     children: [
                       _ModeCard(
                         icon: Icons.timer,
                         title: isMarathi ? "वेळेनुसार (Mock)" : "Mock (Timed)",
                         isSelected: state.selectedPracticeMode == "Timed",
-                        onTap: () => context.read<QuizzesCubit>().changePracticeMode("Timed"),
+                        onTap: () {
+                          context
+                              .read<QuizzesCubit>()
+                              .changePracticeMode("Timed");
+                        },
                       ),
                       const SizedBox(width: 10),
                       _ModeCard(
                         icon: Icons.menu_book,
                         title: isMarathi ? "सराव पद्धत" : "Practice Mode",
                         isSelected: state.selectedPracticeMode == "Practice",
-                        onTap: () => context.read<QuizzesCubit>().changePracticeMode("Practice"),
+                        onTap: () {
+                          context
+                              .read<QuizzesCubit>()
+                              .changePracticeMode("Practice");
+                        },
                         isComingSoon: true,
                       ),
                       const SizedBox(width: 10),
@@ -150,62 +173,76 @@ class QuizzesScreen extends StatelessWidget {
                         icon: Icons.shuffle,
                         title: isMarathi ? "रँडम टेस्ट" : "Random Quiz",
                         isSelected: state.selectedPracticeMode == "Random",
-                        onTap: () => context.read<QuizzesCubit>().changePracticeMode("Random"),
+                        onTap: () {
+                          context
+                              .read<QuizzesCubit>()
+                              .changePracticeMode("Random");
+                        },
                         isComingSoon: true,
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 20),
 
-                  // Category selector
+                  /// Categories
                   Text(
-                    isMarathi ? "विषय निवडा" : "Choose Subject",
-                    style: commonTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    isMarathi ? "विषय निवडा" : "Choose Quizz Subject",
+                    style: commonTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+
                   const SizedBox(height: 10),
-                  GridView.count(
-                    crossAxisCount: 2,
+
+                  GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 1.4,
-                    children: [
-                      _CategoryCard(
-                        title: "GK & Updates",
-                        titleMr: "सामान्य ज्ञान",
-                        color: Colors.red.shade400,
-                        icon: Icons.public,
-                        count: "1,200+ Qs",
-                        onTap: () => _startAndPushQuiz(context, category: "GK & Updates"),
-                      ),
-                      _CategoryCard(
-                        title: "Marathi Grammar",
-                        titleMr: "मराठी व्याकरण",
-                        color: Colors.teal.shade400,
-                        icon: Icons.translate,
-                        count: "850+ Qs",
-                        onTap: () => _startAndPushQuiz(context, category: "Marathi Grammar"),
-                      ),
-                      _CategoryCard(
-                        title: "Mathematics",
-                        titleMr: "अंकगणित",
-                        color: Colors.orange.shade400,
-                        icon: Icons.calculate,
-                        count: "950+ Qs",
-                        onTap: () => _startAndPushQuiz(context, category: "Mathematics"),
-                      ),
-                      _CategoryCard(
-                        title: "Intellectual Ability",
-                        titleMr: "बुद्धिमत्ता चाचणी",
-                        color: Colors.purple.shade400,
-                        icon: Icons.psychology,
-                        count: "1,100+ Qs",
-                        onTap: () => _startAndPushQuiz(context, category: "Intellectual Ability"),
-                      ),
-                    ],
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1.4,
+                    ),
+                    itemCount: state.data.length,
+                    itemBuilder: (context, index) {
+                      final item = state.data[index];
+
+                      Color cardColor = Colors.blue.shade400;
+                      IconData cardIcon = Icons.quiz;
+
+                      final category = item.category ?? "";
+                      if (category == "GK & Updates" ||
+                          category == "General Knowledge" ||
+                          category == "Police Bharti") {
+                        cardColor = Colors.red.shade400;
+                        cardIcon = Icons.public;
+                      } else if (category == "Marathi Grammar") {
+                        cardColor = Colors.teal.shade400;
+                        cardIcon = Icons.translate;
+                      } else if (category == "Mathematics") {
+                        cardColor = Colors.orange.shade400;
+                        cardIcon = Icons.calculate;
+                      } else if (category == "Intellectual Ability") {
+                        cardColor = Colors.purple.shade400;
+                        cardIcon = Icons.psychology;
+                      }
+
+                      return _CategoryCard(
+                        title: item.title ?? "",
+                        titleMr: item.title ?? "",
+                        color: cardColor,
+                        icon: cardIcon,
+                        count: item.type ?? "Mock Test",
+                        onTap: () => context.push(RoutesNames.quizPlayScreen,
+                            extra: item.id),
+                      );
+                    },
                   ),
                   const SizedBox(height: 20),
+
                   const BannerAdWidget(),
                 ],
               ),
@@ -234,7 +271,8 @@ class _ModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    final isMarathi =
+        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
 
     return Expanded(
       child: GestureDetector(
@@ -245,7 +283,8 @@ class _ModeCard extends StatelessWidget {
               SnackBar(
                 content: Text(
                   isMarathi ? "लवकरच येत आहे! 🚀" : "Coming soon! 🚀",
-                  style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: commonTextStyle.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 backgroundColor: Constants.primaryBlueColour,
                 duration: const Duration(seconds: 1),
@@ -268,7 +307,9 @@ class _ModeCard extends StatelessWidget {
                 border: Border.all(
                   color: isSelected
                       ? Colors.transparent
-                      : (isComingSoon ? Colors.grey.shade200 : Colors.grey.shade300),
+                      : (isComingSoon
+                          ? Colors.grey.shade200
+                          : Colors.grey.shade300),
                 ),
                 boxShadow: (isSelected && !isComingSoon)
                     ? [
@@ -309,7 +350,8 @@ class _ModeCard extends StatelessWidget {
                 top: -5,
                 right: -3,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                   decoration: BoxDecoration(
                     color: Colors.red.shade400,
                     borderRadius: BorderRadius.circular(8),
@@ -350,7 +392,8 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    final isMarathi =
+        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -376,7 +419,10 @@ class _CategoryCard extends StatelessWidget {
               ),
               Text(
                 count,
-                style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                style: commonTextStyle.copyWith(
+                    fontSize: 10,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -386,7 +432,8 @@ class _CategoryCard extends StatelessWidget {
             children: [
               Text(
                 isMarathi ? titleMr : title,
-                style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                style: commonTextStyle.copyWith(
+                    fontWeight: FontWeight.bold, fontSize: 13),
               ),
               const SizedBox(height: 3),
               GestureDetector(
@@ -395,9 +442,13 @@ class _CategoryCard extends StatelessWidget {
                   children: [
                     Text(
                       isMarathi ? "सुरू करा" : "Start now",
-                      style: commonTextStyle.copyWith(fontSize: 11, color: Constants.primaryBlueColour, fontWeight: FontWeight.bold),
+                      style: commonTextStyle.copyWith(
+                          fontSize: 11,
+                          color: Constants.primaryBlueColour,
+                          fontWeight: FontWeight.bold),
                     ),
-                    Icon(Icons.arrow_forward, size: 10, color: Constants.primaryBlueColour),
+                    Icon(Icons.arrow_forward,
+                        size: 10, color: Constants.primaryBlueColour),
                   ],
                 ),
               )

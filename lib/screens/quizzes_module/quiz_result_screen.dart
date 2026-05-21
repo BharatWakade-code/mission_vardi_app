@@ -1,0 +1,435 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
+import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
+import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
+
+class QuizResultScreen extends StatelessWidget {
+  const QuizResultScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isMarathi = Localizations.localeOf(context).languageCode == 'mr';
+    
+    final TextStyle commonTextStyle = const TextStyle(
+      fontFamily: 'Outfit',
+      color: Color(0xFF0A2540),
+    );
+
+    return BlocBuilder<QuizzesCubit, QuizzesState>(
+      builder: (context, state) {
+        final totalQuestions = state.questions.length;
+        final correctAnswers = state.score;
+        
+        // Count attempted
+        int attemptedCount = 0;
+        for (final answer in state.userAnswers) {
+          if (answer != null) {
+            attemptedCount++;
+          }
+        }
+        final incorrectAnswers = attemptedCount - correctAnswers;
+        final unansweredCount = totalQuestions - attemptedCount;
+        final scorePercentage = totalQuestions > 0 
+            ? ((correctAnswers / totalQuestions) * 100).toStringAsFixed(1)
+            : "0.0";
+
+        return Scaffold(
+          backgroundColor: Constants.scaffoldBackgroundColour,
+          appBar: CustomAppBar(
+            titleText: isMarathi ? 'चाचणी निकाल' : 'Practice Test Result',
+            titleIcon: Icons.analytics,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                context.read<QuizzesCubit>().resetToMenu();
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Score Summary Card
+                  Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 3,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.blue.shade900, const Color(0xFF0A2540)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            isMarathi ? "तुमचा एकूण स्कोर" : "Your Total Score",
+                            style: commonTextStyle.copyWith(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          
+                          // Circular Score Display
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: CircularProgressIndicator(
+                                  value: totalQuestions > 0 ? (correctAnswers / totalQuestions) : 0.0,
+                                  strokeWidth: 10,
+                                  backgroundColor: Colors.white12,
+                                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.greenAccent),
+                                ),
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "$correctAnswers / $totalQuestions",
+                                    style: commonTextStyle.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "$scorePercentage%",
+                                    style: commonTextStyle.copyWith(
+                                      color: Colors.greenAccent,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                          
+                          // Performance Tag
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              correctAnswers >= (totalQuestions * 0.7)
+                                  ? (isMarathi ? "उत्कृष्ट काम! 🏆" : "Excellent Job! 🏆")
+                                  : (isMarathi ? "अधिक सराव करा! 💪" : "Need More Practice! 💪"),
+                              style: commonTextStyle.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Mini Stats Grid
+                  Row(
+                    children: [
+                      _buildStatCard(
+                        title: isMarathi ? "एकूण प्रश्न" : "Total Qs",
+                        value: "$totalQuestions",
+                        color: Colors.blue.shade700,
+                        icon: Icons.format_list_numbered,
+                        textStyle: commonTextStyle,
+                      ),
+                      const SizedBox(width: 10),
+                      _buildStatCard(
+                        title: isMarathi ? "बरोबर" : "Correct",
+                        value: "$correctAnswers",
+                        color: Colors.green,
+                        icon: Icons.check_circle_outline,
+                        textStyle: commonTextStyle,
+                      ),
+                      const SizedBox(width: 10),
+                      _buildStatCard(
+                        title: isMarathi ? "चुकीचे" : "Incorrect",
+                        value: "$incorrectAnswers",
+                        color: Colors.red,
+                        icon: Icons.highlight_off,
+                        textStyle: commonTextStyle,
+                      ),
+                      const SizedBox(width: 10),
+                      _buildStatCard(
+                        title: isMarathi ? "सोडले" : "Skipped",
+                        value: "$unansweredCount",
+                        color: Colors.grey.shade600,
+                        icon: Icons.next_plan_outlined,
+                        textStyle: commonTextStyle,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Review section header
+                  Text(
+                    isMarathi ? "प्रश्नांचे सविस्तर विश्लेषण" : "Detailed Questions Review",
+                    style: commonTextStyle.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Questions Review List
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: totalQuestions,
+                    separatorBuilder: (_, __) => const SizedBox(height: 16),
+                    itemBuilder: (context, qIdx) {
+                      final question = state.questions[qIdx];
+                      final options = isMarathi ? question["optionsMr"] : question["options"];
+                      final selectedIdx = state.userAnswers[qIdx];
+                      final correctIdx = question["correctIndex"];
+                      final isCorrect = selectedIdx == correctIdx;
+
+                      return Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        elevation: 1.5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Top Row with Question index and status tag
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${isMarathi ? 'प्रश्न' : 'Question'} ${qIdx + 1}",
+                                    style: commonTextStyle.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: selectedIdx == null
+                                          ? Colors.grey.shade100
+                                          : (isCorrect ? Colors.green.shade50 : Colors.red.shade50),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      selectedIdx == null
+                                          ? (isMarathi ? "सोडला" : "Skipped")
+                                          : (isCorrect ? (isMarathi ? "बरोबर" : "Correct") : (isMarathi ? "चुकीचा" : "Incorrect")),
+                                      style: commonTextStyle.copyWith(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                        color: selectedIdx == null
+                                            ? Colors.grey.shade700
+                                            : (isCorrect ? Colors.green.shade700 : Colors.red.shade700),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              
+                              // Question Text
+                              Text(
+                                isMarathi ? question["qMr"] : question["q"],
+                                style: commonTextStyle.copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Option Tiles
+                              ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 4,
+                                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                                itemBuilder: (context, optIdx) {
+                                  final optionText = options[optIdx];
+                                  
+                                  Color tileColor = Colors.white;
+                                  Color borderColor = Colors.grey.shade200;
+                                  IconData? icon;
+                                  Color? iconColor;
+
+                                  if (optIdx == correctIdx) {
+                                    // Highlight correct answer in green
+                                    tileColor = Colors.green.shade50;
+                                    borderColor = Colors.green.shade300;
+                                    icon = Icons.check_circle;
+                                    iconColor = Colors.green;
+                                  } else if (optIdx == selectedIdx && !isCorrect) {
+                                    // Highlight user's wrong answer in red
+                                    tileColor = Colors.red.shade50;
+                                    borderColor = Colors.red.shade300;
+                                    icon = Icons.cancel;
+                                    iconColor = Colors.red;
+                                  }
+
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: tileColor,
+                                      border: Border.all(color: borderColor, width: 1.5),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            optionText,
+                                            style: commonTextStyle.copyWith(
+                                              fontSize: 13.5,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                        if (icon != null) Icon(icon, color: iconColor, size: 18),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              
+                              // Explanation
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber.shade50.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.amber.shade100),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      isMarathi ? "💡 स्पष्टीकरण:" : "💡 Explanation:",
+                                      style: commonTextStyle.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.amber.shade900,
+                                        fontSize: 12.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      isMarathi ? question["explanationMr"] : question["explanation"],
+                                      style: commonTextStyle.copyWith(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade800,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0A2540),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                  onPressed: () {
+                    context.read<QuizzesCubit>().resetToMenu();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    isMarathi ? "मुख्य मेनूवर जा" : "Back to Main Menu",
+                    style: commonTextStyle.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required Color color,
+    required IconData icon,
+    required TextStyle textStyle,
+  }) {
+    return Expanded(
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 1,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
+          child: Column(
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(height: 6),
+              Text(
+                value,
+                style: textStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: textStyle.copyWith(
+                  fontSize: 10,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

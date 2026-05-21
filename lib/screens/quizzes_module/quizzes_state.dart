@@ -1,3 +1,5 @@
+import 'package:mission_vardi/models/quizz_model/quizz_list_reponse_model.dart';
+
 class QuizzesState {
   final String selectedPracticeMode;
   final String activeCategory;
@@ -12,6 +14,15 @@ class QuizzesState {
   final int remainingSeconds;
   final bool isLoading;
 
+  // NEW
+  final List<QuizzListData> data;
+  final List<int?> userAnswers; // Tracks user's selected answers
+
+  // OPTIONAL
+  final String errorMsg;
+  final String successMsg;
+  final bool isSuccess;
+
   QuizzesState({
     this.selectedPracticeMode = "Timed",
     this.activeCategory = "All",
@@ -25,6 +36,15 @@ class QuizzesState {
     this.bookmarkedQuestions = const [],
     this.remainingSeconds = 60,
     this.isLoading = false,
+
+    // NEW
+    this.data = const [],
+    this.userAnswers = const [],
+
+    // OPTIONAL
+    this.errorMsg = '',
+    this.successMsg = '',
+    this.isSuccess = false,
   });
 
   QuizzesState copyWith({
@@ -40,6 +60,15 @@ class QuizzesState {
     List<bool>? bookmarkedQuestions,
     int? remainingSeconds,
     bool? isLoading,
+
+    // NEW
+    List<QuizzListData>? data,
+    List<int?>? userAnswers,
+
+    // OPTIONAL
+    String? errorMsg,
+    String? successMsg,
+    bool? isSuccess,
   }) {
     return QuizzesState(
       selectedPracticeMode: selectedPracticeMode ?? this.selectedPracticeMode,
@@ -48,12 +77,19 @@ class QuizzesState {
       questions: questions ?? this.questions,
       isQuizRunning: isQuizRunning ?? this.isQuizRunning,
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
-      selectedAnswerIndex: selectedAnswerIndex != null ? selectedAnswerIndex() : this.selectedAnswerIndex,
+      selectedAnswerIndex: selectedAnswerIndex != null
+          ? selectedAnswerIndex()
+          : this.selectedAnswerIndex,
       isAnswerSubmitted: isAnswerSubmitted ?? this.isAnswerSubmitted,
       score: score ?? this.score,
       bookmarkedQuestions: bookmarkedQuestions ?? this.bookmarkedQuestions,
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
       isLoading: isLoading ?? this.isLoading,
+      data: data ?? this.data,
+      userAnswers: userAnswers ?? this.userAnswers,
+      errorMsg: errorMsg ?? this.errorMsg,
+      successMsg: successMsg ?? this.successMsg,
+      isSuccess: isSuccess ?? this.isSuccess,
     );
   }
 }

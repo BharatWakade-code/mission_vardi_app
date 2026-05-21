@@ -56,6 +56,7 @@ class Constants {
 class ApiUrls {
    static String login ="/api/mobile/auth/send-otp";
    static String getPdfNotesAndSolvedPapers ="/notes";
+    static String getQuizzesList ="/quiz";
 
 }
 

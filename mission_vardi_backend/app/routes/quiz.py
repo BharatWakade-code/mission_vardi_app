@@ -41,7 +41,7 @@ async def list_quizzes(category: Optional[str] = None, type: Optional[str] = Non
     if type:
         query["type"] = type
         
-    quizzes = list(quizzes_collection.find(query, {"_id": 0}))
+    quizzes = list(quizzes_collection.find(query, {"_id": 0, "questions": 0}))
     return {
         "status": True,
         "message": "Data fetched successfully",
