@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.services.s3_service import list_documents, get_document
+from app.services.mongodb_service import results_collection, users_collection
 
 router = APIRouter(
     prefix="/leaderboard",
@@ -8,17 +8,17 @@ router = APIRouter(
 
 @router.get("/{quiz_id}")
 async def get_leaderboard(quiz_id: str, limit: int = 10):
-    # Fetch all results for this quiz
-    results = list_documents(f"results/{quiz_id}/")
+    # Fetch top results for this quiz sorted by score descending directly in MongoDB
+    results = list(
+        results_collection.find({"quiz_id": quiz_id}, {"_id": 0})
+        .sort("score", -1)
+        .limit(limit)
+    )
     
-    # Sort results by score in descending order
-    sorted_results = sorted(results, key=lambda x: x.get("score", 0), reverse=True)
-    
-    # Optionally, we could fetch user names here if needed
     leaderboard = []
-    for r in sorted_results[:limit]:
+    for r in results:
         user_id = r.get("user_id")
-        user_doc = get_document("users", user_id)
+        user_doc = users_collection.find_one({"id": user_id}, {"_id": 0})
         
         user_name = user_doc.get("name", "Unknown User") if user_doc else "Unknown User"
         

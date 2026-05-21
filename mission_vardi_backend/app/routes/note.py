@@ -4,7 +4,7 @@ from uuid import uuid4
 from datetime import datetime
 
 from app.models.note_model import NoteCreate
-from app.services.s3_service import save_document, list_documents
+from app.services.mongodb_service import notes_collection
 
 router = APIRouter(
     prefix="/notes",
@@ -24,7 +24,8 @@ async def create_note(note: NoteCreate):
         "createdAt": str(datetime.now())
     }
     
-    save_document("notes", note_id, note_data)
+    notes_collection.insert_one(note_data)
+    note_data.pop("_id", None)
     return {
         "status": True,
         "message": "Note created successfully",
@@ -33,20 +34,17 @@ async def create_note(note: NoteCreate):
 
 @router.get("")
 async def list_notes(category: Optional[str] = None):
-    notes = list_documents("notes/")
-    
+    query = {}
     if category:
-        notes = [n for n in notes if n.get("category") == category]
-    
-    # Sort by createdAt descending
-    sorted_notes = sorted(
-        notes, 
-        key=lambda x: x.get("createdAt", ""), 
-        reverse=True
+        query["category"] = category
+        
+    notes = list(
+        notes_collection.find(query, {"_id": 0})
+        .sort("createdAt", -1)
     )
     
     return {
         "status": True,
         "message": "Data fetched successfully",
-        "data": sorted_notes
+        "data": notes
     }

@@ -3,7 +3,7 @@ from uuid import uuid4
 from datetime import datetime
 
 from app.models.notification_model import NotificationCreate
-from app.services.s3_service import save_document, list_documents
+from app.services.mongodb_service import notifications_collection
 
 router = APIRouter(
     prefix="/notifications",
@@ -22,7 +22,8 @@ async def create_notification(notification: NotificationCreate):
         "createdAt": str(datetime.now())
     }
     
-    save_document("notifications", notif_id, notif_data)
+    notifications_collection.insert_one(notif_data)
+    notif_data.pop("_id", None)
     return {
         "status": True,
         "message": "Notification created successfully",
@@ -31,17 +32,13 @@ async def create_notification(notification: NotificationCreate):
 
 @router.get("")
 async def list_notifications():
-    notifications = list_documents("notifications/")
-    
-    # Sort by createdAt descending (newest first)
-    sorted_notifications = sorted(
-        notifications, 
-        key=lambda x: x.get("createdAt", ""), 
-        reverse=True
+    notifications = list(
+        notifications_collection.find({}, {"_id": 0})
+        .sort("createdAt", -1)
     )
     
     return {
         "status": True,
         "message": "Data fetched successfully",
-        "data": sorted_notifications
+        "data": notifications
     }

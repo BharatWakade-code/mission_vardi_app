@@ -4,10 +4,7 @@ from datetime import datetime
 
 from app.models.user_model import UserCreate, UserUpdate
 from fastapi import HTTPException
-from app.services.s3_service import (
-    save_document,
-    get_document
-)
+from app.services.mongodb_service import users_collection
 
 router = APIRouter(
     prefix="/user",
@@ -27,11 +24,8 @@ async def create_user(user: UserCreate):
         "createdAt": str(datetime.now())
     }
 
-    save_document(
-        "users",
-        user_id,
-        user_data
-    )
+    users_collection.insert_one(user_data)
+    user_data.pop("_id", None)
 
     return {
         "status": True,
@@ -42,7 +36,7 @@ async def create_user(user: UserCreate):
 @router.get("/{user_id}")
 async def get_user(user_id: str):
 
-    user = get_document("users", user_id)
+    user = users_collection.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
         
@@ -54,16 +48,17 @@ async def get_user(user_id: str):
 
 @router.put("/{user_id}")
 async def update_user(user_id: str, user_update: UserUpdate):
-    user_data = get_document("users", user_id)
+    user_data = users_collection.find_one({"id": user_id}, {"_id": 0})
     if not user_data:
         raise HTTPException(status_code=404, detail="User not found")
         
     update_data = user_update.dict(exclude_unset=True)
-    for key, value in update_data.items():
-        if value is not None:
-            user_data[key] = value
+    update_data = {k: v for k, v in update_data.items() if v is not None}
+    
+    if update_data:
+        users_collection.update_one({"id": user_id}, {"$set": update_data})
+        user_data.update(update_data)
             
-    save_document("users", user_id, user_data)
     return {
         "status": True,
         "message": "User updated successfully",

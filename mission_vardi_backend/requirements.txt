@@ -4,3 +4,7 @@ boto3
 uvicorn
 pydantic
 firebase-admin
+pymongo
+dnspython
+python-dotenv
+

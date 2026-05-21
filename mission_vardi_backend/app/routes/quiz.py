@@ -4,7 +4,7 @@ from uuid import uuid4
 from datetime import datetime
 
 from app.models.quiz_model import QuizCreate, QuizResultSubmit
-from app.services.s3_service import save_document, get_document, list_documents
+from app.services.mongodb_service import quizzes_collection, results_collection
 
 router = APIRouter(
     prefix="/quiz",
@@ -25,7 +25,8 @@ async def create_quiz(quiz: QuizCreate):
         "createdAt": str(datetime.now())
     }
     
-    save_document("quizzes", quiz_id, quiz_data)
+    quizzes_collection.insert_one(quiz_data)
+    quiz_data.pop("_id", None)
     return {
         "status": True,
         "message": "Quiz created successfully",
@@ -34,14 +35,13 @@ async def create_quiz(quiz: QuizCreate):
 
 @router.get("")
 async def list_quizzes(category: Optional[str] = None, type: Optional[str] = None):
-    quizzes = list_documents("quizzes/")
-    
+    query = {}
     if category:
-        quizzes = [q for q in quizzes if q.get("category") == category]
-        
+        query["category"] = category
     if type:
-        quizzes = [q for q in quizzes if q.get("type") == type]
+        query["type"] = type
         
+    quizzes = list(quizzes_collection.find(query, {"_id": 0}))
     return {
         "status": True,
         "message": "Data fetched successfully",
@@ -50,7 +50,7 @@ async def list_quizzes(category: Optional[str] = None, type: Optional[str] = Non
 
 @router.get("/{quiz_id}")
 async def get_quiz(quiz_id: str):
-    quiz = get_document("quizzes", quiz_id)
+    quiz = quizzes_collection.find_one({"id": quiz_id}, {"_id": 0})
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz not found")
     return {
@@ -62,7 +62,7 @@ async def get_quiz(quiz_id: str):
 @router.post("/{quiz_id}/result")
 async def save_result(quiz_id: str, result: QuizResultSubmit):
     # Verify quiz exists
-    quiz = get_document("quizzes", quiz_id)
+    quiz = quizzes_collection.find_one({"id": quiz_id}, {"_id": 0})
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz not found")
         
@@ -77,8 +77,12 @@ async def save_result(quiz_id: str, result: QuizResultSubmit):
         "submittedAt": str(datetime.now())
     }
     
-    # Save to a specific result prefix that we can easily query for leaderboards
-    save_document(f"results/{quiz_id}", result.user_id, result_data)
+    # Save/update user result in MongoDB
+    results_collection.update_one(
+        {"id": result_id},
+        {"$set": result_data},
+        upsert=True
+    )
     
     return {
         "status": True,
