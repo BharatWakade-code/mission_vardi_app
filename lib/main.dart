@@ -13,8 +13,6 @@ import 'package:mission_vardi/utils/providers_list.dart';
 import 'package:mission_vardi/utils/request_permission.dart';
 import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,7 +70,6 @@ class _MyAppState extends State<MyApp> {
           title: 'MissionVardi',
           scrollBehavior: MyCustomScrollBehavior(),
           localizationsDelegates: const [
-            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,

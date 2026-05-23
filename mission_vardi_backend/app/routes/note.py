@@ -33,10 +33,15 @@ async def create_note(note: NoteCreate):
     }
 
 @router.get("")
-async def list_notes(category: Optional[str] = None):
+async def list_notes(category: Optional[str] = None, search: Optional[str] = None):
     query = {}
     if category:
         query["category"] = category
+    if search:
+        query["$or"] = [
+            {"title": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}}
+        ]
         
     notes = list(
         notes_collection.find(query, {"_id": 0})

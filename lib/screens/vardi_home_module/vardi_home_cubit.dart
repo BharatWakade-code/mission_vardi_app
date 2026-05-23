@@ -13,7 +13,7 @@ class VardiHomeCubit extends Cubit<VardiHomeState> {
   final HomeRepository _repository;
 
   /// Get PDF Notes & Solved Papers
-  Future<void> getPDFNotesAndSolvedPapers() async {
+  Future<void> getPDFNotesAndSolvedPapers({String? search}) async {
     print('api call');
     emit(state.copyWith(
       isLoading: true,
@@ -21,7 +21,12 @@ class VardiHomeCubit extends Cubit<VardiHomeState> {
       successMsg: '',
     ));
 
-    final either = await _repository.getPDFNotesAndSolvedPapers();
+    Map<String, dynamic>? queryParams;
+    if (search != null && search.isNotEmpty) {
+      queryParams = {'search': search};
+    }
+
+    final either = await _repository.getPDFNotesAndSolvedPapers(queryParameters: queryParams);
 
     either.fold(
       (error) {

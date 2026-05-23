@@ -2,10 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
+import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/utils/routes_services/routes_name.dart';
+import 'package:mission_vardi/utils/download_service.dart';
 
 class FarmerHomeScreen extends StatefulWidget {
   const FarmerHomeScreen({super.key});
@@ -27,6 +31,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
   // Controllers
   final TextEditingController searchController = TextEditingController();
+  Timer? _searchDebounce;
 
   // Dynamic Quote State
   int quoteIndex = 0;
@@ -89,6 +94,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   @override
   void dispose() {
     countdownTimer.cancel();
+    _searchDebounce?.cancel();
     searchController.dispose();
     super.dispose();
   }
@@ -499,90 +505,158 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.grey.shade300),
           ),
-          child: TextField(
+          child: CommonTextFormField(
             controller: searchController,
             onChanged: (val) {
               setState(() {
-                searchQuery = val.toLowerCase();
+                searchQuery = val;
+              });
+              _searchDebounce?.cancel();
+              _searchDebounce = Timer(const Duration(milliseconds: 500), () {
+                if (mounted) {
+                  context
+                      .read<VardiHomeCubit>()
+                      .getPDFNotesAndSolvedPapers(search: val);
+                }
               });
             },
-            decoration: InputDecoration(
-              hintText: isMarathi
-                  ? "पीडीएफ नोट्स आणि पेपर्स शोधा..."
-                  : "Search Notes & PDFs...",
-              hintStyle:
-                  commonTextStyle.copyWith(fontSize: 13, color: Colors.grey),
-              prefixIcon: const Icon(Icons.search, size: 20),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.only(bottom: 5),
-            ),
+            hintText: isMarathi
+                ? "पीडीएफ नोट्स आणि पेपर्स शोधा..."
+                : "Search Notes & PDFs...",
+            prefixIcon: Icons.search,
           ),
         ),
 
-        // Notes items
-        ListView.separated(
-          itemCount: papers.length,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            final item = papers[index];
+        // Loader or content
+        if (state.isLoading)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+        else if (papers.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search_off, size: 48, color: Colors.grey.shade400),
+                const SizedBox(height: 8),
+                Text(
+                  isMarathi ? "कोणतेही निकाल आढळले नाहीत" : "No results found",
+                  style: commonTextStyle.copyWith(
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  isMarathi
+                      ? "दुसरा शब्द वापरून शोधा"
+                      : "Try adjusting your keywords",
+                  style: commonTextStyle.copyWith(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          // Notes items
+          ListView.separated(
+            itemCount: papers.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final item = papers[index];
 
-            return Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.picture_as_pdf, color: Colors.red, size: 30),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title ?? '',
-                          style: commonTextStyle.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                              color:
-                                  isDarkMode ? Colors.white : Colors.black87),
+              return Container(
+                decoration: BoxDecoration(
+                  color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          context.push(
+                            RoutesNames.pdfViewerScreen,
+                            extra: {
+                              'pdfUrl': item.pdfUrl ?? '',
+                              'title': item.title ?? '',
+                              'description': item.description ?? '',
+                            },
+                          );
+                        },
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          item.description ?? '',
-                          style: commonTextStyle.copyWith(
-                              fontSize: 11, color: Colors.grey),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.picture_as_pdf,
+                                  color: Colors.red, size: 30),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.title ?? '',
+                                      style: commonTextStyle.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black87),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      item.description ?? '',
+                                      style: commonTextStyle.copyWith(
+                                          fontSize: 11, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Constants.primaryBlueColour,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Constants.primaryBlueColour,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                        onPressed: () {
+                          DownloadService.downloadPDF(
+                            context: context,
+                            url: item.pdfUrl ?? '',
+                            title: item.title ?? '',
+                          );
+                        },
+                        child: const Icon(Icons.download,
+                            color: Colors.white, size: 18),
+                      ),
                     ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(isMarathi
-                                ? "पीडीएफ डाउनलोड पूर्ण झाले आणि सुरक्षितपणे सेव्ह केले!"
-                                : "PDF downloaded and saved offline successfully!")),
-                      );
-                    },
-                    child: const Icon(Icons.download,
-                        color: Colors.white, size: 18),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                  ],
+                ),
+              );
+            },
+          ),
       ],
     );
   }

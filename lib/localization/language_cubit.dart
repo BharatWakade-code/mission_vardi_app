@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 import 'package:flutter/material.dart';
@@ -57,10 +56,7 @@ class LanguageCubit extends Cubit<LanguageState> {
 
 
 
-  AppLocalizations get loc {
-    final context = navigatorKey.currentContext!;
-    return AppLocalizations.of(context)!;
-  }
+ 
 }
 
 
