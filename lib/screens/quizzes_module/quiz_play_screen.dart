@@ -231,7 +231,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
             // Question Card
             Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              elevation: 2,
+              elevation: 2,color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -403,6 +403,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(14),
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.amber.shade50,
                   borderRadius: BorderRadius.circular(12),

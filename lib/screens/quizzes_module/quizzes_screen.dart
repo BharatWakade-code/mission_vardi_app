@@ -274,99 +274,189 @@ class _ModeCard extends StatelessWidget {
     final isMarathi =
         context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
 
+    final bool isDisabled = isComingSoon;
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          if (isComingSoon) {
+          if (isDisabled) {
             ScaffoldMessenger.of(context).clearSnackBars();
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  isMarathi ? "लवकरच येत आहे! 🚀" : "Coming soon! 🚀",
-                  style: commonTextStyle.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                backgroundColor: Constants.primaryBlueColour,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(16),
+                elevation: 0,
+                backgroundColor: Colors.transparent,
                 duration: const Duration(seconds: 1),
+                content: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: LinearGradient(
+                      colors: [
+                        Constants.primaryBlueColour,
+                        Constants.primaryBlueColour.withOpacity(0.85),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Constants.primaryBlueColour.withOpacity(0.25),
+                        blurRadius: 12,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.rocket_launch_rounded,
+                          color: Colors.white, size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          isMarathi
+                              ? "हे फीचर लवकरच येत आहे!"
+                              : "This feature is coming soon!",
+                          style: commonTextStyle.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             );
           } else {
             onTap();
           }
         },
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-              decoration: BoxDecoration(
-                color: isComingSoon
-                    ? Colors.grey.shade100
-                    : (isSelected ? Constants.primaryBlueColour : Colors.white),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isSelected
-                      ? Colors.transparent
-                      : (isComingSoon
-                          ? Colors.grey.shade200
-                          : Colors.grey.shade300),
-                ),
-                boxShadow: (isSelected && !isComingSoon)
-                    ? [
-                        BoxShadow(
-                          color: Colors.blue.withOpacity(0.3),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : [],
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: isSelected && !isDisabled
+                ? LinearGradient(
+                    colors: [
+                      Constants.primaryBlueColour,
+                      Constants.primaryBlueColour.withOpacity(0.75),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
+            boxShadow: [
+              BoxShadow(
+                color: isSelected
+                    ? Constants.primaryBlueColour.withOpacity(0.22)
+                    : Colors.black.withOpacity(0.05),
+                blurRadius: isSelected ? 14 : 8,
+                offset: const Offset(0, 5),
               ),
-              child: Column(
-                children: [
-                  Icon(
-                    icon,
-                    color: isComingSoon
-                        ? Colors.grey.shade400
-                        : (isSelected ? Colors.white : Colors.grey),
-                    size: 24,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: commonTextStyle.copyWith(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: isComingSoon
-                          ? Colors.grey.shade400
-                          : (isSelected ? Colors.white : Colors.black87),
-                    ),
-                  ),
-                ],
+            ],
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
+            decoration: BoxDecoration(
+              color: isDisabled
+                  ? Colors.grey.shade100
+                  : (isSelected ? Colors.transparent : Colors.white),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isSelected ? Colors.transparent : Colors.grey.shade200,
               ),
             ),
-            if (isComingSoon)
-              Positioned(
-                top: -5,
-                right: -3,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade400,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    isMarathi ? "लवकरच" : "Soon",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 7,
-                      fontWeight: FontWeight.bold,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isDisabled
+                            ? Colors.grey.shade200
+                            : (isSelected
+                                ? Colors.white.withOpacity(0.18)
+                                : Constants.primaryBlueColour
+                                    .withOpacity(0.08)),
+                      ),
+                      child: Icon(
+                        icon,
+                        size: 24,
+                        color: isDisabled
+                            ? Colors.grey.shade400
+                            : (isSelected
+                                ? Colors.white
+                                : Constants.primaryBlueColour),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: commonTextStyle.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        height: 1.3,
+                        color: isDisabled
+                            ? Colors.grey.shade500
+                            : (isSelected ? Colors.white : Colors.black87),
+                      ),
+                    ),
+                  ],
+                ),
+
+                /// Coming Soon Badge
+                if (isComingSoon)
+                  Positioned(
+                    top: -12,
+                    right: -8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.orange.shade400,
+                            Colors.red.shade400,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.red.withOpacity(0.25),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        isMarathi ? "लवकरच" : "SOON",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
