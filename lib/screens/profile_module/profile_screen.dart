@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
+import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
+import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/utils/routes_services/routes_name.dart';
+import 'package:mission_vardi/utils/shared_pref_data.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,7 +24,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    final isMarathi =
+        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    final profileState = context.watch<ProfileCubit>().state;
+    final user = profileState.profileData;
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
@@ -62,7 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: const CircleAvatar(
                       radius: 35,
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.shield_outlined, color: Color(0xFF0D47A1), size: 40),
+                      child: Icon(Icons.shield_outlined,
+                          color: Color(0xFF0D47A1), size: 40),
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -71,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Bharat Sonawane",
+                          user?.name ?? "User",
                           style: commonTextStyle.copyWith(
                             color: Colors.white,
                             fontSize: 18,
@@ -80,13 +89,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 4),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: Colors.amber,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            isMarathi ? "रँक: PSI (पोलीस उपनिरीक्षक)" : "Rank: PSI (Sub-Inspector)",
+                            'Email : ${user?.email ?? "test@gmail.com"}',
                             style: commonTextStyle.copyWith(
                               color: const Color(0xFF0A2540),
                               fontWeight: FontWeight.bold,
@@ -96,8 +106,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          isMarathi ? "चालू जिल्हा: पुणे" : "District: Pune",
-                          style: commonTextStyle.copyWith(color: Colors.white70, fontSize: 12),
+                          isMarathi
+                              ? "चालू जिल्हा: ${user?.district ?? 'N/A'}"
+                              : "District: ${user?.district ?? 'N/A'}",
+                          style: commonTextStyle.copyWith(
+                              color: Colors.white70, fontSize: 12),
                         ),
                       ],
                     ),
@@ -107,66 +120,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Coins Referral Row
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.monetization_on, color: Colors.amber, size: 28),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "$coins",
-                            style: commonTextStyle.copyWith(fontWeight: FontWeight.w800, fontSize: 16),
-                          ),
-                          Text(
-                            isMarathi ? "कमावलेली नाणी" : "Vardi Coins Balance",
-                            style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    ),
-                    icon: const Icon(Icons.share, size: 16, color: Colors.white),
-                    label: Text(
-                      isMarathi ? "व्हाट्सॲप शेअर" : "WhatsApp Share",
-                      style: commonTextStyle.copyWith(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(isMarathi
-                              ? "रेफरल लिंक व्हाट्सॲपवर कॉपी केली!"
-                              : "Referral invite copied for WhatsApp sharing!"),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
             // Statistics Header
             Text(
               isMarathi ? "अभ्यासाची प्रगती" : "Study Progress & Accuracy",
-              style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+              style: commonTextStyle.copyWith(
+                  fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
 
@@ -185,7 +143,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Text(
                         isMarathi ? "एकूण अचूकता" : "Overall MCQ Accuracy",
-                        style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: commonTextStyle.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       Text(
                         "84%",
@@ -203,7 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: 0.84,
                       minHeight: 10,
                       backgroundColor: Colors.grey.shade100,
-                      valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryBlueColour),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Constants.primaryBlueColour),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -214,11 +174,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Text(
                         isMarathi ? "दैनिक अभ्यास तास" : "Weekly Study Hours",
-                        style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: commonTextStyle.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       Text(
                         "24.5 Hrs Total",
-                        style: commonTextStyle.copyWith(color: Colors.grey, fontSize: 12),
+                        style: commonTextStyle.copyWith(
+                            color: Colors.grey, fontSize: 12),
                       ),
                     ],
                   ),
@@ -245,7 +207,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Achievement Badges
             Text(
               isMarathi ? "प्राप्त पदके (Badges)" : "Achievement Badges",
-              style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+              style: commonTextStyle.copyWith(
+                  fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
             Row(
@@ -276,7 +239,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Recent Activity History
             Text(
               isMarathi ? "अलीकडील हालचाली" : "Recent Activity History",
-              style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+              style: commonTextStyle.copyWith(
+                  fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
             Container(
@@ -289,21 +253,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   _activityTile(
                     icon: Icons.quiz_rounded,
-                    title: isMarathi ? "सराव क्विझ पूर्ण केली" : "Completed Practice Quiz",
+                    title: isMarathi
+                        ? "सराव क्विझ पूर्ण केली"
+                        : "Completed Practice Quiz",
                     time: "10 mins ago",
                     subtitle: "Score: 4/4 GK Section",
                   ),
                   const Divider(height: 1),
                   _activityTile(
                     icon: Icons.timer,
-                    title: isMarathi ? "१६०० मी धावणे सराव" : "Stopwatch Workout Run",
+                    title: isMarathi
+                        ? "१६०० मी धावणे सराव"
+                        : "Stopwatch Workout Run",
                     time: "2 hours ago",
                     subtitle: "Best lap recorded: 05:22.40",
                   ),
                   const Divider(height: 1),
                   _activityTile(
                     icon: Icons.share,
-                    title: isMarathi ? "मित्राला आमंत्रित केले" : "Referred Friend",
+                    title: isMarathi
+                        ? "मित्राला आमंत्रित केले"
+                        : "Referred Friend",
                     time: "Yesterday",
                     subtitle: "Earned +50 Vardi Coins",
                   ),
@@ -319,16 +289,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   side: const BorderSide(color: Colors.red),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: Text(
                   isMarathi ? "लॉगआउट" : "Logout Account",
-                  style: commonTextStyle.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
+                  style: commonTextStyle.copyWith(
+                      color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
-                  // Bypass logout back to onboarding welcome
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  context.read<AuthCubit>().signOut();
+                  context.go(RoutesNames.signInScreen);
                 },
               ),
             ),
@@ -342,7 +314,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _barItem(String label, double fill, String value) {
     return Column(
       children: [
-        Text(value, style: commonTextStyle.copyWith(fontSize: 9, color: Colors.grey, fontWeight: FontWeight.bold)),
+        Text(value,
+            style: commonTextStyle.copyWith(
+                fontSize: 9, color: Colors.grey, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         Container(
           height: 60,
@@ -361,12 +335,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 6),
-        Text(label, style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey.shade600)),
+        Text(label,
+            style: commonTextStyle.copyWith(
+                fontSize: 10, color: Colors.grey.shade600)),
       ],
     );
   }
 
-  Widget _badgeItem({required IconData icon, required Color color, required String title, required String desc}) {
+  Widget _badgeItem(
+      {required IconData icon,
+      required Color color,
+      required String title,
+      required String desc}) {
     return Column(
       children: [
         Container(
@@ -379,13 +359,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Icon(icon, color: color, size: 28),
         ),
         const SizedBox(height: 6),
-        Text(title, style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12)),
-        Text(desc, style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey)),
+        Text(title,
+            style: commonTextStyle.copyWith(
+                fontWeight: FontWeight.bold, fontSize: 12)),
+        Text(desc,
+            style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey)),
       ],
     );
   }
 
-  Widget _activityTile({required IconData icon, required String title, required String time, required String subtitle}) {
+  Widget _activityTile(
+      {required IconData icon,
+      required String title,
+      required String time,
+      required String subtitle}) {
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(8),
@@ -395,9 +382,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         child: Icon(icon, color: Constants.primaryBlueColour, size: 20),
       ),
-      title: Text(title, style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13)),
-      subtitle: Text(subtitle, style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey)),
-      trailing: Text(time, style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey)),
+      title: Text(title,
+          style: commonTextStyle.copyWith(
+              fontWeight: FontWeight.bold, fontSize: 13)),
+      subtitle: Text(subtitle,
+          style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey)),
+      trailing: Text(time,
+          style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey)),
     );
   }
 }

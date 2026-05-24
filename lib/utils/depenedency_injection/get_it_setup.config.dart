@@ -13,12 +13,16 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../localization/language_cubit.dart' as _i928;
+import '../../screens/auth_module/auth_cubit.dart' as _i132;
+import '../../screens/auth_module/data/auth_repository.dart' as _i986;
 import '../../screens/quizzes_module/data/quizzes_repository.dart' as _i965;
 import '../../screens/quizzes_module/quizzes_cubit.dart' as _i932;
 import '../../screens/vardi_dashboard_module/vardi_dashboard_cubit.dart'
     as _i319;
 import '../../screens/vardi_home_module/data/home_repository.dart' as _i421;
 import '../../screens/vardi_home_module/vardi_home_cubit.dart' as _i672;
+import '../../screens/profile_module/data/profile_repository.dart' as _profile_repo;
+import '../../screens/profile_module/profile_cubit.dart' as _profile_cubit;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -32,13 +36,19 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.factory<_i928.LanguageCubit>(() => _i928.LanguageCubit());
+    gh.factory<_i986.AuthRepository>(() => _i986.AuthRepository());
     gh.factory<_i965.QuizzRepository>(() => _i965.QuizzRepository());
     gh.factory<_i319.VardiDashboardCubit>(() => _i319.VardiDashboardCubit());
     gh.factory<_i421.HomeRepository>(() => _i421.HomeRepository());
     gh.factory<_i672.VardiHomeCubit>(
         () => _i672.VardiHomeCubit(gh<_i421.HomeRepository>()));
+    gh.factory<_i132.AuthCubit>(
+        () => _i132.AuthCubit(gh<_i986.AuthRepository>()));
     gh.factory<_i932.QuizzesCubit>(
         () => _i932.QuizzesCubit(gh<_i965.QuizzRepository>()));
+    gh.factory<_profile_repo.ProfileRepository>(() => _profile_repo.ProfileRepository());
+    gh.factory<_profile_cubit.ProfileCubit>(
+        () => _profile_cubit.ProfileCubit(gh<_profile_repo.ProfileRepository>()));
     return this;
   }
 }

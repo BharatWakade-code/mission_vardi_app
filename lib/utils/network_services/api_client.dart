@@ -13,7 +13,7 @@ class ApiClient {
         connectTimeout: const Duration(minutes: 4),
         receiveTimeout: const Duration(minutes: 15),
         validateStatus: (status) {
-          return status == 200 || status == 400 || status == 409 || status == 405 || status == 422 || status == 404 || status == 500 ;
+          return status == 200 || status == 400 || status == 401 || status == 403 || status == 409 || status == 405 || status == 422 || status == 404 || status == 500 ;
         },
       ),
     );
@@ -23,9 +23,9 @@ class ApiClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = CommonHiveData.getString('token') ?? '';
-          // if (token.isNotEmpty) {
-          //   options.headers['Authorization'] = 'Bearer $token';
-          // }
+          if (token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
           options.headers['Accept'] = 'application/json';
           print("REQUEST[${options.method}] => ${options.path}");
           print("HEADERS: ${options.headers}");

@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:mission_vardi/screens/auth_module/signin_screen.dart';
+import 'package:mission_vardi/screens/auth_module/signup_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quiz_play_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quiz_result_screen.dart';
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_screen.dart';
@@ -6,7 +8,11 @@ import 'package:mission_vardi/screens/welcome_screen.dart';
 import 'package:mission_vardi/screens/vardi_home_module/pdf_viewer_screen.dart';
 
 class RoutesNames {
-  /// Login Module
+  /// Auth Module
+  static const String signInScreen = '/signInScreen';
+  static const String signUpScreen = '/signUpScreen';
+
+  /// Main Module
   static const String welcomeScreen = '/welcomeScreen';
   static const String dashboardScreen = '/dashboardScreen';
   static const String quizPlayScreen = '/quizPlayScreen';
@@ -16,6 +22,14 @@ class RoutesNames {
 
 List<RouteBase> routesList() {
   return [
+    GoRoute(
+      path: RoutesNames.signInScreen,
+      builder: (context, state) => const SignInScreen(),
+    ),
+    GoRoute(
+      path: RoutesNames.signUpScreen,
+      builder: (context, state) => const SignUpScreen(),
+    ),
     GoRoute(
       path: RoutesNames.welcomeScreen,
       builder: (context, state) => const WelcomeScreen(),

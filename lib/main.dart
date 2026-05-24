@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,22 +15,33 @@ import 'package:mission_vardi/utils/providers_list.dart';
 import 'package:mission_vardi/utils/request_permission.dart';
 import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } catch (e) {
+    debugPrint('Firebase init error (web may need firebase_options.dart): $e');
+  }
 
-  // Initialize AdMob Ads
-  await AdManager.instance.initialize();
+
+  if (!kIsWeb) {
+    await AdManager.instance.initialize();
+  }
 
   configureDependencies();
 
   await Hive.initFlutter();
   await CommonHiveData.init();
 
-  try {
-    await dotenv.load(fileName: ".env");
-  } catch (e) {
-    throw Exception('Error loading .env file: $e');
+  // .env file — not supported on web filesystem
+  if (!kIsWeb) {
+    try {
+      await dotenv.load(fileName: ".env");
+    } catch (e) {
+      debugPrint('Error loading .env file: $e');
+    }
   }
 
   runApp(

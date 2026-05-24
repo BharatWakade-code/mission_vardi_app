@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from typing import Optional
+from typing import Optional, Union, List
 from uuid import uuid4
 from datetime import datetime
 
@@ -12,26 +12,52 @@ router = APIRouter(
 )
 
 @router.post("")
-async def create_quiz(quiz: QuizCreate):
-    quiz_id = str(uuid4())
-    
-    quiz_data = {
-        "id": quiz_id,
-        "title": quiz.title,
-        "description": quiz.description,
-        "category": quiz.category,
-        "type": quiz.type,
-        "questions": [q.dict() for q in quiz.questions],
-        "createdAt": str(datetime.now())
-    }
-    
-    quizzes_collection.insert_one(quiz_data)
-    quiz_data.pop("_id", None)
-    return {
-        "status": True,
-        "message": "Quiz created successfully",
-        "data": quiz_data
-    }
+async def create_quiz(quiz: Union[QuizCreate, List[QuizCreate]]):
+    if isinstance(quiz, list):
+        quizzes_data = []
+        for q in quiz:
+            quiz_id = str(uuid4())
+            quiz_data = {
+                "id": quiz_id,
+                "title": q.title,
+                "description": q.description,
+                "category": q.category,
+                "type": q.type,
+                "questions": [question.dict() for question in q.questions],
+                "createdAt": str(datetime.now())
+            }
+            quizzes_data.append(quiz_data)
+            
+        if quizzes_data:
+            quizzes_collection.insert_many(quizzes_data)
+            for d in quizzes_data:
+                d.pop("_id", None)
+                
+        return {
+            "status": True,
+            "message": f"{len(quizzes_data)} quizzes created successfully",
+            "data": quizzes_data
+        }
+    else:
+        quiz_id = str(uuid4())
+        
+        quiz_data = {
+            "id": quiz_id,
+            "title": quiz.title,
+            "description": quiz.description,
+            "category": quiz.category,
+            "type": quiz.type,
+            "questions": [q.dict() for q in quiz.questions],
+            "createdAt": str(datetime.now())
+        }
+        
+        quizzes_collection.insert_one(quiz_data)
+        quiz_data.pop("_id", None)
+        return {
+            "status": True,
+            "message": "Quiz created successfully",
+            "data": quiz_data
+        }
 
 @router.get("")
 async def list_quizzes(category: Optional[str] = None, type: Optional[str] = None):

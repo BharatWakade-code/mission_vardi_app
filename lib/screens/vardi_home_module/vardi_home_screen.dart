@@ -116,36 +116,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🚨 Offline banner if offline
-              if (isOfflineMode)
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(bottom: 15),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade400,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.wifi_off, color: Colors.white, size: 20),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          isMarathi
-                              ? "तुम्ही ऑफलाइन आहात. साठवलेला डेटा दर्शविला जात आहे."
-                              : "Offline Mode Active. Showing cached study assets.",
-                          style: commonTextStyle.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
+            
               // 🔔 Dismissible App Update Alert
               if (!isUpdateDismissed)
                 Container(

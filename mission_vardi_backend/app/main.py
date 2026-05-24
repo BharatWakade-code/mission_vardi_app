@@ -1,17 +1,23 @@
+from dotenv import load_dotenv
+load_dotenv()  # ← Must be FIRST — loads .env before any module reads os.getenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
+from app.routes.auth import router as auth_router
 from app.routes.user import router as user_router
 from app.routes.upload import router as upload_router
 from app.routes.quiz import router as quiz_router
+from app.routes.study import router as study_router
 from app.routes.leaderboard import router as leaderboard_router
 from app.routes.notification import router as notification_router
 from app.routes.note import router as note_router
 
 app = FastAPI(
     title="Mission Vardi API",
-    version="1.0.0"
+    version="2.0.0",
+    description="Backend for Mission Vardi — Police Bharti Exam Prep App"
 )
 
 app.add_middleware(
@@ -22,15 +28,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Auth (register first — no auth required)
+app.include_router(auth_router)
+
+# Core
 app.include_router(user_router)
-app.include_router(upload_router)
 app.include_router(quiz_router)
+app.include_router(study_router)
+
+# Supporting
+app.include_router(upload_router)
 app.include_router(leaderboard_router)
 app.include_router(notification_router)
 app.include_router(note_router)
 
+
 @app.get("/")
 async def root():
-    return {"message": "Mission Vardi API Running"}
+    return {"message": "Mission Vardi API v2.0 Running"}
+
 
 handler = Mangum(app)

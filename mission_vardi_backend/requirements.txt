@@ -2,9 +2,11 @@ fastapi
 mangum
 boto3
 uvicorn
-pydantic
-firebase-admin
+pydantic[email]
+requests
 pymongo
 dnspython
 python-dotenv
-
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart

@@ -25,8 +25,11 @@ class NetworkServices {
 
       if (response.statusCode == 200 ||
           response.statusCode == 400 ||
+          response.statusCode == 401 ||
+          response.statusCode == 404 ||
           response.statusCode == 500 ||
           response.statusCode == 403 ||
+          response.statusCode == 409 ||
           response.statusCode == 422) {
         log('postApi response: $response');
         return response;
@@ -211,7 +214,9 @@ class NetworkServices {
       if (response.statusCode == 200 ||
           response.statusCode == 404 ||
           response.statusCode == 422 ||
-          response.statusCode == 400) {
+          response.statusCode == 400 ||
+          response.statusCode == 401 ||
+          response.statusCode == 403) {
         log('getApi response: $response');
         return response;
       } else {

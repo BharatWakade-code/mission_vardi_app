@@ -20,16 +20,19 @@ class QuizPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreenState extends State<QuizPlayScreen> {
+  // Cache the cubit reference — context.read() is unsafe inside dispose()
+  late QuizzesCubit _quizzesCubit;
 
   @override
   void initState() {
     super.initState();
-    context.read<QuizzesCubit>().getQuizzById(quiz_id: widget.quizId);
+    _quizzesCubit = context.read<QuizzesCubit>();
+    _quizzesCubit.getQuizzById(quiz_id: widget.quizId);
   }
 
   @override
   void dispose() {
-    context.read<QuizzesCubit>().resetToMenu();
+    _quizzesCubit.resetToMenu(); // ✅ safe — no context access
     super.dispose();
   }
 

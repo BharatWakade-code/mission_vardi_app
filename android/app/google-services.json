@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "project_id": "mission-vardi-placeholder",
-    "storage_bucket": "mission-vardi-placeholder.appspot.com"
+    "project_number": "274263956432",
+    "project_id": "mission-vardi-d1b3b",
+    "storage_bucket": "mission-vardi-d1b3b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:1234567890123456",
+        "mobilesdk_app_id": "1:274263956432:android:1496e3c97ecc7deebc37d5",
         "android_client_info": {
           "package_name": "com.example.mission_vardi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "274263956432-3cbe6r9n7ef58bv7n5hpd4of30v3hnhl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mission_vardi",
+            "certificate_hash": "6fd069c9d3af4d61e0e56b870a937919fb1b062f"
+          }
+        },
+        {
+          "client_id": "274263956432-7p3f92feo84e8j3ggneafqk0j3amd26g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDummyKeyPlaceholderForBuildingAppOnly"
+          "current_key": "AIzaSyAmGiZCGukfM--2FJMB_9Oi1ylGJODT9Do"
         }
       ],
       "services": {
         "appinvite_service": {
-          "status": 1
+          "other_platform_oauth_client": [
+            {
+              "client_id": "274263956432-7p3f92feo84e8j3ggneafqk0j3amd26g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

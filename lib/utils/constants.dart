@@ -9,20 +9,7 @@ final TextStyle commonTextStyle = GoogleFonts.philosopher(
 );
 
 class Constants {
-  //Api Constants
-  /// static String baseurl ="https://petrolynks.com/v1";
-   static String aiBaseurl ="https://p4ry83y2u0.execute-api.us-east-1.amazonaws.com/";
-
-
-
-   static String login ="/api/v1/app/login";
-   static String getDashboardData ="/api/v1/store/dashboard";
-   static String getLiveSalesData ="/api/v1/live-sales";
-   static String getStoreList ="/api/v1/store/list";
-   static String petroView ="/api/v1/crop-petroview-dashboard";
-   static String storeReports ="/api/v1/petroview-report";
-
-
+ 
    //Colour Constants
    static Color blackColour = Colors.black;
    static Color greyColour = Colors.grey;
@@ -54,10 +41,13 @@ class Constants {
 }
 
 class ApiUrls {
-   static String login ="/api/mobile/auth/send-otp";
+   static String signIn ="/auth/login";
+   static String signUp ="/auth/register";
+   static String googleAuth ="/auth/google"; // Google OAuth → backend profile sync
+   static String forgotPassword ="/auth/forgot-password";
    static String getPdfNotesAndSolvedPapers ="/notes";
-    static String getQuizzesList ="/quiz";
-
+   static String getQuizzesList ="/quiz";
+   static String getProfile ="/auth/me";
 }
 
 class AppUtils {
