@@ -61,6 +61,7 @@ class User {
   int? studyGoalMinutes;
   bool? isVerified;
   String? createdAt;
+  Map<String, dynamic>? stats;
 
   User(
       {this.id,
@@ -75,7 +76,8 @@ class User {
       this.targetExam,
       this.studyGoalMinutes,
       this.isVerified,
-      this.createdAt});
+      this.createdAt,
+      this.stats});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -91,6 +93,7 @@ class User {
     studyGoalMinutes = json['study_goal_minutes'];
     isVerified = json['is_verified'];
     createdAt = json['createdAt'];
+    stats = json['stats'];
   }
 
   Map<String, dynamic> toJson() {
@@ -108,6 +111,9 @@ class User {
     data['study_goal_minutes'] = this.studyGoalMinutes;
     data['is_verified'] = this.isVerified;
     data['createdAt'] = this.createdAt;
+    if (this.stats != null) {
+      data['stats'] = this.stats;
+    }
     return data;
   }
 }

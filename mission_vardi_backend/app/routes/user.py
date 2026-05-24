@@ -3,7 +3,7 @@ from uuid import uuid4
 from datetime import datetime
 
 from app.models.user_model import UserCreate, UserUpdate, ProfileUpdate
-from app.services.mongodb_service import users_collection, user_stats_collection, study_sessions_collection
+from app.services.mongodb_service import users_collection, user_stats_collection, study_sessions_collection, results_collection
 
 router = APIRouter(
     prefix="/user",
@@ -24,13 +24,17 @@ BADGES = [
 
 
 # ─── Profile ──────────────────────────────────────────────────────────────────
-@router.get("/{user_id}/profile", summary="Full profile with study stats")
+@router.get("/getProfile", summary="Full profile with study stats")
 async def get_profile(user_id: str):
     user = users_collection.find_one({"id": user_id}, {"_id": 0, "hashed_password": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
     stats = user_stats_collection.find_one({"user_id": user_id}, {"_id": 0}) or {}
+
+    recent_results = list(results_collection.find(
+        {"user_id": user_id}, {"_id": 0}
+    ).sort("submittedAt", -1).limit(5))
 
     return {
         "status": True,
@@ -44,12 +48,14 @@ async def get_profile(user_id: str):
                 "current_streak_days": stats.get("current_streak_days", 0),
                 "best_streak_days": stats.get("best_streak_days", 0),
                 "last_studied_at": stats.get("last_studied_at"),
+                "recent_sessions": recent_results,
             }
         }
     }
 
 
-@router.put("/{user_id}/profile", summary="Update profile fields")
+
+@router.put("/updateProfile/{user_id}", summary="Update profile fields")
 async def update_profile(user_id: str, profile: ProfileUpdate):
     user = users_collection.find_one({"id": user_id}, {"_id": 0})
     if not user:

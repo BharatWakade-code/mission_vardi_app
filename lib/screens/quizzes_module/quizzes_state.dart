@@ -17,6 +17,8 @@ class QuizzesState {
   // NEW
   final List<QuizzListData> data;
   final List<int?> userAnswers; // Tracks user's selected answers
+  final String? sessionId;
+  final String? quizId;
 
   // OPTIONAL
   final String errorMsg;
@@ -40,6 +42,8 @@ class QuizzesState {
     // NEW
     this.data = const [],
     this.userAnswers = const [],
+    this.sessionId,
+    this.quizId,
 
     // OPTIONAL
     this.errorMsg = '',
@@ -64,6 +68,8 @@ class QuizzesState {
     // NEW
     List<QuizzListData>? data,
     List<int?>? userAnswers,
+    String? sessionId,
+    String? quizId,
 
     // OPTIONAL
     String? errorMsg,
@@ -87,6 +93,8 @@ class QuizzesState {
       isLoading: isLoading ?? this.isLoading,
       data: data ?? this.data,
       userAnswers: userAnswers ?? this.userAnswers,
+      sessionId: sessionId ?? this.sessionId,
+      quizId: quizId ?? this.quizId,
       errorMsg: errorMsg ?? this.errorMsg,
       successMsg: successMsg ?? this.successMsg,
       isSuccess: isSuccess ?? this.isSuccess,

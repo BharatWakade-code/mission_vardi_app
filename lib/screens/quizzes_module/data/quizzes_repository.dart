@@ -43,4 +43,34 @@ class QuizzRepository implements QuizzesRepositoryImpl {
       return Left(Exception(e));
     }
   }
+
+  @override
+  Future<Either<Exception, dynamic>> startStudySession(Map<String, dynamic> data) async {
+    try {
+      final response = await NetworkServices().postApi(ApiUrls.startStudySession,  data);
+      return Right(response.data);
+    } catch (e) {
+      return Left(Exception(e));
+    }
+  }
+
+  @override
+  Future<Either<Exception, dynamic>> endStudySession(String sessionId, Map<String, dynamic> data) async {
+    try {
+      final response = await NetworkServices().putApi("/study/session/$sessionId/end", request: data);
+      return Right(response.data);
+    } catch (e) {
+      return Left(Exception(e));
+    }
+  }
+
+  @override
+  Future<Either<Exception, dynamic>> saveResult(String quizId, Map<String, dynamic> data) async {
+    try {
+      final response = await NetworkServices().postApi("/quiz/$quizId/result", data);
+      return Right(response.data);
+    } catch (e) {
+      return Left(Exception(e));
+    }
+  }
 }

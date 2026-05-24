@@ -47,7 +47,8 @@ class ApiUrls {
    static String forgotPassword ="/auth/forgot-password";
    static String getPdfNotesAndSolvedPapers ="/notes";
    static String getQuizzesList ="/quiz";
-   static String getProfile ="/auth/me";
+   static String getProfile ="/user/getProfile/";
+   static String startStudySession ="/study/session/start";
 }
 
 class AppUtils {

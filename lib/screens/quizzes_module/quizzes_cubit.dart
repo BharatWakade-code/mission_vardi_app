@@ -4,11 +4,13 @@ import 'package:injectable/injectable.dart';
 import 'package:mission_vardi/models/quizz_model/quizz_list_reponse_model.dart';
 import 'package:mission_vardi/screens/quizzes_module/data/quizzes_repository.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
+import 'package:mission_vardi/utils/shared_pref_data.dart';
 
 @injectable
 class QuizzesCubit extends Cubit<QuizzesState> {
   final QuizzRepository _repository;
   Timer? _quizTimer;
+  int _totalTimeSpent = 0;
 
   QuizzesCubit(this._repository) : super(QuizzesState());
 
@@ -54,7 +56,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
     }
   }
 
- /// Get Quiz List
+  /// Get Quiz List
   Future<void> getQuizzById({String? quiz_id}) async {
     emit(state.copyWith(
       isLoading: true,
@@ -82,18 +84,19 @@ class QuizzesCubit extends Cubit<QuizzesState> {
   void getQuizByIDResponseHandle(QuizzListResponseModel response) {
     if (response.status == true) {
       final List<QuizzListData> fetchedData = response.data ?? [];
-      
+
       List<Map<String, dynamic>> mappedQuestions = [];
       if (fetchedData.isNotEmpty &&
           fetchedData.first.questions != null &&
           fetchedData.first.questions!.isNotEmpty) {
         final quizItem = fetchedData.first;
         final questionsList = quizItem.questions ?? [];
-        
+
         mappedQuestions = questionsList.map((q) {
           final options = q.options ?? [];
           final correctIdx = options.indexOf(q.correctAnswer ?? "");
           return {
+            "id": q.id ?? "",
             "category": quizItem.category ?? "General",
             "categoryMr": quizItem.category ?? "सामान्य",
             "q": q.text ?? "",
@@ -115,7 +118,8 @@ class QuizzesCubit extends Cubit<QuizzesState> {
           data: fetchedData,
           allQuestions: mappedQuestions,
           questions: mappedQuestions,
-          bookmarkedQuestions: List.generate(mappedQuestions.length, (_) => false),
+          bookmarkedQuestions:
+              List.generate(mappedQuestions.length, (_) => false),
           userAnswers: List.generate(mappedQuestions.length, (_) => null),
           isQuizRunning: true,
           currentQuestionIndex: 0,
@@ -125,7 +129,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
           remainingSeconds: state.selectedPracticeMode == "Timed" ? 30 : 60,
           errorMsg: '',
         ));
-        
+
         _startQuizTimer();
       } else {
         emit(state.copyWith(
@@ -144,8 +148,6 @@ class QuizzesCubit extends Cubit<QuizzesState> {
     }
   }
 
-
-
   void changePracticeMode(String mode) {
     emit(state.copyWith(selectedPracticeMode: mode));
   }
@@ -154,8 +156,9 @@ class QuizzesCubit extends Cubit<QuizzesState> {
     emit(state.copyWith(activeCategory: category));
   }
 
-  void startQuiz({String? category}) {
+  void startQuiz({String? category}) async {
     _quizTimer?.cancel();
+    _totalTimeSpent = 0;
 
     List<Map<String, dynamic>> filtered = state.allQuestions;
 
@@ -186,6 +189,26 @@ class QuizzesCubit extends Cubit<QuizzesState> {
     ));
 
     _startQuizTimer();
+    
+    // Call API to start session
+    try {
+      String userId = CommonHiveData.getString('userId');
+      String quizId = state.data.isNotEmpty ? (state.data.first.id ?? "") : "unknown";
+      final either = await _repository.startStudySession({
+        "user_id": userId,
+        "quiz_id": quizId
+      });
+      either.fold(
+        (error) => print("Error starting session: $error"),
+        (response) {
+          if (response['status'] == true) {
+            emit(state.copyWith(sessionId: response['data']['session_id']));
+          }
+        }
+      );
+    } catch(e) {
+      print("Exception starting session: $e");
+    }
   }
 
   void selectAnswer(int index) {
@@ -245,6 +268,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
             return;
           }
           if (state.remainingSeconds > 0) {
+            _totalTimeSpent++;
             emit(state.copyWith(
               remainingSeconds: state.remainingSeconds - 1,
             ));
@@ -260,8 +284,43 @@ class QuizzesCubit extends Cubit<QuizzesState> {
     }
   }
 
-  void finishQuiz() {
+  void finishQuiz() async {
     _quizTimer?.cancel();
+
+    if (state.sessionId != null) {
+      List<Map<String, dynamic>> answers = [];
+      for (int i = 0; i < state.userAnswers.length; i++) {
+        final selectedIdx = state.userAnswers[i];
+        if (selectedIdx != null) {
+          final q = state.questions[i];
+          final options = q["options"] as List<String>;
+          answers.add({
+            "question_id": q["id"],
+            "selected_option": options[selectedIdx]
+          });
+        }
+      }
+
+      final data = {
+        "time_spent_seconds": _totalTimeSpent,
+        "answers": answers
+      };
+
+      await _repository.endStudySession(state.sessionId!, data);
+    }
+
+    try {
+      final saveResultData = {
+        "user_id": CommonHiveData.getString('userId'),
+        "score": state.score,
+        "total": state.questions.length
+      };
+      
+      String quizId = state.data.isNotEmpty ? (state.data.first.id ?? "") : "unknown";
+      await _repository.saveResult(quizId, saveResultData);
+    } catch (e) {
+      print("Exception saving result: $e");
+    }
 
     emit(state.copyWith(
       isQuizRunning: false,

@@ -8,9 +8,10 @@ import 'package:mission_vardi/utils/network_services/api_services.dart';
 @injectable
 class ProfileRepository implements ProfileRepositoryImpl {
   @override
-  Future<Either<Exception, ProfileResponseModel>> getProfile() async {
+  Future<Either<Exception, ProfileResponseModel>> getProfile(
+      {String? userID}) async {
     try {
-      final response = await NetworkServices().getApi(ApiUrls.getProfile);
+      final response = await NetworkServices() .getApi(ApiUrls.getProfile, queryParameters: {'user_id': userID});
       final responseData = ProfileResponseModel.fromJson(response.data);
       return Right(responseData);
     } catch (e) {

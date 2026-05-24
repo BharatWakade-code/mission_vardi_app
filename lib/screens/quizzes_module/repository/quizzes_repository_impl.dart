@@ -8,4 +8,7 @@ abstract class QuizzesRepositoryImpl {
       {queryParameters});
   Future<Either<Exception, QuizzListResponseModel>> getQuizById(
       {queryParameters});
+  Future<Either<Exception, dynamic>> startStudySession(Map<String, dynamic> data);
+  Future<Either<Exception, dynamic>> endStudySession(String sessionId, Map<String, dynamic> data);
+  Future<Either<Exception, dynamic>> saveResult(String quizId, Map<String, dynamic> data);
 }

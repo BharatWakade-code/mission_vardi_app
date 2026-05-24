@@ -7,6 +7,7 @@ import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:intl/intl.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
 
@@ -28,6 +29,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
     final profileState = context.watch<ProfileCubit>().state;
     final user = profileState.profileData;
+    
+    final stats = user?.stats ?? {};
+    double accuracy = (stats['average_score_percent'] as num?)?.toDouble() ?? 0.0;
+    int totalTimeSeconds = (stats['total_time_seconds'] as num?)?.toInt() ?? 0;
+    double hours = totalTimeSeconds / 3600;
+    String hoursStr = hours.toStringAsFixed(1);
+    if (hoursStr.endsWith(".0")) hoursStr = hoursStr.substring(0, hoursStr.length - 2);
+
+    List<dynamic> recentSessions = stats['recent_sessions'] ?? [];
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
@@ -67,11 +77,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.amber,
                       shape: BoxShape.circle,
                     ),
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       radius: 35,
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.shield_outlined,
-                          color: Color(0xFF0D47A1), size: 40),
+                      backgroundImage: NetworkImage(user?.avatarUrl ?? ""),
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -147,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       Text(
-                        "84%",
+                        "${accuracy.toStringAsFixed(0)}%",
                         style: commonTextStyle.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Constants.primaryBlueColour,
@@ -159,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
                     child: LinearProgressIndicator(
-                      value: 0.84,
+                      value: accuracy / 100.0,
                       minHeight: 10,
                       backgroundColor: Colors.grey.shade100,
                       valueColor: AlwaysStoppedAnimation<Color>(
@@ -178,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       Text(
-                        "24.5 Hrs Total",
+                        "$hoursStr Hrs Total",
                         style: commonTextStyle.copyWith(
                             color: Colors.grey, fontSize: 12),
                       ),
@@ -249,36 +258,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(color: Colors.grey.shade200),
               ),
-              child: Column(
-                children: [
-                  _activityTile(
-                    icon: Icons.quiz_rounded,
-                    title: isMarathi
-                        ? "सराव क्विझ पूर्ण केली"
-                        : "Completed Practice Quiz",
-                    time: "10 mins ago",
-                    subtitle: "Score: 4/4 GK Section",
-                  ),
-                  const Divider(height: 1),
-                  _activityTile(
-                    icon: Icons.timer,
-                    title: isMarathi
-                        ? "१६०० मी धावणे सराव"
-                        : "Stopwatch Workout Run",
-                    time: "2 hours ago",
-                    subtitle: "Best lap recorded: 05:22.40",
-                  ),
-                  const Divider(height: 1),
-                  _activityTile(
-                    icon: Icons.share,
-                    title: isMarathi
-                        ? "मित्राला आमंत्रित केले"
-                        : "Referred Friend",
-                    time: "Yesterday",
-                    subtitle: "Earned +50 Vardi Coins",
-                  ),
-                ],
-              ),
+              child: recentSessions.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Text(
+                          isMarathi ? "कोणताही इतिहास नाही" : "No history found",
+                          style: commonTextStyle.copyWith(color: Colors.grey),
+                        ),
+                      ),
+                    )
+                  : Column(
+                      children: recentSessions.map((session) {
+                        DateTime date = DateTime.tryParse(session['ended_at'] ?? session['submittedAt'] ?? '') ?? DateTime.now();
+                        String timeStr = DateFormat('dd MMM, hh:mm a').format(date);
+                        String category = session['category'] ?? (isMarathi ? "सराव" : "Practice");
+                        int score = session['score'] ?? 0;
+                        int total = session['total'] ?? 0;
+                        int wrong = total - score;
+
+                        return Column(
+                          children: [
+                            _activityTile(
+                              icon: Icons.quiz_rounded,
+                              title: isMarathi
+                                  ? "$category क्विझ पूर्ण केली"
+                                  : "Completed $category Quiz",
+                              time: timeStr,
+                              subtitle: "Score: $score/$total | Wrong: $wrong",
+                            ),
+                            if (session != recentSessions.last)
+                              const Divider(height: 1),
+                          ],
+                        );
+                      }).toList(),
+                    ),
             ),
             const SizedBox(height: 30),
 
