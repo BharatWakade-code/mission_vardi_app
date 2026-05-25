@@ -80,7 +80,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: CircleAvatar(
                       radius: 35,
                       backgroundColor: Colors.white,
-                      backgroundImage: NetworkImage(user?.avatarUrl ?? ""),
+                      backgroundImage: (user?.avatarUrl != null && user!.avatarUrl!.trim().isNotEmpty && user.avatarUrl!.startsWith('http'))
+                          ? NetworkImage(user.avatarUrl!)
+                          : null,
+                      child: (user?.avatarUrl == null || user!.avatarUrl!.trim().isEmpty || !user.avatarUrl!.startsWith('http'))
+                          ? const Icon(
+                              Icons.person,
+                              size: 40,
+                              color: Color(0xFF0D47A1),
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 15),

@@ -3,7 +3,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final GoogleSignIn _googleSignIn = GoogleSignIn();
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId: '274263956432-7p3f92feo84e8j3ggneafqk0j3amd26g.apps.googleusercontent.com',
+  );
 
   /// Signs in the user with Google via Firebase.
   /// Returns the [UserCredential] on success, or throws an exception on failure.

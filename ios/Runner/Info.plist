@@ -57,5 +57,18 @@
 		<false/>
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-3940256099942544~1458002511</string>
+		<key>GIDClientID</key>
+		<string>274263956432-0ocoiu8k5bffcq594fk3k9skfapusuaf.apps.googleusercontent.com</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.274263956432-0ocoiu8k5bffcq594fk3k9skfapusuaf</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>
