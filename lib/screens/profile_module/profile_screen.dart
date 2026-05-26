@@ -67,6 +67,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     if (maxWeeklyHours == 0) maxWeeklyHours = 1; // prevent division by zero
 
+
+
+    if (profileState.isLoading && user == null) {
+      return Scaffold(
+        backgroundColor: Constants.scaffoldBackgroundColour,
+        appBar: CustomAppBar(
+          titleText: isMarathi ? 'माहिती व प्रगती' : 'Profile & Statistics',
+          titleIcon: Icons.person,
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(

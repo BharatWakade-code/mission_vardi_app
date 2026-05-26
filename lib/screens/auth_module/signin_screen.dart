@@ -529,21 +529,7 @@ class _SignInScreenState extends State<SignInScreen>
 
                       const SizedBox(height: 12),
 
-                      TextButton(
-                        onPressed: () =>
-                            context.go(RoutesNames.dashboardScreen),
-                        child: Text(
-                          "Continue as Guest",
-                          style: commonTextStyle.copyWith(
-                            color: Colors.white38,
-                            fontSize: 13,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.white38,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
+                    
                     ],
                   ),
                 ),

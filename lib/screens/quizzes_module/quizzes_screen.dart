@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
-import 'package:mission_vardi/screens/quizzes_module/quiz_play_screen.dart';
 import 'package:mission_vardi/utils/common_widgets/banner_ad_widget.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -204,7 +203,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       crossAxisCount: 3,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 1.1,
+                      childAspectRatio: 0.78,
                     ),
                     itemCount: state.data.length,
                     itemBuilder: (context, index) {
@@ -485,52 +484,58 @@ class _CategoryCard extends StatelessWidget {
     final isMarathi =
         context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: color, size: 20),
                 ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              Text(
-                count,
-                style: commonTextStyle.copyWith(
-                    fontSize: 10,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isMarathi ? titleMr : title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: commonTextStyle.copyWith(
-                    fontWeight: FontWeight.bold, fontSize: 13),
-              ),
-              const SizedBox(height: 3),
-              GestureDetector(
-                onTap: onTap,
-                child: Row(
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    count,
+                    textAlign: TextAlign.end,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: commonTextStyle.copyWith(
+                        fontSize: 10,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isMarathi ? titleMr : title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: commonTextStyle.copyWith(
+                      fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                const SizedBox(height: 3),
+                Row(
                   children: [
                     Text(
                       isMarathi ? "सुरू करा" : "Start now",
@@ -542,11 +547,11 @@ class _CategoryCard extends StatelessWidget {
                     Icon(Icons.arrow_forward,
                         size: 10, color: Constants.primaryBlueColour),
                   ],
-                ),
-              )
-            ],
-          ),
-        ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
