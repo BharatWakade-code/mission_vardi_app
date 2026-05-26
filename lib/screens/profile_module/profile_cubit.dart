@@ -10,8 +10,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository _repository;
 
   ProfileCubit(this._repository) : super(ProfileState());
-final String userID = CommonHiveData.getString('userId');
-
+  String get userID => CommonHiveData.getString('userId');
   Future<void> getProfile() async {
     emit(state.copyWith(
       isLoading: true,
@@ -45,5 +44,37 @@ final String userID = CommonHiveData.getString('userId');
         }
       },
     );
+  }
+
+  Future<void> updateProfile({required Map<String, dynamic> body}) async {
+    emit(state.copyWith(isLoading: true, errorMsg: '', successMsg: ''));
+
+    final either = await _repository.updateProfile(userID: userID, body: body);
+
+    either.fold(
+      (error) {
+        emit(state.copyWith(isLoading: false, errorMsg: error.toString()));
+      },
+      (response) {
+        if (response['status'] == true) {
+          emit(state.copyWith(
+            isLoading: false,
+            successMsg: response['message'] ?? 'Profile updated',
+            isSuccess: true,
+          ));
+          // Refresh the profile after a successful update
+          getProfile();
+        } else {
+          emit(state.copyWith(
+            isLoading: false,
+            errorMsg: response['message'] ?? 'Failed to update profile',
+          ));
+        }
+      },
+    );
+  }
+
+  void clearProfile() {
+    emit(ProfileState());
   }
 }

@@ -108,7 +108,7 @@ class WelcomeScreen extends StatelessWidget {
 
                     /// Description text
                     Text(
-                      "Prepare with daily MCQ tests, real-time mock timers, physical test trackers, and district-wise rank analysis. Track sit-ups, pushups, and 1600m sprints.",
+                      "Prepare with daily MCQ tests, real-time mock timers, physical test trackers, and global rank analysis. Track sit-ups, pushups, and 1600m sprints.",
                       textAlign: TextAlign.center,
                       style: commonTextStyle.copyWith(
                         color: Colors.white.withOpacity(0.85),

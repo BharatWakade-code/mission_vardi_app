@@ -36,6 +36,40 @@ async def get_profile(user_id: str):
         {"user_id": user_id}, {"_id": 0}
     ).sort("submittedAt", -1).limit(5))
 
+    from app.services.mongodb_service import quizzes_collection, study_sessions_collection
+
+    for result in recent_results:
+        # Fetch Quiz Title
+        quiz = quizzes_collection.find_one({"id": result.get("quiz_id")}, {"_id": 0, "title": 1})
+        result["quiz_title"] = quiz.get("title", "Unknown Quiz") if quiz else "Unknown Quiz"
+
+        # Calculate Attempted
+        # Find the latest study session for this quiz and user to get attempt count
+        session = study_sessions_collection.find_one(
+            {"quiz_id": result.get("quiz_id"), "user_id": user_id, "status": "completed"}, 
+            sort=[("ended_at", -1)]
+        )
+        if session and "answers" in session:
+            attempted = sum(1 for a in session["answers"] if a.get("selected_option") != "")
+            result["attempted"] = attempted
+        else:
+            result["attempted"] = result.get("score", 0) # Fallback to score if we can't find session
+
+    from datetime import datetime, timedelta
+    today = datetime.utcnow().date()
+    last_week = (datetime.utcnow() - timedelta(days=7)).isoformat()
+    recent_all = list(results_collection.find({"user_id": user_id, "submittedAt": {"$gte": last_week}}, {"_id": 0}))
+    
+    weekly_hours = []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        day_str = day.strftime("%a")
+        day_prefix = str(day)
+        
+        time_for_day = sum(r.get("time_spent_seconds", 0) for r in recent_all if r.get("submittedAt", "").startswith(day_prefix))
+        minutes = round(time_for_day / 60, 1)
+        weekly_hours.append({"day": day_str, "minutes": minutes})
+
     return {
         "status": True,
         "message": "Profile fetched",
@@ -48,7 +82,9 @@ async def get_profile(user_id: str):
                 "current_streak_days": stats.get("current_streak_days", 0),
                 "best_streak_days": stats.get("best_streak_days", 0),
                 "last_studied_at": stats.get("last_studied_at"),
+                "weekly_study_hours": weekly_hours,
                 "recent_sessions": recent_results,
+                "badges": [b for b in BADGES if b["condition"](stats)],
             }
         }
     }

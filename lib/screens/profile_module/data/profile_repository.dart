@@ -18,4 +18,15 @@ class ProfileRepository implements ProfileRepositoryImpl {
       return Left(Exception(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Exception, dynamic>> updateProfile(
+      {required String userID, required Map<String, dynamic> body}) async {
+    try {
+      final response = await NetworkServices().putApi('${ApiUrls.updateProfile}/$userID', request: body);
+      return Right(response.data);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
 }

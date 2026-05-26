@@ -10,7 +10,6 @@ class EmailRegister(BaseModel):
     last_name: Optional[str] = None
     mobile: Optional[str] = None
     phone: Optional[str] = None   # alias for mobile from Flutter
-    district: Optional[str] = None
 
 
 class EmailLogin(BaseModel):

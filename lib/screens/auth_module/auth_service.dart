@@ -9,6 +9,9 @@ class AuthService {
   /// Returns the [UserCredential] on success, or throws an exception on failure.
   static Future<UserCredential?> signInWithGoogle() async {
     try {
+      // Force account selection by signing out locally first
+      await _googleSignIn.signOut();
+      
       // Trigger the Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 

@@ -80,6 +80,22 @@ def _update_user_stats(user_id: str):
 
     last_session = max(sessions, key=lambda s: s.get("ended_at", ""))
 
+    # Weekly study hours calculation (last 7 days including today)
+    weekly_hours = []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        day_str = day.strftime("%a") # e.g., "Mon", "Tue"
+        
+        # Sum time for this specific date
+        time_for_day = sum(
+            s.get("time_spent_seconds", 0) 
+            for s in sessions 
+            if s.get("ended_at", "") and s.get("ended_at", "").startswith(str(day))
+        )
+        
+        hours = round(time_for_day / 3600, 2)
+        weekly_hours.append({"day": day_str, "hours": hours})
+
     stats = {
         "user_id": user_id,
         "total_quizzes": total_quizzes,
@@ -89,6 +105,7 @@ def _update_user_stats(user_id: str):
         "best_streak_days": best_streak,
         "category_stats": category_stats,
         "last_studied_at": last_session.get("ended_at"),
+        "weekly_study_hours": weekly_hours,
     }
 
     user_stats_collection.update_one(

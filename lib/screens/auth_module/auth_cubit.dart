@@ -228,6 +228,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   /// Sign Out
   Future<void> signOut() async {
+    try {
+      await AuthService.signOut();
+    } catch (e) {
+      log('[AuthCubit] Firebase signOut error: $e');
+    }
     await CommonHiveData.clearAll();
     emit(AuthState());
   }

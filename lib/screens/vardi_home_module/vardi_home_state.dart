@@ -6,7 +6,9 @@ class VardiHomeState {
   final bool isSuccess;
   final String errorMsg;
   final String successMsg;
-  List<PdfNoteModel>? data;
+  List<dynamic>? data;
+  List<dynamic>? alerts;
+  List<dynamic>? leaderboard;
 
    VardiHomeState({
     this.isLoading = false,
@@ -14,6 +16,8 @@ class VardiHomeState {
     this.errorMsg = '',
     this.successMsg = '',
     this.data,
+    this.alerts,
+    this.leaderboard,
   });
 
   VardiHomeState copyWith({
@@ -22,6 +26,8 @@ class VardiHomeState {
     String? errorMsg,
     String? successMsg,
     dynamic data,
+    List<dynamic>? alerts,
+    List<dynamic>? leaderboard,
   }) {
     return VardiHomeState(
       isLoading: isLoading ?? this.isLoading,
@@ -29,6 +35,8 @@ class VardiHomeState {
       errorMsg: errorMsg ?? this.errorMsg,
       successMsg: successMsg ?? this.successMsg,
       data: data ?? this.data,
+      alerts: alerts ?? this.alerts,
+      leaderboard: leaderboard ?? this.leaderboard,
     );
   }
 }

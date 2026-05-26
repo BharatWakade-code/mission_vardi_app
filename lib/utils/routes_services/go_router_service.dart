@@ -43,8 +43,8 @@ final GoRouter router = GoRouter(
     final hiveToken = CommonHiveData.getString('token');
     final isLoggedIn = hiveToken.isNotEmpty;
 
-    final isAuthRoute = state.matchedLocation == RoutesNames.signInScreen ||
-        state.matchedLocation == RoutesNames.signUpScreen;
+    final isAuthRoute = state.uri.path == RoutesNames.signInScreen ||
+        state.uri.path == RoutesNames.signUpScreen;
 
     // Not logged in → always go to sign in
     if (!isLoggedIn && !isAuthRoute) {

@@ -48,7 +48,10 @@ class ApiUrls {
    static String getPdfNotesAndSolvedPapers ="/notes";
    static String getQuizzesList ="/quiz";
    static String getProfile ="/user/getProfile/";
+   static String updateProfile = "/user/updateProfile";
    static String startStudySession ="/study/session/start";
+   static String getGlobalAlerts = "/alerts/global";
+   static String getGlobalLeaderboard = "/leaderboard/global";
 }
 
 class AppUtils {

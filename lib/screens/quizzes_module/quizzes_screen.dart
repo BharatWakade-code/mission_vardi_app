@@ -204,7 +204,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       crossAxisCount: 3,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 1.4,
+                      childAspectRatio: 1.1,
                     ),
                     itemCount: state.data.length,
                     itemBuilder: (context, index) {
@@ -522,6 +522,8 @@ class _CategoryCard extends StatelessWidget {
             children: [
               Text(
                 isMarathi ? titleMr : title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: commonTextStyle.copyWith(
                     fontWeight: FontWeight.bold, fontSize: 13),
               ),

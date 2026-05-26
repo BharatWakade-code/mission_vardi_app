@@ -26,7 +26,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   bool isUpdateDismissed = false;
 
   // Selection states
-  String selectedDistrict = "Mumbai"; // Mumbai, Nagpur, Pune, Thane
+  // Removed district string
   String searchQuery = "";
 
   // Controllers
@@ -63,6 +63,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   void initState() {
     super.initState();
     context.read<VardiHomeCubit>().getPDFNotesAndSolvedPapers();
+    context.read<VardiHomeCubit>().getGlobalData();
 
     // Ticking seconds countdown
     countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -278,49 +279,22 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               ),
               const SizedBox(height: 20),
 
-              // 👮‍♂️ District selection & Live Updates
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    isMarathi
-                        ? "जिल्हास्तरीय भरती अपडेट्स"
-                        : "District Bharti Alerts",
-                    style: commonTextStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.white : Colors.black87,
-                    ),
+              // 🚨 Global Bharti Alerts
+              if ((context.watch<VardiHomeCubit>().state.alerts ?? []).isNotEmpty) ...[
+                Text(
+                  isMarathi
+                      ? "पोलीस भरती अपडेट्स"
+                      : "Police Bharti Updates",
+                  style: commonTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.white : Colors.black87,
                   ),
-                  DropdownButton<String>(
-                    value: selectedDistrict,
-                    dropdownColor:
-                        isDarkMode ? const Color(0xFF222222) : Colors.white,
-                    style: commonTextStyle.copyWith(
-                      color: Constants.primaryBlueColour,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    underline: const SizedBox.shrink(),
-                    onChanged: (String? val) {
-                      if (val != null) {
-                        setState(() {
-                          selectedDistrict = val;
-                        });
-                      }
-                    },
-                    items:
-                        ["Mumbai", "Nagpur", "Pune", "Thane"].map((String d) {
-                      return DropdownMenuItem<String>(
-                        value: d,
-                        child: Text(d),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _districtNewsFeed(isMarathi),
-              const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 10),
+                _globalNewsFeed(isMarathi),
+                const SizedBox(height: 20),
+              ],
 
               // 📚 Digital PDF Notes Library & Solved Papers
               Text(
@@ -337,19 +311,21 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               _pdfNotesLibrary(isMarathi),
               const SizedBox(height: 20),
 
-              // 📊 District-wise Leaderboard
-              Text(
-                isMarathi
-                    ? "जिल्हानुसार आघाडीवर (Leaderboard)"
-                    : "District-wise Leaderboard",
-                style: commonTextStyle.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: isDarkMode ? Colors.white : Colors.black87,
+              // 📊 Global Leaderboard
+              if ((context.watch<VardiHomeCubit>().state.leaderboard ?? []).isNotEmpty) ...[
+                Text(
+                  isMarathi
+                      ? "ग्लोबल लीडरबोर्ड (Leaderboard)"
+                      : "Global Leaderboard",
+                  style: commonTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              _leaderboardList(isMarathi),
+                const SizedBox(height: 10),
+                _leaderboardList(isMarathi),
+              ],
             ],
           ),
         ),
@@ -394,25 +370,17 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 
-  // Mock News Feed
-  Widget _districtNewsFeed(bool isMarathi) {
+  // Dynamic News Feed
+  Widget _globalNewsFeed(bool isMarathi) {
+    final state = context.watch<VardiHomeCubit>().state;
+    final alerts = state.alerts ?? [];
+    
     String message = "";
-    if (selectedDistrict == "Mumbai") {
-      message = isMarathi
-          ? "मुंबई पोलीस भरती मैदानी चाचणी वेळापत्रक जाहीर. २ जूनपासून सुरू."
-          : "Mumbai Police Bharti Ground Test dates released. Starting June 2nd.";
-    } else if (selectedDistrict == "Nagpur") {
-      message = isMarathi
-          ? "नागपूर विभाग लेखी परीक्षेसाठी नवीन मार्गदर्शक सूचना जारी."
-          : "Nagpur division written exam guidelines updated.";
-    } else if (selectedDistrict == "Pune") {
-      message = isMarathi
-          ? "पुणे पोलीस आयुक्तालय: १५,००० उमेदवारांची यादी अंतिम टप्प्यात."
-          : "Pune Commissionary: list of 15k candidates in final validation phase.";
+    if (alerts.isNotEmpty) {
+      final latest = alerts.first;
+      message = isMarathi ? (latest['message_mr'] ?? "") : (latest['message_en'] ?? "");
     } else {
-      message = isMarathi
-          ? "ठाणे शारीरिक चाचणीसाठी प्रवेशपत्रे उद्यापासून उपलब्ध होतील."
-          : "Thane ground test admit cards downloadable from tomorrow.";
+      message = isMarathi ? "कोणतेही अपडेट नाही." : "No updates available.";
     }
 
     return Container(
@@ -439,7 +407,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "$selectedDistrict Bharti Alert",
+                  isMarathi ? "नवीन अलर्ट" : "New Alert",
                   style: commonTextStyle.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
@@ -632,14 +600,27 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 
-  // Topper/Leaderboard Widget
+  // Global Leaderboard Widget
   Widget _leaderboardList(bool isMarathi) {
-    final List<Map<String, String>> leaders = [
-      {"name": "Anil Patil", "score": "194/200", "district": "Mumbai"},
-      {"name": "Seema Shinde", "score": "191/200", "district": "Nagpur"},
-      {"name": "Rahul Deshmukh", "score": "189/200", "district": "Pune"},
-      {"name": "Vijay Gaikwad", "score": "186/200", "district": "Thane"},
-    ];
+    final state = context.watch<VardiHomeCubit>().state;
+    final List<dynamic> leaders = state.leaderboard ?? [];
+
+    if (leaders.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Center(
+          child: Text(
+            isMarathi ? "लीडरबोर्ड अद्याप उपलब्ध नाही" : "Leaderboard not available yet",
+            style: commonTextStyle.copyWith(color: Colors.grey),
+          ),
+        ),
+      );
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -674,18 +655,14 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               ],
             ),
             title: Text(
-              item["name"]!,
+              item["name"] ?? "Unknown",
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                   color: isDarkMode ? Colors.white : Colors.black87),
             ),
-            subtitle: Text(
-              "${isMarathi ? 'जिल्हा' : 'District'}: ${item["district"]}",
-              style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey),
-            ),
             trailing: Text(
-              item["score"]!,
+              item["score_str"] ?? "0",
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Constants.primaryBlueColour,
