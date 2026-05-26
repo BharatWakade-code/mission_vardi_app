@@ -36,11 +36,14 @@ app.include_router(user_router)
 app.include_router(quiz_router)
 app.include_router(study_router)
 
+from app.routes.alert import router as alert_router
+
 # Supporting
 app.include_router(upload_router)
 app.include_router(leaderboard_router)
 app.include_router(notification_router)
 app.include_router(note_router)
+app.include_router(alert_router)
 
 
 @app.get("/")

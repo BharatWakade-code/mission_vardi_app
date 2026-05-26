@@ -86,10 +86,12 @@ class QuizzesCubit extends Cubit<QuizzesState> {
       final List<QuizzListData> fetchedData = response.data ?? [];
 
       List<Map<String, dynamic>> mappedQuestions = [];
+      String? currentQuizId;
       if (fetchedData.isNotEmpty &&
           fetchedData.first.questions != null &&
           fetchedData.first.questions!.isNotEmpty) {
         final quizItem = fetchedData.first;
+        currentQuizId = quizItem.id;
         final questionsList = quizItem.questions ?? [];
 
         mappedQuestions = questionsList.map((q) {
@@ -115,7 +117,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
           isLoading: false,
           successMsg: response.message ?? '',
           isSuccess: true,
-          data: fetchedData,
+          quizId: currentQuizId ?? "",
           allQuestions: mappedQuestions,
           questions: mappedQuestions,
           bookmarkedQuestions:
@@ -131,12 +133,12 @@ class QuizzesCubit extends Cubit<QuizzesState> {
         ));
 
         _startQuizTimer();
+        _startStudySessionApi(currentQuizId ?? "unknown");
       } else {
         emit(state.copyWith(
           isLoading: false,
           successMsg: response.message ?? '',
           isSuccess: true,
-          data: fetchedData,
           errorMsg: '',
         ));
       }
@@ -190,10 +192,12 @@ class QuizzesCubit extends Cubit<QuizzesState> {
 
     _startQuizTimer();
     
-    // Call API to start session
+    _startStudySessionApi(state.quizId ?? "unknown");
+  }
+
+  Future<void> _startStudySessionApi(String quizId) async {
     try {
       String userId = CommonHiveData.getString('userId');
-      String quizId = state.data.isNotEmpty ? (state.data.first.id ?? "") : "unknown";
       final either = await _repository.startStudySession({
         "user_id": userId,
         "quiz_id": quizId
@@ -316,7 +320,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
         "total": state.questions.length
       };
       
-      String quizId = state.data.isNotEmpty ? (state.data.first.id ?? "") : "unknown";
+      String quizId = state.quizId ?? "unknown";
       await _repository.saveResult(quizId, saveResultData);
     } catch (e) {
       print("Exception saving result: $e");

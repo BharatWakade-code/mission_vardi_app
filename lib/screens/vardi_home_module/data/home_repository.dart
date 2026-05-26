@@ -21,4 +21,19 @@ class HomeRepository implements HomeRepositoryImpl {
       return Left(Exception(e));
     }
   }
+
+  Future<Either<Exception, Map<String, dynamic>>> getGlobalData() async {
+    try {
+      final alertRes = await NetworkServices().getApi(ApiUrls.getGlobalAlerts);
+      final leaderRes = await NetworkServices().getApi(ApiUrls.getGlobalLeaderboard);
+      
+      return Right({
+        "alerts": alertRes.data['data'] ?? [],
+        "leaderboard": leaderRes.data['data'] ?? []
+      });
+    } catch (e) {
+      print('getGlobalData ex: $e');
+      return Left(Exception(e));
+    }
+  }
 }

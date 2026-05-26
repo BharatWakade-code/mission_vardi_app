@@ -58,5 +58,16 @@ class VardiHomeCubit extends Cubit<VardiHomeState> {
     }
   }
 
-
+  Future<void> getGlobalData() async {
+    final either = await _repository.getGlobalData();
+    either.fold(
+      (error) => print("getGlobalData error: $error"),
+      (data) {
+        emit(state.copyWith(
+          alerts: data['alerts'],
+          leaderboard: data['leaderboard']
+        ));
+      }
+    );
+  }
 }

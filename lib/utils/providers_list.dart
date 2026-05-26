@@ -25,7 +25,7 @@ providerList() {
       create: (_) => getIt<QuizzesCubit>(),
     ),
     BlocProvider(
-      create: (_) => getIt<ProfileCubit>()..getProfile(),
+      create: (_) => getIt<ProfileCubit>(),
     ),
   ];
 }

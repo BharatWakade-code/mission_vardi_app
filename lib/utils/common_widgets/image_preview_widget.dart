@@ -38,20 +38,20 @@ class ImagePreviewWidget extends StatelessWidget {
       body: Center(
         child: Hero(
           tag: imageUrl.toString(),
-          child: (imageUrl != null && imageUrl!.trim().isNotEmpty && imageUrl!.startsWith('http'))
+          child: imageUrl != null && imageUrl!.isNotEmpty
               ? Image.network(
                   imageUrl!,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) => const Icon(
-                    Icons.broken_image_rounded,
-                    size: 60,
-                    color: Colors.grey,
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    'assets/images/error_vine_bottle.png',
+                    height: 60,
+                    width: 60,
                   ),
                 )
-              : const Icon(
-                  Icons.broken_image_rounded,
-                  size: 60,
-                  color: Colors.grey,
+              : Image.asset(
+                  'assets/images/error_vine_bottle.png',
+                  height: 60,
+                  width: 60,
                 ),
         ),
       ),
