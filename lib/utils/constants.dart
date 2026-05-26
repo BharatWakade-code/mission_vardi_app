@@ -53,6 +53,7 @@ class ApiUrls {
    static String startStudySession ="/study/session/start";
    static String getGlobalAlerts = "/alerts/global";
    static String getGlobalLeaderboard = "/leaderboard/global";
+   static String getCurrentAffairs = "/current_affairs";
 }
 
 class AppUtils {

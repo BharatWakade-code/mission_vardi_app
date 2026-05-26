@@ -6,6 +6,9 @@ import 'package:mission_vardi/screens/quizzes_module/quiz_result_screen.dart';
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_screen.dart';
 import 'package:mission_vardi/screens/welcome_screen.dart';
 import 'package:mission_vardi/screens/vardi_home_module/pdf_viewer_screen.dart';
+import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
+import 'package:mission_vardi/screens/current_affairs_module/current_affairs_detail_screen.dart';
+import 'package:mission_vardi/screens/current_affairs_module/data/current_affairs_model.dart';
 
 class RoutesNames {
   /// Auth Module
@@ -18,6 +21,8 @@ class RoutesNames {
   static const String quizPlayScreen = '/quizPlayScreen';
   static const String quizResultScreen = '/quizResultScreen';
   static const String pdfViewerScreen = '/pdfViewerScreen';
+  static const String currentAffairsScreen = '/currentAffairsScreen';
+  static const String currentAffairsDetailScreen = '/currentAffairsDetailScreen';
 }
 
 List<RouteBase> routesList() {
@@ -55,6 +60,17 @@ List<RouteBase> routesList() {
           title: extra['title'] as String,
           description: extra['description'] as String,
         );
+      },
+    ),
+    GoRoute(
+      path: RoutesNames.currentAffairsScreen,
+      builder: (context, state) => const CurrentAffairsScreen(),
+    ),
+    GoRoute(
+      path: RoutesNames.currentAffairsDetailScreen,
+      builder: (context, state) {
+        final article = state.extra as CurrentAffairsModel;
+        return CurrentAffairsDetailScreen(article: article);
       },
     ),
   ];

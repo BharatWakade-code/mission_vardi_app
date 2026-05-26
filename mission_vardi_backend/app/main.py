@@ -13,6 +13,7 @@ from app.routes.study import router as study_router
 from app.routes.leaderboard import router as leaderboard_router
 from app.routes.notification import router as notification_router
 from app.routes.note import router as note_router
+from app.routes.current_affairs import router as current_affairs_router
 
 app = FastAPI(
     title="Mission Vardi API",
@@ -44,6 +45,7 @@ app.include_router(leaderboard_router)
 app.include_router(notification_router)
 app.include_router(note_router)
 app.include_router(alert_router)
+app.include_router(current_affairs_router)
 
 
 @app.get("/")

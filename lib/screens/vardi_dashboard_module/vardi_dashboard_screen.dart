@@ -7,6 +7,7 @@ import 'package:mission_vardi/screens/vardi_home_module/vardi_home_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_screen.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_screen.dart';
 import 'package:mission_vardi/screens/profile_module/profile_screen.dart';
+import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
 import 'package:mission_vardi/utils/constants.dart';
 
 class VardiDashboardScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
 
     List<Widget> screens = [
       const FarmerHomeScreen(), // Mapped to the home screen class in vardi_home_screen
+      const CurrentAffairsScreen(),
       const QuizzesScreen(),
       const PhysicalPrepScreen(),
       const ProfileScreen(),
@@ -52,12 +54,12 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
       },
       selectedLabelStyle: commonTextStyle.copyWith(
         color: Colors.amber,
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: FontWeight.bold,
       ),
       unselectedLabelStyle: commonTextStyle.copyWith(
         color: Colors.white70,
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: FontWeight.normal,
       ),
       items: [
@@ -66,16 +68,20 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
           label: isMarathi ? "मुख्य पृष्ठ" : "Home",
         ),
         BottomNavigationBarItem(
+          icon: const Icon(Icons.newspaper_rounded),
+          label: isMarathi ? "चालू घडामोडी" : "Affairs",
+        ),
+        BottomNavigationBarItem(
           icon: const Icon(Icons.quiz_rounded),
-          label: isMarathi ? "परीक्षा आणि क्विझ" : "Mock & Quizzes",
+          label: isMarathi ? "परीक्षा-क्विझ" : "Quizzes",
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.directions_run_rounded),
-          label: isMarathi ? "मैदानी चाचणी" : "Physical Prep",
+          label: isMarathi ? "मैदानी चाचणी" : "Physical",
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.analytics_rounded),
-          label: isMarathi ? "माहिती व प्रगती" : "Profile & Stats",
+          label: isMarathi ? "माहिती-प्रगती" : "Profile",
         ),
       ],
     );

@@ -1,14 +1,17 @@
-import 'dart:async';
 import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/download_service.dart';
+import 'package:path_provider/path_provider.dart';
 
-enum ReadingTheme { light, sepia, eyeComfort, dark }
+enum ReadingTheme {
+  light,
+  sepia,
+  eyeComfort,
+  dark,
+}
 
 class PdfViewerScreen extends StatefulWidget {
   final String pdfUrl;
@@ -27,39 +30,47 @@ class PdfViewerScreen extends StatefulWidget {
 }
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
-  // PDF State
+  // PDF
   String? _localPdfPath;
   bool _isLoading = true;
   String _loadingProgress = "0%";
   String? _errorMessage;
 
-  // Navigation & Page State
-  PDFViewController? _pdfViewController;
+  // PDF Controller
+  PDFViewController? _pdfController;
+
+  // Pages
   int _currentPage = 0;
   int _totalPages = 0;
 
-  // Reading Options
+  // Theme
   ReadingTheme _activeTheme = ReadingTheme.light;
+
+  // Bookmark
   bool _isBookmarked = false;
 
-  // Notes state
-  final TextEditingController _notesController = TextEditingController();
+  // Notes
+  final TextEditingController _notesController =
+      TextEditingController();
+
   String _savedNotes = "";
 
   @override
   void initState() {
     super.initState();
-    _downloadAndCachePdf();
+    _initializePdf();
   }
 
   @override
   void dispose() {
+    _pdfController = null;
     _notesController.dispose();
     super.dispose();
   }
 
-  // Download & Cache logic
-  Future<void> _downloadAndCachePdf() async {
+  Future<void> _initializePdf() async {
+    if (!mounted) return;
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -67,34 +78,65 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     });
 
     try {
-      String url = widget.pdfUrl;
+      final url = widget.pdfUrl.trim();
 
-      // Fallback sample PDF if URL is invalid or empty to guarantee working display
-      if (url.isEmpty || !url.startsWith("http")) {
-        url = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+      if (url.isEmpty) {
+        throw Exception("Invalid PDF URL");
       }
 
       final uri = Uri.parse(url);
-      final filename = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : "document.pdf";
-      
-      final tempDir = await getTemporaryDirectory();
-      final file = File("${tempDir.path}/$filename");
 
-      if (await file.exists()) {
-        setState(() {
-          _localPdfPath = file.path;
-          _isLoading = false;
-        });
-        return;
+      String fileName = uri.pathSegments.isNotEmpty
+          ? uri.pathSegments.last
+          : "document_${DateTime.now().millisecondsSinceEpoch}.pdf";
+
+      if (!fileName.endsWith(".pdf")) {
+        fileName = "$fileName.pdf";
       }
 
-      final dio = Dio();
+      final directory = await getTemporaryDirectory();
+
+      final filePath = "${directory.path}/$fileName";
+
+      final file = File(filePath);
+
+      // Use Cached File
+      if (await file.exists()) {
+        final size = await file.length();
+
+        if (size > 1000) {
+          if (!mounted) return;
+
+          setState(() {
+            _localPdfPath = filePath;
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          await file.delete();
+        }
+      }
+
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 20),
+          receiveTimeout: const Duration(seconds: 20),
+          sendTimeout: const Duration(seconds: 20),
+        ),
+      );
+
       await dio.download(
         url,
-        file.path,
+        filePath,
+        deleteOnError: true,
         onReceiveProgress: (received, total) {
-          if (total != -1) {
-            final progress = (received / total * 100).toStringAsFixed(0);
+          if (!mounted) return;
+
+          if (total > 0) {
+            final progress =
+                ((received / total) * 100).toStringAsFixed(0);
+
             setState(() {
               _loadingProgress = "$progress%";
             });
@@ -102,30 +144,75 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         },
       );
 
+      final downloadedFile = File(filePath);
+
+      if (!await downloadedFile.exists()) {
+        throw Exception("PDF not found");
+      }
+
+      final downloadedSize = await downloadedFile.length();
+
+      if (downloadedSize < 1000) {
+        await downloadedFile.delete();
+
+        throw Exception("Corrupted PDF file");
+      }
+
+      if (!mounted) return;
+
       setState(() {
-        _localPdfPath = file.path;
+        _localPdfPath = filePath;
         _isLoading = false;
       });
-    } catch (e) {
-      print("PDF Download error: $e");
+    } on DioException catch (e) {
+      if (!mounted) return;
+
+      String message = "Failed to load PDF";
+
+      switch (e.type) {
+        case DioExceptionType.connectionTimeout:
+          message = "Connection timeout";
+          break;
+
+        case DioExceptionType.receiveTimeout:
+          message = "Server taking too long";
+          break;
+
+        case DioExceptionType.connectionError:
+          message = "No internet connection";
+          break;
+
+        default:
+          message = "Unable to open study material";
+      }
+
       setState(() {
         _isLoading = false;
-        _errorMessage = "Unable to fetch study guide.\nPlease check your network connection.";
+        _errorMessage = message;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+        _errorMessage = e.toString();
       });
     }
   }
 
-  // Theme color styling
-  Color _getBgColor() {
+  Color _getBackgroundColor() {
     switch (_activeTheme) {
       case ReadingTheme.light:
-        return const Color(0xFFF8FAFC); // Slate 50
+        return const Color(0xFFF8FAFC);
+
       case ReadingTheme.sepia:
-        return const Color(0xFFF4ECD8); // Warm Sepia
+        return const Color(0xFFF4ECD8);
+
       case ReadingTheme.eyeComfort:
-        return const Color(0xFFE8F5E9); // Soft Mint
+        return const Color(0xFFE8F5E9);
+
       case ReadingTheme.dark:
-        return const Color(0xFF0F172A); // Midnight Navy Slate 900
+        return const Color(0xFF0F172A);
     }
   }
 
@@ -133,23 +220,29 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     switch (_activeTheme) {
       case ReadingTheme.light:
         return const Color(0xFF1E293B);
+
       case ReadingTheme.sepia:
         return const Color(0xFF4A3B32);
+
       case ReadingTheme.eyeComfort:
         return const Color(0xFF1B5E20);
+
       case ReadingTheme.dark:
         return const Color(0xFFF1F5F9);
     }
   }
 
-  Color _getAccentBgColor() {
+  Color _getCardColor() {
     switch (_activeTheme) {
       case ReadingTheme.light:
-        return const Color(0xFFE2E8F0);
+        return Colors.white;
+
       case ReadingTheme.sepia:
         return const Color(0xFFEFE5CD);
+
       case ReadingTheme.eyeComfort:
         return const Color(0xFFC8E6C9);
+
       case ReadingTheme.dark:
         return const Color(0xFF1E293B);
     }
@@ -157,32 +250,38 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = _getBgColor();
+    final bgColor = _getBackgroundColor();
     final textColor = _getTextColor();
 
     return Scaffold(
-      backgroundColor: themeColor,
+      backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: themeColor,
         elevation: 0,
+        backgroundColor: bgColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: textColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        titleSpacing: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               widget.title,
-              style: GoogleFonts.outfit(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.outfit(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: textColor,
+              ),
             ),
-            if (!_isLoading && _errorMessage == null && _totalPages > 0)
+            if (_totalPages > 0)
               Text(
                 "Page ${_currentPage + 1} of $_totalPages",
                 style: GoogleFonts.outfit(
@@ -193,41 +292,37 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
           ],
         ),
         actions: [
-          // Bookmark Toggle
           IconButton(
-            icon: Icon(
-              _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-              color: _isBookmarked ? Colors.amber : textColor,
-            ),
             onPressed: () {
               setState(() {
                 _isBookmarked = !_isBookmarked;
               });
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(_isBookmarked
-                      ? "Page bookmarked successfully!"
-                      : "Page removed from bookmarks!"),
-                  duration: const Duration(seconds: 1),
+                  content: Text(
+                    _isBookmarked
+                        ? "Bookmarked"
+                        : "Bookmark removed",
+                  ),
                 ),
               );
             },
+            icon: Icon(
+              _isBookmarked
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+              color: _isBookmarked
+                  ? Colors.amber
+                  : textColor,
+            ),
           ),
-          // Theme Options Button
           IconButton(
-            icon: Icon(Icons.color_lens_outlined, color: textColor),
             onPressed: _showThemeSelector,
-          ),
-          // Real PDF Download Button
-          IconButton(
-            icon: Icon(Icons.download, color: textColor),
-            onPressed: () {
-              DownloadService.downloadPDF(
-                context: context,
-                url: widget.pdfUrl,
-                title: widget.title,
-              );
-            },
+            icon: Icon(
+              Icons.palette_outlined,
+              color: textColor,
+            ),
           ),
         ],
       ),
@@ -243,32 +338,29 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                const SizedBox(
-                  width: 72,
-                  height: 72,
-                  child: CircularProgressIndicator(
+            SizedBox(
+              width: 70,
+              height: 70,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const CircularProgressIndicator(
                     strokeWidth: 4,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
                   ),
-                ),
-                Text(
-                  _loadingProgress,
-                  style: GoogleFonts.outfit(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
+                  Text(
+                    _loadingProgress,
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
             Text(
-              "Preparing your study desk...",
+              "Loading PDF...",
               style: GoogleFonts.outfit(
-                fontSize: 14,
                 color: textColor.withOpacity(0.7),
               ),
             ),
@@ -280,36 +372,30 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     if (_errorMessage != null) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.cloud_off, size: 64, color: Colors.grey),
-              const SizedBox(height: 14),
+              Icon(
+                Icons.picture_as_pdf_outlined,
+                size: 70,
+                color: Colors.red.shade300,
+              ),
+              const SizedBox(height: 20),
               Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.outfit(
                   fontSize: 14,
-                  fontWeight: FontWeight.bold,
                   color: textColor,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Constants.primaryBlueColour,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: _downloadAndCachePdf,
-                icon: const Icon(Icons.refresh, color: Colors.white),
-                label: Text(
-                  "Retry Download",
-                  style: GoogleFonts.outfit(color: Colors.white),
-                ),
-              )
+              ElevatedButton(
+                onPressed: _initializePdf,
+                child: const Text("Retry"),
+              ),
             ],
           ),
         ),
@@ -318,155 +404,162 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
 
     return Column(
       children: [
-        // PDF View Container
         Expanded(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: textColor.withOpacity(0.1)),
+              color: _getCardColor(),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: PDFView(
-                key: ValueKey(_localPdfPath),
-                filePath: _localPdfPath,
-                enableSwipe: true,
-                swipeHorizontal: false,
-                autoSpacing: true,
-                pageFling: true,
-                pageSnap: true,
-                nightMode: _activeTheme == ReadingTheme.dark,
-                onRender: (pages) {
-                  setState(() {
-                    _totalPages = pages ?? 0;
-                  });
-                },
-                onViewCreated: (PDFViewController controller) {
-                  setState(() {
-                    _pdfViewController = controller;
-                  });
-                },
-                onPageChanged: (page, total) {
-                  setState(() {
-                    _currentPage = page ?? 0;
-                  });
-                },
-                onError: (error) {
-                  setState(() {
-                    _errorMessage = "Error reading study guide.\n$error";
-                  });
-                },
-              ),
+              borderRadius: BorderRadius.circular(16),
+              child: _localPdfPath == null
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : PDFView(
+                      key: ValueKey(_localPdfPath),
+                      filePath: _localPdfPath!,
+                      enableSwipe: true,
+                      swipeHorizontal: false,
+                      autoSpacing: true,
+                      pageFling: true,
+                      pageSnap: true,
+                      fitPolicy: FitPolicy.BOTH,
+                      nightMode:
+                          _activeTheme == ReadingTheme.dark,
+
+                      onRender: (pages) {
+                        if (!mounted) return;
+
+                        setState(() {
+                          _totalPages = pages ?? 0;
+                        });
+                      },
+
+                      onViewCreated:
+                          (PDFViewController controller) {
+                        _pdfController = controller;
+                      },
+
+                      onPageChanged: (page, total) {
+                        if (!mounted) return;
+
+                        setState(() {
+                          _currentPage = page ?? 0;
+                          _totalPages = total ?? 0;
+                        });
+                      },
+
+                      onError: (error) {
+                        debugPrint(error.toString());
+
+                        if (!mounted) return;
+
+                        setState(() {
+                          _errorMessage =
+                              "Unable to render PDF";
+                        });
+                      },
+
+                      onPageError: (page, error) {
+                        debugPrint(
+                          "Page Error => $page : $error",
+                        );
+                      },
+                    ),
             ),
           ),
         ),
 
-        // Bottom Navigation Controls
+        // Bottom Controls
         if (_totalPages > 0)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: _getAccentBgColor(),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
-                ),
-              ],
+              color: _getCardColor(),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                // Page slider to jump pages
+                Slider(
+                  value: _currentPage.toDouble(),
+                  min: 0,
+                  max: (_totalPages > 0
+                      ? (_totalPages - 1).toDouble()
+                      : 1),
+
+                  divisions: _totalPages > 1
+                      ? _totalPages - 1
+                      : 1,
+
+                  onChanged: (value) async {
+                    final page = value.toInt();
+
+                    setState(() {
+                      _currentPage = page;
+                    });
+
+                    await _pdfController?.setPage(page);
+                  },
+                ),
+
                 Row(
                   children: [
-                    Text(
-                      "1",
-                      style: GoogleFonts.outfit(
-                          fontSize: 11, color: textColor.withOpacity(0.7)),
+                    IconButton(
+                      onPressed: _currentPage > 0
+                          ? () async {
+                              final page =
+                                  _currentPage - 1;
+
+                              await _pdfController
+                                  ?.setPage(page);
+                            }
+                          : null,
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                      ),
                     ),
                     Expanded(
-                      child: SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Constants.primaryBlueColour,
-                          inactiveTrackColor: textColor.withOpacity(0.15),
-                          thumbColor: Constants.primaryBlueColour,
-                          overlayColor: Constants.primaryBlueColour.withOpacity(0.2),
-                        ),
-                        child: Slider(
-                          value: _currentPage.toDouble(),
-                          min: 0,
-                          max: (_totalPages - 1).toDouble(),
-                          divisions: _totalPages - 1,
-                          onChanged: (val) {
-                            _pdfViewController?.setPage(val.toInt());
-                          },
+                      child: Center(
+                        child: Text(
+                          "Page ${_currentPage + 1} / $_totalPages",
+                          style: GoogleFonts.outfit(
+                            fontWeight: FontWeight.w600,
+                            color: textColor,
+                          ),
                         ),
                       ),
                     ),
-                    Text(
-                      "$_totalPages",
-                      style: GoogleFonts.outfit(
-                          fontSize: 11, color: textColor.withOpacity(0.7)),
+                    IconButton(
+                      onPressed:
+                          _currentPage <
+                                  (_totalPages - 1)
+                              ? () async {
+                                  final page =
+                                      _currentPage + 1;
+
+                                  await _pdfController
+                                      ?.setPage(page);
+                                }
+                              : null,
+                      icon: const Icon(
+                        Icons.arrow_forward_ios,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      onPressed:
+                          _showNotesBottomSheet,
+                      icon: const Icon(
+                        Icons.edit_note,
+                      ),
+                      label: const Text("Notes"),
                     ),
                   ],
                 ),
-
-                // Controls row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back_ios, size: 16, color: textColor),
-                      onPressed: _currentPage > 0
-                          ? () {
-                              _pdfViewController?.setPage(_currentPage - 1);
-                            }
-                          : null,
-                    ),
-                    Text(
-                      "Page ${_currentPage + 1} of $_totalPages",
-                      style: GoogleFonts.outfit(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.arrow_forward_ios, size: 16, color: textColor),
-                      onPressed: _currentPage < (_totalPages - 1)
-                          ? () {
-                              _pdfViewController?.setPage(_currentPage + 1);
-                            }
-                          : null,
-                    ),
-                    const Spacer(),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constants.primaryBlueColour,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
-                      ),
-                      onPressed: _showNotesBottomSheet,
-                      icon: const Icon(Icons.edit_note,
-                          color: Colors.white, size: 18),
-                      label: Text(
-                        "Take Notes",
-                        style: GoogleFonts.outfit(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           ),
@@ -474,56 +567,45 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     );
   }
 
-  // Theme switcher options
   void _showThemeSelector() {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (_) {
         return AlertDialog(
-          backgroundColor: _getBgColor(),
+          backgroundColor: _getBackgroundColor(),
           title: Text(
-            "Select Theme",
+            "Reading Theme",
             style: GoogleFonts.outfit(
-              fontWeight: FontWeight.bold,
               color: _getTextColor(),
+              fontWeight: FontWeight.bold,
             ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: ReadingTheme.values.map((theme) {
-              String name = "";
-              Color previewColor = Colors.white;
+              String label = "";
+
               switch (theme) {
                 case ReadingTheme.light:
-                  name = "Light Mode";
-                  previewColor = const Color(0xFFF8FAFC);
+                  label = "Light";
                   break;
+
                 case ReadingTheme.sepia:
-                  name = "Warm Sepia";
-                  previewColor = const Color(0xFFF4ECD8);
+                  label = "Sepia";
                   break;
+
                 case ReadingTheme.eyeComfort:
-                  name = "Eye Comfort";
-                  previewColor = const Color(0xFFE8F5E9);
+                  label = "Eye Comfort";
                   break;
+
                 case ReadingTheme.dark:
-                  name = "Midnight Dark";
-                  previewColor = const Color(0xFF0F172A);
+                  label = "Dark";
                   break;
               }
 
               return ListTile(
-                leading: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: previewColor,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey),
-                  ),
-                ),
                 title: Text(
-                  name,
+                  label,
                   style: GoogleFonts.outfit(
                     color: _getTextColor(),
                   ),
@@ -532,7 +614,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   setState(() {
                     _activeTheme = theme;
                   });
-                  Navigator.of(context).pop();
+
+                  Navigator.pop(context);
                 },
               );
             }).toList(),
@@ -542,85 +625,77 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     );
   }
 
-  // Persistent notes sheet
   void _showNotesBottomSheet() {
     _notesController.text = _savedNotes;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: _getBgColor(),
+      backgroundColor: _getBackgroundColor(),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(24),
+        ),
       ),
-      builder: (context) {
-        final localTextColor = _getTextColor();
+      builder: (_) {
+        final textColor = _getTextColor();
+
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            top: 20,
             left: 20,
             right: 20,
+            top: 20,
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom +
+                    20,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Quick Notes",
-                    style: GoogleFonts.outfit(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: localTextColor,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _savedNotes = _notesController.text;
-                      });
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Notes saved locally!"),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Save",
-                      style: GoogleFonts.outfit(
-                        fontWeight: FontWeight.bold,
-                        color: Constants.primaryBlueColour,
-                      ),
-                    ),
-                  )
-                ],
+              Text(
+                "Quick Notes",
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               TextField(
                 controller: _notesController,
                 maxLines: 6,
-                style: GoogleFonts.outfit(color: localTextColor, fontSize: 13),
+                style: GoogleFonts.outfit(
+                  color: textColor,
+                ),
                 decoration: InputDecoration(
-                  hintText: "Jot down key points to remember from this notes sheet...",
-                  hintStyle: GoogleFonts.outfit(
-                    color: localTextColor.withOpacity(0.4),
-                    fontSize: 12,
-                  ),
+                  hintText: "Write notes here...",
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: localTextColor.withOpacity(0.2)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Constants.primaryBlueColour),
+                    borderRadius:
+                        BorderRadius.circular(14),
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _savedNotes =
+                        _notesController.text;
+                  });
+
+                  Navigator.pop(context);
+
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Notes saved",
+                      ),
+                    ),
+                  );
+                },
+                child: const Text("Save Notes"),
+              ),
             ],
           ),
         );

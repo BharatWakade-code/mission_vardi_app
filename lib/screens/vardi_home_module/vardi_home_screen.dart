@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
+import 'package:mission_vardi/screens/current_affairs_module/current_affairs_cubit.dart';
+import 'package:mission_vardi/screens/current_affairs_module/current_affairs_state.dart';
+import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -64,6 +67,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     super.initState();
     context.read<VardiHomeCubit>().getPDFNotesAndSolvedPapers();
     context.read<VardiHomeCubit>().getGlobalData();
+    context.read<CurrentAffairsCubit>().loadCurrentAffairs();
 
     // Ticking seconds countdown
     countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -117,7 +121,6 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            
               // 🔔 Dismissible App Update Alert
               if (!isUpdateDismissed)
                 Container(
@@ -280,11 +283,10 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               const SizedBox(height: 20),
 
               // 🚨 Global Bharti Alerts
-              if ((context.watch<VardiHomeCubit>().state.alerts ?? []).isNotEmpty) ...[
+              if ((context.watch<VardiHomeCubit>().state.alerts ?? [])
+                  .isNotEmpty) ...[
                 Text(
-                  isMarathi
-                      ? "पोलीस भरती अपडेट्स"
-                      : "Police Bharti Updates",
+                  isMarathi ? "पोलीस भरती अपडेट्स" : "Police Bharti Updates",
                   style: commonTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -295,6 +297,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 _globalNewsFeed(isMarathi),
                 const SizedBox(height: 20),
               ],
+
+              // 📰 Trending Current Affairs Preview Card
+              _trendingCurrentAffairs(isMarathi),
 
               // 📚 Digital PDF Notes Library & Solved Papers
               Text(
@@ -312,7 +317,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               const SizedBox(height: 20),
 
               // 📊 Global Leaderboard
-              if ((context.watch<VardiHomeCubit>().state.leaderboard ?? []).isNotEmpty) ...[
+              if ((context.watch<VardiHomeCubit>().state.leaderboard ?? [])
+                  .isNotEmpty) ...[
                 Text(
                   isMarathi
                       ? "ग्लोबल लीडरबोर्ड (Leaderboard)"
@@ -374,11 +380,13 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   Widget _globalNewsFeed(bool isMarathi) {
     final state = context.watch<VardiHomeCubit>().state;
     final alerts = state.alerts ?? [];
-    
+
     String message = "";
     if (alerts.isNotEmpty) {
       final latest = alerts.first;
-      message = isMarathi ? (latest['message_mr'] ?? "") : (latest['message_en'] ?? "");
+      message = isMarathi
+          ? (latest['message_mr'] ?? "")
+          : (latest['message_en'] ?? "");
     } else {
       message = isMarathi ? "कोणतेही अपडेट नाही." : "No updates available.";
     }
@@ -580,8 +588,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                               borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                         ),
-                        onPressed: () {
-                          DownloadService.downloadPDF(
+                        onPressed: () async {
+                          await DownloadService.downloadPDF(
                             context: context,
                             url: item.pdfUrl ?? '',
                             title: item.title ?? '',
@@ -615,7 +623,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
         ),
         child: Center(
           child: Text(
-            isMarathi ? "लीडरबोर्ड अद्याप उपलब्ध नाही" : "Leaderboard not available yet",
+            isMarathi
+                ? "लीडरबोर्ड अद्याप उपलब्ध नाही"
+                : "Leaderboard not available yet",
             style: commonTextStyle.copyWith(color: Colors.grey),
           ),
         ),
@@ -671,6 +681,146 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
           );
         },
       ),
+    );
+  }
+
+  // 📰 Beautiful dynamic premium widget for Trending Current Affairs on Dashboard
+  Widget _trendingCurrentAffairs(bool isMarathi) {
+    return BlocBuilder<CurrentAffairsCubit, CurrentAffairsState>(
+      builder: (context, state) {
+        final trendingArticles = state.articles.where((a) => a.isTrending).toList();
+        if (trendingArticles.isEmpty) return const SizedBox();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  isMarathi ? "चालू घडामोडी (Trending)" : "Trending Current Affairs",
+                  style: commonTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    context.read<VardiDashboardCubit>().onChangeIndex(1);
+                  },
+                  child: Text(
+                    isMarathi ? "सर्व पहा" : "View All",
+                    style: commonTextStyle.copyWith(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Constants.primaryBlueColour,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            ListView.separated(
+              itemCount: trendingArticles.take(2).length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final article = trendingArticles[index];
+                final title = isMarathi ? article.titleMr : article.titleEn;
+                final desc = isMarathi ? article.descriptionMr : article.descriptionEn;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      context.push('/currentAffairsDetailScreen', extra: article);
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          if (article.imageUrl != null && article.imageUrl!.isNotEmpty)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                article.imageUrl!,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          else
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.newspaper_rounded, color: Colors.blue),
+                            ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade50,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    isMarathi ? "महत्त्वाचे" : "TRENDING",
+                                    style: commonTextStyle.copyWith(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red.shade700,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: commonTextStyle.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12.5,
+                                    color: isDarkMode ? Colors.white : Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  desc,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: commonTextStyle.copyWith(
+                                    fontSize: 11,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
+      },
     );
   }
 }
