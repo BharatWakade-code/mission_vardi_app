@@ -6,23 +6,39 @@ class AdManager {
   AdManager._privateConstructor();
   static final AdManager instance = AdManager._privateConstructor();
 
-  // Test Ad Unit IDs from Google
+  // Ad Unit IDs (Automatically toggles between Test IDs in Debug and Production IDs in Release)
   static String get bannerAdUnitId {
     if (kIsWeb) return '';
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/6300978111'; // Safe public Google Banner Test ID
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/2934735716';
+    if (kDebugMode) {
+      if (Platform.isAndroid) {
+        return 'ca-app-pub-3940256099942544/6300978111'; // Safe Google Test Banner ID (Android)
+      } else if (Platform.isIOS) {
+        return 'ca-app-pub-3940256099942544/2934735716'; // Safe Google Test Banner ID (iOS)
+      }
+    } else {
+      if (Platform.isAndroid) {
+        return 'ca-app-pub-5035062638976485/9730028275';
+      } else if (Platform.isIOS) {
+        return 'ca-app-pub-5035062638976485/7075944777';
+      }
     }
     throw UnsupportedError('Unsupported platform');
   }
 
   static String get rewardedAdUnitId {
     if (kIsWeb) return '';
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/5224354917'; // Safe public Google Rewarded Test ID
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/1712485313';
+    if (kDebugMode) {
+      if (Platform.isAndroid) {
+        return 'ca-app-pub-3940256099942544/5224354917'; // Safe Google Test Rewarded ID (Android)
+      } else if (Platform.isIOS) {
+        return 'ca-app-pub-3940256099942544/1712485313'; // Safe Google Test Rewarded ID (iOS)
+      }
+    } else {
+      if (Platform.isAndroid) {
+        return 'ca-app-pub-3940256099942544/5224354917';
+      } else if (Platform.isIOS) {
+        return 'ca-app-pub-5035062638976485/6612584349';
+      }
     }
     throw UnsupportedError('Unsupported platform');
   }

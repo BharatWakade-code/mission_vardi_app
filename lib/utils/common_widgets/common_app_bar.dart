@@ -63,12 +63,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   Icon(widget.titleIcon ?? Icons.shield,
                       color: Colors.amber, size: 20),
                   const SizedBox(width: 6),
-                  Text(
-                    widget.titleText!,
-                    style: commonTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
+                  Expanded(
+                    child: Text(
+                      widget.titleText!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: commonTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

@@ -29,4 +29,32 @@ class ProfileRepository implements ProfileRepositoryImpl {
       return Left(Exception(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Exception, Map<String, dynamic>>> getUploadUrl() async {
+    try {
+      final response = await NetworkServices().getApi(ApiUrls.getUploadUrl);
+      if (response.data != null && response.data['status'] == true) {
+        return Right(Map<String, dynamic>.from(response.data['data']));
+      } else {
+        return Left(Exception(response.data['message'] ?? 'Failed to generate upload URL'));
+      }
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Exception, void>> uploadFileToS3({
+    required String uploadUrl,
+    required List<int> bytes,
+    required String contentType,
+  }) async {
+    try {
+      await NetworkServices().putBinaryWithoutBaseUrl(uploadUrl, bytes, contentType);
+      return const Right(null);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
 }

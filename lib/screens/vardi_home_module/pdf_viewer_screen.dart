@@ -329,6 +329,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: PDFView(
+                key: ValueKey(_localPdfPath),
                 filePath: _localPdfPath,
                 enableSwipe: true,
                 swipeHorizontal: false,

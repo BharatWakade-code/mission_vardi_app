@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
@@ -113,24 +114,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Row(
                 children: [
-                  // Police badge avatar
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.amber,
-                      shape: BoxShape.circle,
-                    ),
-                    child: CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.white,
-                      backgroundImage:
-                          user?.avatarUrl != null && user!.avatarUrl!.isNotEmpty
-                              ? NetworkImage(user.avatarUrl!)
-                              : null,
-                      child: user?.avatarUrl == null || user!.avatarUrl!.isEmpty
-                          ? const Icon(Icons.person,
-                              size: 40, color: Colors.grey)
-                          : null,
+                  // Police badge avatar with upload gesture
+                  GestureDetector(
+                    onTap: () => _pickAndUploadImage(context),
+                    child: Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.amber,
+                            shape: BoxShape.circle,
+                          ),
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundColor: Colors.white,
+                            backgroundImage:
+                                user?.avatarUrl != null && user!.avatarUrl!.isNotEmpty
+                                    ? NetworkImage(user.avatarUrl!)
+                                    : null,
+                            child: user?.avatarUrl == null || user!.avatarUrl!.isEmpty
+                                ? const Icon(Icons.person,
+                                    size: 40, color: Colors.grey)
+                                : null,
+                          ),
+                        ),
+                        if (profileState.isLoading)
+                          Positioned.fill(
+                            child: Container(
+                              margin: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.black45,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                                ),
+                              ),
+                            ),
+                          ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.shade700,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -632,6 +673,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _pickAndUploadImage(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+    
+    final ImageSource? source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        final isMarathi =
+            context.read<LanguageCubit>().state.locale.languageCode == 'mr';
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isMarathi ? "प्रोफाइल फोटो निवडा" : "Choose Profile Photo",
+                  style: commonTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constants.primaryBlueColour,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.camera_alt, color: Colors.white),
+                      label: Text(
+                        isMarathi ? "कॅमेरा" : "Camera",
+                        style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () => Navigator.pop(context, ImageSource.camera),
+                    ),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade800,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.photo_library, color: Colors.white),
+                      label: Text(
+                        isMarathi ? "गॅलरी" : "Gallery",
+                        style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () => Navigator.pop(context, ImageSource.gallery),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (source != null) {
+      final XFile? pickedFile = await picker.pickImage(
+        source: source,
+        imageQuality: 75,
+        maxWidth: 512,
+        maxHeight: 512,
+      );
+
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        if (!context.mounted) return;
+
+        final profileCubit = context.read<ProfileCubit>();
+        final isMarathi =
+            context.read<LanguageCubit>().state.locale.languageCode == 'mr';
+        final messenger = ScaffoldMessenger.of(context);
+
+        await profileCubit.uploadAvatar(bytes: bytes);
+
+        final state = profileCubit.state;
+        if (state.errorMsg.isNotEmpty) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(state.errorMsg),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(isMarathi
+                  ? "प्रोफाइल फोटो यशस्वीरित्या अपडेट केला!"
+                  : "Profile photo updated successfully!"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    }
   }
 
   void _showEditProfileBottomSheet(BuildContext context, user) {

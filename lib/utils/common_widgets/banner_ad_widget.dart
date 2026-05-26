@@ -50,7 +50,10 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       alignment: Alignment.center,
       width: _bannerAd!.size.width.toDouble(),
       height: _bannerAd!.size.height.toDouble(),
-      child: AdWidget(ad: _bannerAd!),
+      child: AdWidget(
+        key: ObjectKey(_bannerAd!),
+        ad: _bannerAd!,
+      ),
     );
   }
 }

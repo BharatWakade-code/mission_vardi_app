@@ -77,4 +77,58 @@ class ProfileCubit extends Cubit<ProfileState> {
   void clearProfile() {
     emit(ProfileState());
   }
+
+  Future<void> uploadAvatar({required List<int> bytes}) async {
+    emit(state.copyWith(isLoading: true, errorMsg: '', successMsg: ''));
+
+    final urlResult = await _repository.getUploadUrl();
+    await urlResult.fold(
+      (error) async {
+        emit(state.copyWith(isLoading: false, errorMsg: error.toString()));
+      },
+      (data) async {
+        final uploadUrl = data['uploadUrl'] as String;
+        final fileUrl = data['fileUrl'] as String;
+
+        final uploadResult = await _repository.uploadFileToS3(
+          uploadUrl: uploadUrl,
+          bytes: bytes,
+          contentType: 'image/jpeg',
+        );
+
+        await uploadResult.fold(
+          (error) async {
+            emit(state.copyWith(isLoading: false, errorMsg: error.toString()));
+          },
+          (_) async {
+            final updateResult = await _repository.updateProfile(
+              userID: userID,
+              body: {'avatar_url': fileUrl},
+            );
+
+            updateResult.fold(
+              (error) {
+                emit(state.copyWith(isLoading: false, errorMsg: error.toString()));
+              },
+              (response) {
+                if (response['status'] == true) {
+                  emit(state.copyWith(
+                    isLoading: false,
+                    successMsg: 'Avatar uploaded successfully!',
+                    isSuccess: true,
+                  ));
+                  getProfile();
+                } else {
+                  emit(state.copyWith(
+                    isLoading: false,
+                    errorMsg: response['message'] ?? 'Failed to update avatar url',
+                  ));
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 }

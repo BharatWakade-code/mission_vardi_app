@@ -303,4 +303,30 @@ class NetworkServices {
       throw Exception("Unexpected error occurred");
     }
   }
+
+  Future<Response> putBinaryWithoutBaseUrl(
+      String fullUrl, List<int> bytes, String contentType) async {
+    try {
+      log('S3 Put Full URL: $fullUrl');
+      final dio = Dio();
+      final response = await dio.put(
+        fullUrl,
+        data: Stream.fromIterable([bytes]),
+        options: Options(
+          headers: {
+            Headers.contentLengthHeader: bytes.length,
+          },
+          contentType: contentType,
+        ),
+      );
+      log('S3 Put Status Code: ${response.statusCode}');
+      return response;
+    } on DioException catch (e) {
+      log("S3 Put Error: ${e.response?.data}");
+      rethrow;
+    } catch (e) {
+      log("Unexpected S3 upload error: $e");
+      throw Exception("Failed to upload file to storage");
+    }
+  }
 }
