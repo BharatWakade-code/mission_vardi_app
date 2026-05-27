@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
@@ -37,8 +38,6 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
   }
 
   void _showSubmitConfirmationDialog(BuildContext context, QuizzesState state) {
-    final isMarathi = context.read<LanguageCubit>().state.locale.languageCode == 'mr';
-    
     // Count attempted
     int attemptedCount = 0;
     for (final answer in state.userAnswers) {
@@ -52,20 +51,18 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(
-          isMarathi ? "चाचणी सबमिट करायची?" : "Submit Quiz?",
+          "submit_quiz_question".tr(),
           style: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
         ),
         content: Text(
-          isMarathi
-              ? "तुम्ही एकूण $attemptedCount प्रश्नांची उत्तरे दिली आहेत आणि $unanswered प्रश्न सोडले आहेत. तुम्हाला खात्री आहे का?"
-              : "You have answered $attemptedCount questions and skipped $unanswered. Are you sure you want to final submit?",
+          "submit_quiz_confirmation_params".tr(args: [attemptedCount.toString(), unanswered.toString()]),
           style: const TextStyle(fontFamily: 'Outfit'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
             child: Text(
-              isMarathi ? "रद्द करा" : "Cancel",
+              "cancel".tr(),
               style: const TextStyle(fontFamily: 'Outfit', color: Colors.grey),
             ),
           ),
@@ -78,7 +75,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               context.read<QuizzesCubit>().finishQuiz();
             },
             child: Text(
-              isMarathi ? "होय, सबमिट करा" : "Yes, Submit",
+              "yes_submit".tr(),
               style: const TextStyle(fontFamily: 'Outfit', color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
@@ -89,8 +86,8 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
 
     final TextStyle commonTextStyle = const TextStyle(
       fontFamily: 'Outfit',
@@ -113,9 +110,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
           return Scaffold(
             backgroundColor: Constants.scaffoldBackgroundColour,
             appBar: CustomAppBar(
-              titleText: isMarathi
-                  ? 'सराव चाचणी सुरू आहे'
-                  : 'Practice Test in Progress',
+              titleText: "practice_test_in_progress".tr(),
               titleIcon: Icons.timer,
               leading: IconButton(
                 icon: const Icon(
@@ -143,7 +138,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       onPressed: () => _showSubmitConfirmationDialog(context, state),
                       icon: const Icon(Icons.done_all, size: 16),
                       label: Text(
-                        isMarathi ? "पूर्ण सबमिट" : "Final Submit",
+                        "final_submit".tr(),
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -162,13 +157,11 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           ? const Center(child: CircularProgressIndicator())
                           : Center(
                               child: Text(
-                                isMarathi
-                                    ? "कोणतेही प्रश्न उपलब्ध नाहीत"
-                                    : "No questions available",
+                                "no_questions_available".tr(),
                                 style: commonTextStyle,
                               ),
                             ))
-                      : _buildQuizContent(state, isMarathi, commonTextStyle),
+                      : _buildQuizContent(state, commonTextStyle),
                 ),
                 const BannerAdWidget(),
               ],
@@ -179,7 +172,8 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
     );
   }
 
-  Widget _buildQuizContent(QuizzesState state, bool isMarathi, TextStyle commonTextStyle) {
+  Widget _buildQuizContent(QuizzesState state, TextStyle commonTextStyle) {
+    final isMr = context.locale.languageCode == 'mr';
     if (!state.isQuizRunning) {
       // Return a loading spinner while listener triggers redirection
       return const Center(child: CircularProgressIndicator());
@@ -190,6 +184,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -197,7 +192,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${isMarathi ? 'प्रश्न' : 'Question'} ${state.currentQuestionIndex + 1} / ${state.questions.length}",
+                  "${"question".tr()} ${state.currentQuestionIndex + 1} / ${state.questions.length}",
                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 if (state.selectedPracticeMode == "Timed")
@@ -250,7 +245,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            isMarathi ? currentQuestion["categoryMr"] : currentQuestion["category"],
+                            isMr ? currentQuestion["categoryMr"] : currentQuestion["category"],
                             style: commonTextStyle.copyWith(
                                 fontSize: 11, fontWeight: FontWeight.bold, color: Colors.amber.shade900),
                           ),
@@ -263,8 +258,8 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                               SnackBar(
                                 content: Text(
                                   wasBookmarked
-                                      ? (isMarathi ? "बुकमार्क काढले!" : "Removed from Bookmarks!")
-                                      : (isMarathi ? "बुकमार्क जोडले!" : "Added to Bookmarks!"),
+                                      ? "removed_from_bookmarks".tr()
+                                      : "added_to_bookmarks".tr(),
                                 ),
                                 duration: const Duration(seconds: 1),
                               ),
@@ -279,7 +274,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      isMarathi ? currentQuestion["qMr"] : currentQuestion["q"],
+                      isMr ? currentQuestion["qMr"] : currentQuestion["q"],
                       style: commonTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -295,7 +290,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               physics: const NeverScrollableScrollPhysics(),
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
-                final optionsList = isMarathi ? currentQuestion["optionsMr"] : currentQuestion["options"];
+                final optionsList = isMr ? currentQuestion["optionsMr"] : currentQuestion["options"];
                 final optionText = optionsList[index];
 
                 Color tileColor = Colors.white;
@@ -366,13 +361,9 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           ? null
                           : () => context.read<QuizzesCubit>().submitAnswer(),
                       child: Text(
-                        isMarathi
-                            ? (state.selectedPracticeMode == "Timed"
-                                ? "उत्तर सबमिट करा (${state.remainingSeconds}s)"
-                                : "उत्तर सबमिट करा")
-                            : (state.selectedPracticeMode == "Timed"
-                                ? "Submit Answer (${state.remainingSeconds}s)"
-                                : "Submit Answer"),
+                        state.selectedPracticeMode == "Timed"
+                            ? "submit_answer_timed".tr(args: ["${state.remainingSeconds}s"])
+                            : "submit_answer".tr(),
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -387,13 +378,9 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       ),
                       onPressed: () => context.read<QuizzesCubit>().nextQuestion(),
                       child: Text(
-                        isMarathi
-                            ? (state.selectedPracticeMode == "Timed"
-                                ? "पुढील प्रश्न (${state.remainingSeconds}s)"
-                                : "पुढील प्रश्न")
-                            : (state.selectedPracticeMode == "Timed"
-                                ? "Next Question (${state.remainingSeconds}s)"
-                                : "Next Question"),
+                        state.selectedPracticeMode == "Timed"
+                            ? "next_question_timed".tr(args: ["${state.remainingSeconds}s"])
+                            : "next_question".tr(),
                         style: commonTextStyle.copyWith(color: const Color(0xFF0A2540), fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -416,12 +403,12 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isMarathi ? "💡 स्पष्टीकरण:" : "💡 Explanation:",
+                      "explanation_prefix".tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, color: Colors.amber.shade900),
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      isMarathi ? currentQuestion["explanationMr"] : currentQuestion["explanation"],
+                      isMr ? currentQuestion["explanationMr"] : currentQuestion["explanation"],
                       style: commonTextStyle.copyWith(fontSize: 13),
                     ),
                   ],

@@ -1,25 +1,25 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
-
-
-import 'package:flutter/material.dart';
 
 @immutable
 class LanguageState {
   final Locale locale;
+  final bool isTablet;
 
   const LanguageState({
     required this.locale,
+    this.isTablet = false,
   });
 
   LanguageState copyWith({
     Locale? locale,
+    bool? isTablet,
   }) {
     return LanguageState(
       locale: locale ?? this.locale,
+      isTablet: isTablet ?? this.isTablet,
     );
   }
 }
@@ -54,11 +54,16 @@ class LanguageCubit extends Cubit<LanguageState> {
     emit(state.copyWith(locale: Locale(code)));
   }
 
+  void updateDeviceType(BuildContext context) {
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
 
+    emit(state.copyWith(
+      isTablet: shortestSide >= 600,
+    ));
+  }
 
- 
+  /// Use 'key'.tr() directly in widgets for translations.
+  /// EasyLocalization handles locale-aware string resolution automatically.
 }
-
-
 
 

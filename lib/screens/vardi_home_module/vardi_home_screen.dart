@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_cubit.dart';
@@ -106,15 +107,16 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
+    final isMarathi = context.locale.languageCode == 'mr';
     final themeColor = isDarkMode
         ? const Color(0xFF121212)
         : Constants.scaffoldBackgroundColour;
 
     return Scaffold(
       backgroundColor: themeColor,
-      appBar: homeAppBar(isMarathi),
+      appBar: homeAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -282,11 +284,15 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               ),
               const SizedBox(height: 20),
 
+              // 👮‍♂️ Maharashtra Police Bharti Info Hub Banner
+              _buildBhartiInfoBanner(isDarkMode),
+              const SizedBox(height: 20),
+
               // 🚨 Global Bharti Alerts
               if ((context.watch<VardiHomeCubit>().state.alerts ?? [])
                   .isNotEmpty) ...[
                 Text(
-                  isMarathi ? "पोलीस भरती अपडेट्स" : "Police Bharti Updates",
+                  'police_bharti_updates'.tr(),
                   style: commonTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -294,18 +300,16 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _globalNewsFeed(isMarathi),
+                _globalNewsFeed(),
                 const SizedBox(height: 20),
               ],
 
               // 📰 Trending Current Affairs Preview Card
-              _trendingCurrentAffairs(isMarathi),
+              _trendingCurrentAffairs(),
 
               // 📚 Digital PDF Notes Library & Solved Papers
               Text(
-                isMarathi
-                    ? "अभ्यास साहित्य आणि पेपर्स"
-                    : "PDF Notes & Solved Papers",
+                'pdf_notes_and_papers'.tr(),
                 style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -313,16 +317,14 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              _pdfNotesLibrary(isMarathi),
+              _pdfNotesLibrary(),
               const SizedBox(height: 20),
 
               // 📊 Global Leaderboard
               if ((context.watch<VardiHomeCubit>().state.leaderboard ?? [])
                   .isNotEmpty) ...[
                 Text(
-                  isMarathi
-                      ? "ग्लोबल लीडरबोर्ड (Leaderboard)"
-                      : "Global Leaderboard",
+                  'global_leaderboard'.tr(),
                   style: commonTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -330,7 +332,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _leaderboardList(isMarathi),
+                _leaderboardList(),
               ],
             ],
           ),
@@ -368,8 +370,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 
-  // App Toggles and Localization
-  CustomAppBar homeAppBar(bool isMarathi) {
+  // App Bar
+  CustomAppBar homeAppBar() {
     return const CustomAppBar(
       titleText: "MISSION VARDI",
       titleIcon: Icons.shield,
@@ -377,18 +379,19 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   }
 
   // Dynamic News Feed
-  Widget _globalNewsFeed(bool isMarathi) {
+  Widget _globalNewsFeed() {
     final state = context.watch<VardiHomeCubit>().state;
     final alerts = state.alerts ?? [];
+    final bool isMr = context.locale.languageCode == 'mr';
 
     String message = "";
     if (alerts.isNotEmpty) {
       final latest = alerts.first;
-      message = isMarathi
+      message = isMr
           ? (latest['message_mr'] ?? "")
           : (latest['message_en'] ?? "");
     } else {
-      message = isMarathi ? "कोणतेही अपडेट नाही." : "No updates available.";
+      message = 'no_updates_available'.tr();
     }
 
     return Container(
@@ -415,7 +418,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isMarathi ? "नवीन अलर्ट" : "New Alert",
+                  'new_alert'.tr(),
                   style: commonTextStyle.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
@@ -437,7 +440,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   }
 
   // PDF Notes library with search simulation
-  Widget _pdfNotesLibrary(bool isMarathi) {
+  Widget _pdfNotesLibrary() {
     final state = context.watch<VardiHomeCubit>().state;
     final papers = state.data ?? [];
 
@@ -467,9 +470,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 }
               });
             },
-            hintText: isMarathi
-                ? "पीडीएफ नोट्स आणि पेपर्स शोधा..."
-                : "Search Notes & PDFs...",
+            hintText: 'search_notes_pdfs'.tr(),
             prefixIcon: Icons.search,
           ),
         ),
@@ -491,7 +492,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 Icon(Icons.search_off, size: 48, color: Colors.grey.shade400),
                 const SizedBox(height: 8),
                 Text(
-                  isMarathi ? "कोणतेही निकाल आढळले नाहीत" : "No results found",
+                  'no_results_found'.tr(),
                   style: commonTextStyle.copyWith(
                     color: Colors.grey.shade600,
                     fontWeight: FontWeight.bold,
@@ -500,9 +501,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  isMarathi
-                      ? "दुसरा शब्द वापरून शोधा"
-                      : "Try adjusting your keywords",
+                  'try_adjusting_keywords'.tr(),
                   style: commonTextStyle.copyWith(
                     color: Colors.grey,
                     fontSize: 12,
@@ -609,7 +608,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   }
 
   // Global Leaderboard Widget
-  Widget _leaderboardList(bool isMarathi) {
+  Widget _leaderboardList() {
     final state = context.watch<VardiHomeCubit>().state;
     final List<dynamic> leaders = state.leaderboard ?? [];
 
@@ -623,9 +622,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
         ),
         child: Center(
           child: Text(
-            isMarathi
-                ? "लीडरबोर्ड अद्याप उपलब्ध नाही"
-                : "Leaderboard not available yet",
+            'leaderboard_not_available'.tr(),
             style: commonTextStyle.copyWith(color: Colors.grey),
           ),
         ),
@@ -685,9 +682,10 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   }
 
   // 📰 Beautiful dynamic premium widget for Trending Current Affairs on Dashboard
-  Widget _trendingCurrentAffairs(bool isMarathi) {
+  Widget _trendingCurrentAffairs() {
     return BlocBuilder<CurrentAffairsCubit, CurrentAffairsState>(
       builder: (context, state) {
+        final isMr = context.locale.languageCode == 'mr';
         final trendingArticles = state.articles.where((a) => a.isTrending).toList();
         if (trendingArticles.isEmpty) return const SizedBox();
 
@@ -698,7 +696,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  isMarathi ? "चालू घडामोडी (Trending)" : "Trending Current Affairs",
+                  'trending_current_affairs'.tr(),
                   style: commonTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -710,7 +708,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                     context.read<VardiDashboardCubit>().onChangeIndex(1);
                   },
                   child: Text(
-                    isMarathi ? "सर्व पहा" : "View All",
+                    'view_all'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
@@ -728,8 +726,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final article = trendingArticles[index];
-                final title = isMarathi ? article.titleMr : article.titleEn;
-                final desc = isMarathi ? article.descriptionMr : article.descriptionEn;
+                final title = isMr ? article.titleMr : article.titleEn;
+                final desc = isMr ? article.descriptionMr : article.descriptionEn;
 
                 return Container(
                   decoration: BoxDecoration(
@@ -778,7 +776,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
-                                    isMarathi ? "महत्त्वाचे" : "TRENDING",
+                                    'trending_label'.tr(),
                                     style: commonTextStyle.copyWith(
                                       fontSize: 8,
                                       fontWeight: FontWeight.bold,
@@ -821,6 +819,91 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
           ],
         );
       },
+    );
+  }
+
+  // 👮‍♂️ Beautiful Maharashtra Police Bharti Info Hub Banner Card
+  Widget _buildBhartiInfoBanner(bool isDarkMode) {
+    final isMr = context.locale.languageCode == 'mr';
+    final gradientColors = isDarkMode
+        ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+        : [const Color(0xFF0D47A1), const Color(0xFF1E88E5)];
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.push(RoutesNames.policeBhartiInfoScreen);
+          },
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.shield_rounded,
+                    color: Colors.amber,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'police_bharti_guide'.tr(),
+                        style: commonTextStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'police_bharti_guide_desc'.tr(),
+                        style: commonTextStyle.copyWith(
+                          fontSize: 11,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Colors.white70,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

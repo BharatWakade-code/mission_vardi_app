@@ -8,6 +8,8 @@ import 'package:mission_vardi/screens/quizzes_module/quizzes_screen.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_screen.dart';
 import 'package:mission_vardi/screens/profile_module/profile_screen.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/utils/constants.dart';
 
 class VardiDashboardScreen extends StatefulWidget {
@@ -22,8 +24,9 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Watch LanguageCubit to update bottom navigation labels in real-time
+    context.watch<LanguageCubit>().state;
     final dashboardCubit = context.watch<VardiDashboardCubit>();
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
 
     List<Widget> screens = [
       const FarmerHomeScreen(), // Mapped to the home screen class in vardi_home_screen
@@ -36,13 +39,13 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Constants.scaffoldBackgroundColour,
-      bottomNavigationBar: mainBottomNavigationBar(dashboardCubit, context, isMarathi),
+      bottomNavigationBar: mainBottomNavigationBar(dashboardCubit, context),
       body: screens[dashboardCubit.state.selectedIndex],
     );
   }
 
   BottomNavigationBar mainBottomNavigationBar(
-      VardiDashboardCubit dashboardCubit, BuildContext context, bool isMarathi) {
+      VardiDashboardCubit dashboardCubit, BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       currentIndex: dashboardCubit.state.selectedIndex,
@@ -65,23 +68,23 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_filled),
-          label: isMarathi ? "मुख्य पृष्ठ" : "Home",
+          label: "home".tr(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.newspaper_rounded),
-          label: isMarathi ? "चालू घडामोडी" : "Affairs",
+          label: "affairs".tr(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.quiz_rounded),
-          label: isMarathi ? "परीक्षा-क्विझ" : "Quizzes",
+          label: "quizzes".tr(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.directions_run_rounded),
-          label: isMarathi ? "मैदानी चाचणी" : "Physical",
+          label: "physical".tr(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.analytics_rounded),
-          label: isMarathi ? "माहिती-प्रगती" : "Profile",
+          label: "profile".tr(),
         ),
       ],
     );

@@ -9,6 +9,7 @@ import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
 import 'package:mission_vardi/utils/common_widgets/common_bottom_sheet.dart';
@@ -42,8 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
     final profileState = context.watch<ProfileCubit>().state;
     final user = profileState.profileData;
 
@@ -74,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return Scaffold(
         backgroundColor: Constants.scaffoldBackgroundColour,
         appBar: CustomAppBar(
-          titleText: isMarathi ? 'माहिती व प्रगती' : 'Profile & Statistics',
+          titleText: "profile_statistics".tr(),
           titleIcon: Icons.person,
         ),
         body: const Center(
@@ -86,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: isMarathi ? 'माहिती व प्रगती' : 'Profile & Statistics',
+        titleText: "profile_statistics".tr(),
         titleIcon: Icons.person,
       ),
       body: SingleChildScrollView(
@@ -201,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'Email : ${user?.email ?? "test@gmail.com"}',
+                                    '${"email".tr()} : ${user?.email ?? "test@gmail.com"}',
                                     style: commonTextStyle.copyWith(
                                       color: const Color(0xFF0A2540),
                                       fontWeight: FontWeight.bold,
@@ -226,9 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ?.sendEmailVerification();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                          content: Text(isMarathi
-                                              ? "व्हेरिफिकेशन लिंक पाठवली!"
-                                              : "Verification link sent!")),
+                                          content: Text("verification_link_sent".tr())),
                                     );
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -244,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
-                                    isMarathi ? "Verify करा" : "Verify",
+                                    "verify".tr(),
                                     style: commonTextStyle.copyWith(
                                         color: Colors.white,
                                         fontSize: 10,
@@ -274,7 +273,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Statistics Header
             Text(
-              isMarathi ? "अभ्यासाची प्रगती" : "Study Progress & Accuracy",
+              "study_progress_accuracy".tr(),
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -294,7 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        isMarathi ? "एकूण अचूकता" : "Overall MCQ Accuracy",
+                        "overall_mcq_accuracy".tr(),
                         style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
@@ -325,12 +324,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        isMarathi ? "दैनिक अभ्यास तास" : "Weekly Study Hours",
+                        "weekly_study_hours".tr(),
                         style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       Text(
-                        "$hoursStr Hrs Total",
+                        "$hoursStr ${"hrs_total".tr()}",
                         style: commonTextStyle.copyWith(
                             color: Colors.grey, fontSize: 12),
                       ),
@@ -370,7 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Achievement Badges
             Text(
-              isMarathi ? "प्राप्त पदके (Badges)" : "Achievement Badges",
+              "achievement_badges".tr(),
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -380,9 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Center(
                       child: Text(
-                        isMarathi
-                            ? "अद्याप कोणतेही पदक नाही"
-                            : "No badges earned yet",
+                        "no_badges_earned_yet".tr(),
                         style: commonTextStyle.copyWith(color: Colors.grey),
                       ),
                     ),
@@ -428,7 +425,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Recent Activity History
             Text(
-              isMarathi ? "अलीकडील हालचाली" : "Recent Activity History",
+              "recent_activity_history".tr(),
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -444,9 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
                         child: Text(
-                          isMarathi
-                              ? "कोणताही इतिहास नाही"
-                              : "No history found",
+                          "no_history_found".tr(),
                           style: commonTextStyle.copyWith(color: Colors.grey),
                         ),
                       ),
@@ -461,7 +456,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             DateFormat('dd MMM, hh:mm a').format(date);
                         String quizTitle = session['quiz_title'] ??
                             (session['category'] ??
-                                (isMarathi ? "सराव" : "Practice"));
+                                "practice".tr());
                         int score = session['score'] ?? 0;
                         int total = session['total'] ?? 0;
                         int attempted = session['attempted'] ?? score;
@@ -524,19 +519,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         Row(
                                           children: [
                                             _buildStatChip(
-                                                isMarathi
-                                                    ? "सोडवले"
-                                                    : "Attempted",
+                                                "attempted".tr(),
                                                 "$attempted/$total",
                                                 Colors.blue),
                                             const SizedBox(width: 8),
                                             _buildStatChip(
-                                                isMarathi ? "बरोबर" : "Correct",
+                                                "correct".tr(),
                                                 "$score",
                                                 Colors.green),
                                             const SizedBox(width: 8),
                                             _buildStatChip(
-                                                isMarathi ? "चूक" : "Wrong",
+                                                "wrong".tr(),
                                                 "$wrong",
                                                 Colors.red),
                                           ],
@@ -572,7 +565,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: Text(
-                  isMarathi ? "लॉगआउट" : "Logout Account",
+                  "logout_account".tr(),
                   style: commonTextStyle.copyWith(
                       color: Colors.red, fontWeight: FontWeight.bold),
                 ),
@@ -685,8 +678,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        final isMarathi =
-            context.read<LanguageCubit>().state.locale.languageCode == 'mr';
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -694,7 +685,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  isMarathi ? "प्रोफाइल फोटो निवडा" : "Choose Profile Photo",
+                  "choose_profile_photo".tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -714,7 +705,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       icon: const Icon(Icons.camera_alt, color: Colors.white),
                       label: Text(
-                        isMarathi ? "कॅमेरा" : "Camera",
+                        "camera".tr(),
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () => Navigator.pop(context, ImageSource.camera),
@@ -729,7 +720,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       icon: const Icon(Icons.photo_library, color: Colors.white),
                       label: Text(
-                        isMarathi ? "गॅलरी" : "Gallery",
+                        "gallery".tr(),
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () => Navigator.pop(context, ImageSource.gallery),
@@ -757,8 +748,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (!context.mounted) return;
 
         final profileCubit = context.read<ProfileCubit>();
-        final isMarathi =
-            context.read<LanguageCubit>().state.locale.languageCode == 'mr';
         final messenger = ScaffoldMessenger.of(context);
 
         await profileCubit.uploadAvatar(bytes: bytes);
@@ -774,9 +763,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         } else {
           messenger.showSnackBar(
             SnackBar(
-              content: Text(isMarathi
-                  ? "प्रोफाइल फोटो यशस्वीरित्या अपडेट केला!"
-                  : "Profile photo updated successfully!"),
+              content: Text("profile_photo_updated_successfully".tr()),
               backgroundColor: Colors.green,
             ),
           );
@@ -799,47 +786,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     CommonBottomSheet.show(
       context: context,
-      title: "Update Profile",
+      title: "update_profile".tr(),
       child: Column(
         children: [
           CommonAuthInputField(
             controller: nameController,
-            label: "Full Name",
-            hint: "Enter your full name",
+            label: "full_name".tr(),
+            hint: "enter_full_name".tr(),
             icon: Icons.person_outline,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: mobileController,
-            label: "Mobile",
-            hint: "Enter your mobile number",
+            label: "mobile".tr(),
+            hint: "enter_mobile_number".tr(),
             icon: Icons.phone_outlined,
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: avatarController,
-            label: "Avatar URL",
-            hint: "Enter a valid image URL for your profile",
+            label: "avatar_url".tr(),
+            hint: "enter_avatar_url".tr(),
             icon: Icons.image_outlined,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: bioController,
-            label: "Bio",
-            hint: "Short description about yourself",
+            label: "bio".tr(),
+            hint: "short_description".tr(),
             icon: Icons.info_outline,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: examController,
-            label: "Target Exam",
+            label: "target_exam".tr(),
             hint: "e.g. police_bharti",
             icon: Icons.track_changes_outlined,
           ),
           const SizedBox(height: 24),
           CommonAuthButton(
-            label: "Save Changes",
+            label: "save_changes".tr(),
             onTap: () {
               final Map<String, dynamic> body = {};
               if (nameController.text.isNotEmpty)

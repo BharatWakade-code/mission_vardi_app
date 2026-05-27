@@ -1,11 +1,13 @@
 import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/screens/auth_module/signin_screen.dart';
 import 'package:mission_vardi/screens/auth_module/signup_screen.dart';
+import 'package:mission_vardi/screens/pyq_module/pyq_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quiz_play_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quiz_result_screen.dart';
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_screen.dart';
 import 'package:mission_vardi/screens/welcome_screen.dart';
 import 'package:mission_vardi/screens/vardi_home_module/pdf_viewer_screen.dart';
+import 'package:mission_vardi/screens/vardi_home_module/police_bharti_info_screen.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_detail_screen.dart';
 import 'package:mission_vardi/screens/current_affairs_module/data/current_affairs_model.dart';
@@ -23,6 +25,8 @@ class RoutesNames {
   static const String pdfViewerScreen = '/pdfViewerScreen';
   static const String currentAffairsScreen = '/currentAffairsScreen';
   static const String currentAffairsDetailScreen = '/currentAffairsDetailScreen';
+  static const String policeBhartiInfoScreen = '/policeBhartiInfoScreen';
+  static const String pyqScreen = '/pyqScreen';
 }
 
 List<RouteBase> routesList() {
@@ -72,6 +76,14 @@ List<RouteBase> routesList() {
         final article = state.extra as CurrentAffairsModel;
         return CurrentAffairsDetailScreen(article: article);
       },
+    ),
+    GoRoute(
+      path: RoutesNames.policeBhartiInfoScreen,
+      builder: (context, state) => const PoliceBhartiInfoScreen(),
+    ),
+    GoRoute(
+      path: RoutesNames.pyqScreen,
+      builder: (context, state) => const PYQScreen(),
     ),
   ];
 }

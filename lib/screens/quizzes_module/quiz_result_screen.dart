@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
+import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 
 class QuizResultScreen extends StatelessWidget {
   const QuizResultScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = Localizations.localeOf(context).languageCode == 'mr';
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
+    final isMr = context.locale.languageCode == 'mr';
     
     final TextStyle commonTextStyle = const TextStyle(
       fontFamily: 'Outfit',
@@ -38,7 +44,7 @@ class QuizResultScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Constants.scaffoldBackgroundColour,
           appBar: CustomAppBar(
-            titleText: isMarathi ? 'चाचणी निकाल' : 'Practice Test Result',
+            titleText: "practice_test_result".tr(),
             titleIcon: Icons.analytics,
             leading: IconButton(
               icon: const Icon(
@@ -47,7 +53,7 @@ class QuizResultScreen extends StatelessWidget {
               ),
               onPressed: () {
                 context.read<QuizzesCubit>().resetToMenu();
-                Navigator.of(context).pop();
+                context.go(RoutesNames.dashboardScreen);
               },
             ),
           ),
@@ -74,7 +80,7 @@ class QuizResultScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            isMarathi ? "तुमचा एकूण स्कोर" : "Your Total Score",
+                            "your_total_score".tr(),
                             style: commonTextStyle.copyWith(
                               color: Colors.white70,
                               fontSize: 16,
@@ -131,8 +137,8 @@ class QuizResultScreen extends StatelessWidget {
                             ),
                             child: Text(
                               correctAnswers >= (totalQuestions * 0.7)
-                                  ? (isMarathi ? "उत्कृष्ट काम! 🏆" : "Excellent Job! 🏆")
-                                  : (isMarathi ? "अधिक सराव करा! 💪" : "Need More Practice! 💪"),
+                                  ? "excellent_job".tr()
+                                  : "need_more_practice".tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -150,7 +156,7 @@ class QuizResultScreen extends StatelessWidget {
                   Row(
                     children: [
                       _buildStatCard(
-                        title: isMarathi ? "एकूण प्रश्न" : "Total Qs",
+                        title: "total_qs".tr(),
                         value: "$totalQuestions",
                         color: Colors.blue.shade700,
                         icon: Icons.format_list_numbered,
@@ -158,7 +164,7 @@ class QuizResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _buildStatCard(
-                        title: isMarathi ? "बरोबर" : "Correct",
+                        title: "correct".tr(),
                         value: "$correctAnswers",
                         color: Colors.green,
                         icon: Icons.check_circle_outline,
@@ -166,7 +172,7 @@ class QuizResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _buildStatCard(
-                        title: isMarathi ? "चुकीचे" : "Incorrect",
+                        title: "incorrect".tr(),
                         value: "$incorrectAnswers",
                         color: Colors.red,
                         icon: Icons.highlight_off,
@@ -174,7 +180,7 @@ class QuizResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _buildStatCard(
-                        title: isMarathi ? "सोडले" : "Skipped",
+                        title: "skipped".tr(),
                         value: "$unansweredCount",
                         color: Colors.grey.shade600,
                         icon: Icons.next_plan_outlined,
@@ -186,7 +192,7 @@ class QuizResultScreen extends StatelessWidget {
 
                   // Review section header
                   Text(
-                    isMarathi ? "प्रश्नांचे सविस्तर विश्लेषण" : "Detailed Questions Review",
+                    "detailed_questions_review".tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -202,7 +208,7 @@ class QuizResultScreen extends StatelessWidget {
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemBuilder: (context, qIdx) {
                       final question = state.questions[qIdx];
-                      final options = isMarathi ? question["optionsMr"] : question["options"];
+                      final options = isMr ? question["optionsMr"] : question["options"];
                       final selectedIdx = state.userAnswers[qIdx];
                       final correctIdx = question["correctIndex"];
                       final isCorrect = selectedIdx == correctIdx;
@@ -220,7 +226,7 @@ class QuizResultScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "${isMarathi ? 'प्रश्न' : 'Question'} ${qIdx + 1}",
+                                    "${"question".tr()} ${qIdx + 1}",
                                     style: commonTextStyle.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.grey.shade700,
@@ -236,8 +242,8 @@ class QuizResultScreen extends StatelessWidget {
                                     ),
                                     child: Text(
                                       selectedIdx == null
-                                          ? (isMarathi ? "सोडला" : "Skipped")
-                                          : (isCorrect ? (isMarathi ? "बरोबर" : "Correct") : (isMarathi ? "चुकीचा" : "Incorrect")),
+                                          ? "skipped_short".tr()
+                                          : (isCorrect ? "correct".tr() : "incorrect_short".tr()),
                                       style: commonTextStyle.copyWith(
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
@@ -253,7 +259,7 @@ class QuizResultScreen extends StatelessWidget {
                               
                               // Question Text
                               Text(
-                                isMarathi ? question["qMr"] : question["q"],
+                                isMr ? question["qMr"] : question["q"],
                                 style: commonTextStyle.copyWith(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -328,7 +334,7 @@ class QuizResultScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      isMarathi ? "💡 स्पष्टीकरण:" : "💡 Explanation:",
+                                      "explanation_prefix".tr(),
                                       style: commonTextStyle.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.amber.shade900,
@@ -337,7 +343,7 @@ class QuizResultScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      isMarathi ? question["explanationMr"] : question["explanation"],
+                                      isMr ? question["explanationMr"] : question["explanation"],
                                       style: commonTextStyle.copyWith(
                                         fontSize: 12,
                                         color: Colors.grey.shade800,
@@ -372,10 +378,10 @@ class QuizResultScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<QuizzesCubit>().resetToMenu();
-                    Navigator.of(context).pop();
+                    context.go(RoutesNames.dashboardScreen);
                   },
                   child: Text(
-                    isMarathi ? "मुख्य मेनूवर जा" : "Back to Main Menu",
+                    "back_to_main_menu".tr(),
                     style: commonTextStyle.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

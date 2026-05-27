@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_cubit.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_state.dart';
@@ -50,7 +51,8 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
 
     return BlocBuilder<PhysicalPrepCubit, PhysicalPrepState>(
       builder: (context, state) {
@@ -61,7 +63,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
           child: Scaffold(
             backgroundColor: Constants.scaffoldBackgroundColour,
             appBar: CustomAppBar(
-              titleText: isMarathi ? 'मैदानी चाचणी ट्रॅकर' : 'Physical Test Tracker',
+              titleText: "physical_test_tracker".tr(),
               titleIcon: Icons.fitness_center,
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(66),
@@ -97,7 +99,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           children: [
                             const Icon(Icons.fitness_center, size: 14),
                             const SizedBox(width: 4),
-                            Text(isMarathi ? "व्यायाम ट्रॅकर" : "Workout"),
+                            Text("workout".tr()),
                           ],
                         ),
                       ),
@@ -107,7 +109,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           children: [
                             const Icon(Icons.timer_outlined, size: 14),
                             const SizedBox(width: 4),
-                            Text(isMarathi ? "धावणे टाइमर" : "Timer"),
+                            Text("timer".tr()),
                           ],
                         ),
                       ),
@@ -117,7 +119,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           children: [
                             const Icon(Icons.calculate_rounded, size: 14),
                             const SizedBox(width: 4),
-                            Text(isMarathi ? "गुण कॅल्क्युलेटर" : "Calculator"),
+                            Text("calculator".tr()),
                           ],
                         ),
                       ),
@@ -147,14 +149,12 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    isMarathi ? "आजचे व्यायाम ध्येय!" : "Today's Workout Target!",
+                                    "todays_workout_target".tr(),
                                     style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
                                   ),
                                   const SizedBox(height: 3),
                                   Text(
-                                    isMarathi
-                                        ? "शारीरिक चाचणीत १०० पैकी १०० मिळवण्यासाठी रोज सराव करा"
-                                        : "Train daily to score 100% in ground test.",
+                                    "train_daily_physical_desc".tr(),
                                     style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey.shade600),
                                   ),
                                 ],
@@ -166,43 +166,41 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 20),
 
                       _trackerCard(
-                        title: isMarathi ? "दंड (Push-ups)" : "Push-ups Counter",
+                        title: "pushups_counter".tr(),
                         count: state.pushupCount,
                         goal: state.pushupGoal,
-                        isMarathi: isMarathi,
                         onAdd: cubit.incrementPushups,
                         onReset: cubit.resetPushups,
                       ),
                       const SizedBox(height: 15),
 
                       _trackerCard(
-                        title: isMarathi ? "उठबशा (Sit-ups)" : "Sit-ups Counter",
+                        title: "situps_counter".tr(),
                         count: state.situpCount,
                         goal: state.situpGoal,
-                        isMarathi: isMarathi,
                         onAdd: cubit.incrementSitups,
                         onReset: cubit.resetSitups,
                       ),
                       const SizedBox(height: 20),
 
                       Text(
-                        isMarathi ? "पोलीस भरती निकष" : "Police Physical Standards",
+                        "police_physical_standards".tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       const SizedBox(height: 10),
                       _standardItem(
-                        title: isMarathi ? "१६०० मीटर धावणे (पुरुष)" : "1600 Meters Run (Male)",
-                        desc: isMarathi ? "उत्कृष्ट वेळ: ५ मि. १० सेकंद (३० गुण)" : "Excellent target: 5 mins 10 secs (30 Marks)",
+                        title: "run_1600_male".tr(),
+                        desc: "run_1600_male_desc".tr(),
                         score: "30 M",
                       ),
                       _standardItem(
-                        title: isMarathi ? "१०० मीटर धावणे" : "100 Meters Sprint",
-                        desc: isMarathi ? "उत्कृष्ट वेळ: ११.५० सेकंद (१५ गुण)" : "Excellent target: 11.50 secs (15 Marks)",
+                        title: "sprint_100".tr(),
+                        desc: "sprint_100_desc".tr(),
                         score: "15 M",
                       ),
                       _standardItem(
-                        title: isMarathi ? "गोळाफेक" : "Shot Put Throw",
-                        desc: isMarathi ? "उत्कृष्ट अंतर: ८.५० मीटर (१५ गुण)" : "Excellent throw: 8.50 meters (15 Marks)",
+                        title: "shot_put_throw".tr(),
+                        desc: "shot_put_desc".tr(),
                         score: "15 M",
                       ),
                     ],
@@ -232,7 +230,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         child: Column(
                           children: [
                             Text(
-                              isMarathi ? "१६०० मी / १०० मी धावण्याची वेळ" : "Running Event stopwatch",
+                              "running_event_stopwatch".tr(),
                               style: commonTextStyle.copyWith(color: Colors.grey, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 15),
@@ -276,11 +274,11 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            isMarathi ? "नोंदवलेली वेळ (Laps)" : "Recorded Splits (Laps)",
+                            "recorded_splits".tr(),
                             style: commonTextStyle.copyWith(fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            "${state.lapTimes.length} ${isMarathi ? 'फेऱ्या' : 'Laps'}",
+                            "${state.lapTimes.length} ${"laps_count".tr()}",
                             style: commonTextStyle.copyWith(color: Colors.grey, fontSize: 12),
                           ),
                         ],
@@ -291,7 +289,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         child: state.lapTimes.isEmpty
                             ? Center(
                                 child: Text(
-                                  isMarathi ? "धावणे सुरू करा आणि लॅप्स नोंदवा" : "Start timer & record split lap markers.",
+                                  "stopwatch_start_instruction".tr(),
                                   style: commonTextStyle.copyWith(color: Colors.grey, fontSize: 13),
                                 ),
                               )
@@ -305,7 +303,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${isMarathi ? 'फेरी' : 'Lap'} ${state.lapTimes.length - index}",
+                                          "${"lap".tr()} ${state.lapTimes.length - index}",
                                           style: commonTextStyle.copyWith(fontWeight: FontWeight.w600),
                                         ),
                                         Text(
@@ -349,9 +347,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    isMarathi
-                                        ? "महत्वाची टीप (Guidelines):"
-                                        : "Important Note:",
+                                    "important_note".tr(),
                                     style: commonTextStyle.copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12.5,
@@ -360,9 +356,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    isMarathi
-                                        ? "१. सुरुवातीला सर्व मूल्ये '०' सेट केली आहेत.\n२. तुमचे मैदानी रेकॉर्ड प्रविष्ट करून ५० पैकी गुण तपासा.\n३. चाचणीत उत्तीर्ण होण्यासाठी किमान २५ गुण मिळवणे बंधनकारक आहे."
-                                        : "1. Initially all values are set to '0'.\n2. Enter your actual timings/distances to see your marks.\n3. A minimum of 25 out of 50 marks is required to qualify.",
+                                    "physical_note_desc".tr(),
                                     style: commonTextStyle.copyWith(
                                       fontSize: 11,
                                       color: const Color(0xFF1E3A8A),
@@ -410,7 +404,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         child: Column(
                           children: [
                             Text(
-                              isMarathi ? "शारीरिक चाचणी एकूण गुण" : "Total Physical Marks",
+                              "total_physical_marks".tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold,
@@ -435,12 +429,12 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               ),
                               child: Text(
                                 state.calculatedScore >= 45
-                                    ? (isMarathi ? "🏆 खाकी वर्दी पक्की (उत्कृष्ट!)" : "🏆 Vardi Confirmed (Outstanding!)")
+                                    ? "physical_vardi_confirmed".tr()
                                     : state.calculatedScore >= 35
-                                        ? (isMarathi ? "⚡ उत्कृष्ट कामगिरी!" : "⚡ Excellent Performance!")
+                                        ? "physical_excellent".tr()
                                         : state.calculatedScore >= 25
-                                            ? (isMarathi ? "👍 पात्र (अधिक सराव करा)" : "👍 Qualified (Need Practice)")
-                                            : (isMarathi ? "❌ अपात्र (२५ गुण आवश्यक)" : "❌ Unqualified (25 Min Required)"),
+                                            ? "physical_qualified".tr()
+                                            : "physical_unqualified".tr(),
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -454,7 +448,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 24),
 
                       Text(
-                        isMarathi ? "लिंग निवडा" : "Select Gender",
+                        "select_gender".tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 10),
@@ -462,7 +456,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         children: [
                           Expanded(
                             child: _genderButton(
-                              label: isMarathi ? "पुरुष (Male)" : "Male",
+                              label: "male".tr(),
                               icon: Icons.male_rounded,
                               isSelected: state.gender == 'male',
                               onTap: () => cubit.changeGender('male'),
@@ -471,7 +465,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: _genderButton(
-                              label: isMarathi ? "महिला (Female)" : "Female",
+                              label: "female".tr(),
                               icon: Icons.female_rounded,
                               isSelected: state.gender == 'female',
                               onTap: () => cubit.changeGender('female'),
@@ -482,18 +476,18 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 24),
 
                       Text(
-                        isMarathi ? "चाचणी इव्हेंट रेकॉर्ड प्रविष्ट करा" : "Enter Physical Event Timings",
+                        "enter_physical_event_timings".tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 12),
 
                       _calculatorInputRow(
                         title: state.gender == 'male'
-                            ? (isMarathi ? "१६०० मी धावणे" : "1600 Meters Run")
-                            : (isMarathi ? "८०० मी धावणे" : "800 Meters Run"),
+                            ? "run_1600".tr()
+                            : "run_800".tr(),
                         subTitle: state.runningTime.isEmpty
-                            ? (isMarathi ? "उत्कृष्ट वेळ: ५.१० मि" : "Target: <= 5.10 mins")
-                            : _getParsedRunningTimeDescription(state.runningTime, isMarathi),
+                            ? "run_male_excellent_target".tr()
+                            : _getParsedRunningTimeDescription(state.runningTime),
                         score: "${state.runMarks} / 20",
                         controller: runningTimeController,
                         hint: "5.10",
@@ -501,8 +495,8 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 14),
 
                       _calculatorInputRow(
-                        title: isMarathi ? "१०० मी धावणे" : "100 Meters Sprint",
-                        subTitle: isMarathi ? "उत्कृष्ट वेळ: ११.५० सेकंद" : "Target: <= 11.50 secs",
+                        title: "sprint_100".tr(),
+                        subTitle: "sprint_excellent_target".tr(),
                         score: "${state.sprintMarks} / 15",
                         controller: sprintController,
                         hint: "11.5",
@@ -510,8 +504,8 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 14),
 
                       _calculatorInputRow(
-                        title: isMarathi ? "गोळाफेक (Shot Put)" : "Shot Put Throw",
-                        subTitle: isMarathi ? "उत्कृष्ट अंतर: ८.५० मीटर" : "Target: >= 8.50 meters",
+                        title: "shot_put_throw".tr(),
+                        subTitle: "shot_put_excellent_target".tr(),
                         score: "${state.shotPutMarks} / 15",
                         controller: shotPutController,
                         hint: "8.5",
@@ -542,16 +536,10 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                       const SizedBox(height: 3),
                                       Text(
                                         customEvent.scoringType == 'multiplier'
-                                            ? (isMarathi
-                                                ? "नियम: প্রতি संख्या ${customEvent.ruleValue} गुण | कामगिरी: ${customEvent.rawInput}"
-                                                : "Rule: ${customEvent.ruleValue} marks/rep | Input: ${customEvent.rawInput}")
+                                            ? "multiplier_rule_desc".tr(args: [customEvent.ruleValue.toString(), customEvent.rawInput])
                                             : customEvent.scoringType == 'threshold'
-                                                ? (isMarathi
-                                                    ? "लक्ष्य: ${customEvent.targetComparison} ${customEvent.targetValue} | कामगिरी: ${customEvent.rawInput}"
-                                                    : "Target: ${customEvent.targetComparison} ${customEvent.targetValue} | Input: ${customEvent.rawInput}")
-                                                : (isMarathi
-                                                    ? "थेट गुण कामगिरी: ${customEvent.achievedMarks}"
-                                                    : "Direct score entry: ${customEvent.achievedMarks}"),
+                                                ? "threshold_rule_desc".tr(args: [customEvent.targetComparison, customEvent.targetValue.toString(), customEvent.rawInput])
+                                                : "direct_rule_desc".tr(args: [customEvent.achievedMarks.toString()]),
                                         style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey.shade600),
                                       ),
                                     ],
@@ -589,10 +577,10 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         width: double.infinity,
                         height: 48,
                         child: OutlinedButton.icon(
-                          onPressed: () => _showAddEventBottomSheet(context, cubit, isMarathi),
+                          onPressed: () => _showAddEventBottomSheet(context, cubit),
                           icon: const Icon(Icons.add, size: 20),
                           label: Text(
-                            isMarathi ? "इतर इव्हेंट जोडा (Add Custom Event)" : "Add Custom Event",
+                            "add_custom_event_btn".tr(),
                             style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13.5),
                           ),
                           style: OutlinedButton.styleFrom(
@@ -630,7 +618,6 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
     required String title,
     required int count,
     required int goal,
-    required bool isMarathi,
     required VoidCallback onAdd,
     required VoidCallback onReset,
   }) {
@@ -691,7 +678,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      isMarathi ? "दैनिक उद्दिष्ट साध्य करण्यासाठी क्लिक करा" : "Click '+' button to count reps.",
+                      "pushup_target_desc".tr(),
                       style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey),
                     ),
                   ],
@@ -920,7 +907,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
     );
   }
 
-  void _showAddEventBottomSheet(BuildContext context, PhysicalPrepCubit cubit, bool isMarathi) {
+  void _showAddEventBottomSheet(BuildContext context, PhysicalPrepCubit cubit) {
     final nameController = TextEditingController();
     final maxMarksController = TextEditingController();
     
@@ -960,7 +947,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isMarathi ? "नवीन इव्हेंट जोडा" : "Add Custom Event",
+                          "add_custom_event_title".tr(),
                           style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         IconButton(
@@ -973,19 +960,19 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     
                     // Event Name
                     Text(
-                      isMarathi ? "इव्हेंटचे नाव (उदा. लांब उडी, पुल-अप्स)" : "Event Name (e.g. Long Jump, Pull-Ups)",
+                      "event_name_label".tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
                     CommonTextFormField(
                       controller: nameController,
-                      hintText: isMarathi ? "उदा. लांब उडी / पुल-अप्स" : "e.g. Long Jump / Pull-Ups",
+                      hintText: "event_name_hint".tr(),
                     ),
                     const SizedBox(height: 16),
 
                     // Max Marks
                     Text(
-                      isMarathi ? "कमाल एकूण गुण (Max Marks)" : "Maximum Total Marks",
+                      "max_marks_label".tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
@@ -998,7 +985,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
 
                     // Scoring Rule Selector Dropdown/Segment
                     Text(
-                      isMarathi ? "गुण मोजणी नियम निवडा (Scoring Rule)" : "Select Scoring Rule Type",
+                      "scoring_rule_label".tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
@@ -1018,21 +1005,21 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                             DropdownMenuItem(
                               value: 'direct',
                               child: Text(
-                                isMarathi ? "थेट गुण प्रविष्ट करा (Direct Marks)" : "Direct Score Input",
+                                "direct_score_input".tr(),
                                 style: commonTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'multiplier',
                               child: Text(
-                                isMarathi ? "संख्या गुणाकार नियम (उदा. पुल-अप्स)" : "Per Rep/Count Multiplier",
+                                "multiplier_rule".tr(),
                                 style: commonTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'threshold',
                               child: Text(
-                                isMarathi ? "मर्यादा लक्ष्य नियम (उदा. लांब उडी)" : "Target Pass/Fail Threshold",
+                                "threshold_rule".tr(),
                                 style: commonTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
@@ -1052,7 +1039,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     // DYNAMIC FIELDS BASED ON RULE TYPE
                     if (selectedRuleType == 'direct') ...[
                       Text(
-                        isMarathi ? "मिळालेले गुण (Your Marks)" : "Your Achieved Marks",
+                        "your_achieved_marks".tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       const SizedBox(height: 8),
@@ -1069,7 +1056,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  isMarathi ? "प्रति पुनरावृत्ती गुण" : "Marks per Rep",
+                                  "marks_per_rep".tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
@@ -1087,7 +1074,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  isMarathi ? "तुमची एकूण संख्या" : "Your Reps Count",
+                                  "your_reps_count".tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
@@ -1109,7 +1096,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  isMarathi ? "तुलना नियम" : "Comparison",
+                                  "comparison".tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
@@ -1129,14 +1116,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                         DropdownMenuItem(
                                           value: '>=',
                                           child: Text(
-                                            isMarathi ? "किंवा अधिक (>=)" : "At least (>=)",
+                                            "at_least".tr(),
                                             style: commonTextStyle.copyWith(fontSize: 12.5),
                                           ),
                                         ),
                                         DropdownMenuItem(
                                           value: '<=',
                                           child: Text(
-                                            isMarathi ? "किंवा कमी (<=)" : "At most (<=)",
+                                            "at_most".tr(),
                                             style: commonTextStyle.copyWith(fontSize: 12.5),
                                           ),
                                         ),
@@ -1160,7 +1147,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  isMarathi ? "लक्ष्य मर्यादा" : "Target Target",
+                                  "target_limit".tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
@@ -1176,7 +1163,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        isMarathi ? "तुमची प्रत्यक्ष कामगिरी (Your Result)" : "Your Actual Result Value",
+                        "your_actual_result".tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       const SizedBox(height: 8),
@@ -1233,7 +1220,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: Text(
-                          isMarathi ? "इव्हेंट जतन करा" : "Save Event",
+                          "save_event".tr(),
                           style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -1252,7 +1239,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
     );
   }
 
-  String _getParsedRunningTimeDescription(String timeStr, bool isMarathi) {
+  String _getParsedRunningTimeDescription(String timeStr) {
     double runMinVal = 0;
     double runSecVal = 0;
     final cleanTime = timeStr.trim().replaceAll(' ', '');
@@ -1279,9 +1266,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
     }
     final min = runMinVal.toInt();
     final sec = runSecVal.toInt();
-    return isMarathi
-        ? "विश्लेषण: $min मि $sec सेकंद"
-        : "Parsed: $min min $sec sec";
+    return "parsed_time_desc".tr(args: [min.toString(), sec.toString()]);
   }
 }
 

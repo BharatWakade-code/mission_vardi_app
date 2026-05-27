@@ -38,6 +38,7 @@ app.include_router(quiz_router)
 app.include_router(study_router)
 
 from app.routes.alert import router as alert_router
+from app.routes.localization import router as localization_router
 
 # Supporting
 app.include_router(upload_router)
@@ -46,6 +47,7 @@ app.include_router(notification_router)
 app.include_router(note_router)
 app.include_router(alert_router)
 app.include_router(current_affairs_router)
+app.include_router(localization_router)
 
 
 @app.get("/")

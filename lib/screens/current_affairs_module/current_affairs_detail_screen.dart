@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/data/current_affairs_model.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/common_widgets/common_toast_message.dart';
@@ -75,6 +78,9 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                       ),
                       tooltip: _isMarathiReadingMode ? "Switch to English" : "मराठीत वाचा",
                       onPressed: () {
+                        final targetLang = _isMarathiReadingMode ? 'en' : 'mr';
+                        context.read<LanguageCubit>().changeLanguage(targetLang);
+                        context.setLocale(Locale(targetLang));
                         setState(() {
                           _isMarathiReadingMode = !_isMarathiReadingMode;
                         });
@@ -204,9 +210,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                               await launchUrl(uri, mode: LaunchMode.externalApplication);
                             } else {
                               GlobalToast.show(
-                                _isMarathiReadingMode
-                                    ? "मूळ लेख उघडण्यात अडचण येत आहे!"
-                                    : "Could not open the original article!",
+                                "could_not_open_article".tr(),
                                 icon: Icons.error_outline_rounded,
                                 accentColor: Colors.red,
                               );
@@ -242,9 +246,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _isMarathiReadingMode
-                                            ? "संपूर्ण मूळ लेख वाचा"
-                                            : "Read Full Article",
+                                        "read_original_article".tr(),
                                         style: commonTextStyle.copyWith(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
@@ -253,9 +255,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        _isMarathiReadingMode
-                                            ? "वृत्तपत्रातील मूळ आणि संपूर्ण बातमी वाचा"
-                                            : "Read the complete source article in browser",
+                                        "read_full_article_source".tr(),
                                         style: commonTextStyle.copyWith(
                                           fontSize: 11,
                                           color: const Color(0xFF15803D),

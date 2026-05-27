@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
+import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/common_widgets/banner_ad_widget.dart';
@@ -22,18 +24,30 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
     super.initState();
 
     context.read<QuizzesCubit>().getQuizzesList();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final profileCubit = context.read<ProfileCubit>();
+        if (profileCubit.state.profileData == null) {
+          profileCubit.getProfile();
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
-
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
+    
+    // Watch ProfileCubit to get the current streak
+    final profileState = context.watch<ProfileCubit>().state;
+    final int currentStreak = profileState.profileData?.stats?['current_streak_days'] ?? 0;
+    
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText:
-            isMarathi ? 'परीक्षा आणि सराव केंद्र' : 'Exam & Practice Center',
+        titleText: "exam_practice_center".tr(),
         titleIcon: Icons.quiz,
       ),
       body: BlocBuilder<QuizzesCubit, QuizzesState>(
@@ -88,24 +102,33 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                isMarathi
-                                    ? "दैनिक आव्हान क्विझ उपलब्ध!"
-                                    : "Daily Challenge Available!",
+                                "daily_challenge_available".tr(),
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 ),
                               ),
-                              const SizedBox(height: 3),
-                              Text(
-                                isMarathi
-                                    ? "पूर्ण करा आणि दुपटीने गुण मिळवा"
-                                    : "Complete and win 2x Coins",
-                                style: commonTextStyle.copyWith(
-                                  color: Colors.white70,
-                                  fontSize: 12,
-                                ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.local_fire_department_rounded, 
+                                      color: currentStreak > 0 ? Colors.orange : Colors.grey.shade400, 
+                                      size: 14),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    currentStreak > 0 
+                                      ? (context.locale.languageCode == 'mr' 
+                                          ? '$currentStreak दिवसांची सलगता (Streak)' 
+                                          : '$currentStreak Day Streak!')
+                                      : "complete_win_coins".tr(),
+                                    style: commonTextStyle.copyWith(
+                                      color: currentStreak > 0 ? Colors.orange.shade200 : Colors.white70,
+                                      fontSize: 12,
+                                      fontWeight: currentStreak > 0 ? FontWeight.bold : FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -117,9 +140,12 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            context.read<QuizzesCubit>().changePracticeMode("Timed");
+                            context.push(RoutesNames.quizPlayScreen, extra: 'daily-challenge');
+                          },
                           child: Text(
-                            isMarathi ? "सुरू करा" : "Start",
+                            "start".tr(),
                             style: commonTextStyle.copyWith(
                               color: const Color(0xFF0A2540),
                               fontWeight: FontWeight.bold,
@@ -130,11 +156,106 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                     ),
                   ),
 
+                  const SizedBox(height: 16),
+
+                  /// ── PYQ Banner ──────────────────────────────────────────
+                  GestureDetector(
+                    onTap: () => context.push(RoutesNames.pyqScreen),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.purple.withOpacity(0.25),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.history_edu_rounded,
+                              color: Colors.white,
+                              size: 26,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.locale.languageCode == 'mr'
+                                      ? 'मागील वर्षांच्या प्रश्नपत्रिका (PYQs)'
+                                      : 'Previous Year Question Papers',
+                                  style: commonTextStyle.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  context.locale.languageCode == 'mr'
+                                      ? '२०२१ – २०२४ | ७ पेपर्स उपलब्ध'
+                                      : '2021 – 2024  |  7 Papers Available',
+                                  style: commonTextStyle.copyWith(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  context.locale.languageCode == 'mr'
+                                      ? 'पहा'
+                                      : 'View',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white, size: 12),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 20),
 
                   /// Practice mode
                   Text(
-                    isMarathi ? "सराव प्रकार निवडा" : "Select Practice Mode",
+                    "select_practice_mode".tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -147,7 +268,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                     children: [
                       _ModeCard(
                         icon: Icons.timer,
-                        title: isMarathi ? "वेळेनुसार (Mock)" : "Mock (Timed)",
+                        title: "mock_timed".tr(),
                         isSelected: state.selectedPracticeMode == "Timed",
                         onTap: () {
                           context
@@ -158,19 +279,18 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       const SizedBox(width: 10),
                       _ModeCard(
                         icon: Icons.menu_book,
-                        title: isMarathi ? "सराव पद्धत" : "Practice Mode",
+                        title: "practice_mode".tr(),
                         isSelected: state.selectedPracticeMode == "Practice",
                         onTap: () {
                           context
                               .read<QuizzesCubit>()
                               .changePracticeMode("Practice");
                         },
-                        isComingSoon: true,
                       ),
                       const SizedBox(width: 10),
                       _ModeCard(
                         icon: Icons.shuffle,
-                        title: isMarathi ? "रँडम टेस्ट" : "Random Quiz",
+                        title: "random_quiz".tr(),
                         isSelected: state.selectedPracticeMode == "Random",
                         onTap: () {
                           context
@@ -186,7 +306,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
                   /// Categories
                   Text(
-                    isMarathi ? "विषय निवडा" : "Choose Quizz Subject",
+                    "choose_quiz_subject".tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -270,9 +390,6 @@ class _ModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
-
     final bool isDisabled = isComingSoon;
 
     return Expanded(
@@ -314,9 +431,7 @@ class _ModeCard extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          isMarathi
-                              ? "हे फीचर लवकरच येत आहे!"
-                              : "This feature is coming soon!",
+                          "feature_coming_soon".tr(),
                           style: commonTextStyle.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -443,7 +558,7 @@ class _ModeCard extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        isMarathi ? "लवकरच" : "SOON",
+                        "soon".tr(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 8,
@@ -482,7 +597,7 @@ class _CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMarathi =
-        context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+        context.locale.languageCode == 'mr';
 
     return GestureDetector(
       onTap: onTap,
@@ -538,7 +653,7 @@ class _CategoryCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      isMarathi ? "सुरू करा" : "Start now",
+                      "start_now".tr(),
                       style: commonTextStyle.copyWith(
                           fontSize: 11,
                           color: Constants.primaryBlueColour,

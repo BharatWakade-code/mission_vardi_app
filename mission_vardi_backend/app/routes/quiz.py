@@ -4,7 +4,7 @@ from uuid import uuid4
 from datetime import datetime
 
 from app.models.quiz_model import QuizCreate, QuizResultSubmit
-from app.services.mongodb_service import quizzes_collection, results_collection
+from app.services.mongodb_service import quizzes_collection, results_collection, config_collection
 
 router = APIRouter(
     prefix="/quiz",
@@ -76,6 +76,71 @@ async def list_quizzes(category: Optional[str] = None, type: Optional[str] = Non
 
 @router.get("/{quiz_id}")
 async def get_quiz(quiz_id: str):
+    if quiz_id == "pyq-catalogue":
+        config_doc = config_collection.find_one({"id": "pyq_catalogue"}, {"_id": 0})
+        catalogue = config_doc.get("data") if config_doc else None
+        
+        if not catalogue:
+            return {
+                "status": False,
+                "message": "PYQ catalogue not available yet",
+                "data": []
+            }
+
+        return {
+            "status": True,
+            "message": "PYQ catalogue fetched successfully",
+            "data": catalogue
+        }
+
+    if quiz_id == "daily-challenge":
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        daily_quiz_id = f"daily_challenge_{today_str}"
+        
+        # Check if today's challenge already exists
+        daily_quiz = quizzes_collection.find_one({"id": daily_quiz_id}, {"_id": 0})
+        
+        if not daily_quiz:
+            import random
+            
+            # Fetch all questions from all quizzes
+            all_quizzes = list(quizzes_collection.find({"type": {"$ne": "challenge"}}, {"questions": 1, "category": 1}))
+            all_questions = []
+            for qz in all_quizzes:
+                for q in qz.get("questions", []):
+                    # add an identifier if needed, or just use as is
+                    all_questions.append(q)
+            
+            if len(all_questions) > 0:
+                # Sample up to 10 questions
+                selected = random.sample(all_questions, min(10, len(all_questions)))
+                
+                daily_quiz = {
+                    "id": daily_quiz_id,
+                    "title": f"Daily Challenge - {today_str}",
+                    "description": "Test your knowledge with today's 10 random questions!",
+                    "category": "Daily Challenge",
+                    "type": "challenge",
+                    "questions": selected,
+                    "createdAt": str(datetime.now())
+                }
+                
+                # Insert so everyone gets the same one today and results can be tracked
+                quizzes_collection.insert_one(daily_quiz)
+                daily_quiz.pop("_id", None)
+            else:
+                return {
+                    "status": False,
+                    "message": "Not enough questions in database to generate a daily challenge.",
+                    "data": None
+                }
+
+        return {
+            "status": True,
+            "message": "Daily challenge fetched successfully",
+            "data": daily_quiz
+        }
+
     quiz = quizzes_collection.find_one({"id": quiz_id}, {"_id": 0})
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz not found")

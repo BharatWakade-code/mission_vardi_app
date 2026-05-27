@@ -351,6 +351,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
       currentQuestionIndex: 0,
       selectedAnswerIndex: () => null,
       isAnswerSubmitted: false,
+      errorMsg: '',
     ));
   }
 

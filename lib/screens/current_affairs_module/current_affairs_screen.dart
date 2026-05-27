@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_state.dart';
@@ -50,12 +51,13 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = context.watch<LanguageCubit>().state.locale.languageCode == 'mr';
+    // Watch LanguageCubit to trigger an instant rebuild when language changes
+    context.watch<LanguageCubit>().state;
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: isMarathi ? "चालू घडामोडी" : "CURRENT AFFAIRS",
+        titleText: "affairs".tr().toUpperCase(),
         titleIcon: Icons.newspaper_rounded,
       ),
       body: SafeArea(
@@ -93,9 +95,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           }
                         });
                       },
-                      hintText: isMarathi
-                          ? "चालू घडामोडी शोधा..."
-                          : "Search daily current affairs...",
+                      hintText: "search_articles".tr(),
                       prefixIcon: Icons.search_rounded,
                     ),
                   ),
@@ -158,7 +158,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
-                                        isMarathi ? cat['mr'] : cat['en'],
+                                        context.locale.languageCode == 'mr' ? cat['mr'] : cat['en'],
                                         style: commonTextStyle.copyWith(
                                           fontSize: 12,
                                           fontWeight: isSelected
@@ -205,9 +205,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                               size: 54, color: Colors.red),
                           const SizedBox(height: 12),
                           Text(
-                            isMarathi
-                                ? "माहिती लोड करण्यात अडचण आली."
-                                : "Failed to load current affairs.",
+                            "failed_to_load_affairs".tr(),
                             style: commonTextStyle.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.red,
@@ -221,7 +219,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Constants.primaryBlueColour,
                             ),
-                            child: Text(isMarathi ? "पुन्हा प्रयत्न करा" : "Retry"),
+                            child: Text("retry".tr()),
                           )
                         ],
                       ),
@@ -240,9 +238,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            isMarathi
-                                ? "कोणत्याही घडामोडी सापडल्या नाहीत"
-                                : "No current affairs articles found",
+                            "no_articles_found".tr(),
                             style: commonTextStyle.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -251,9 +247,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            isMarathi
-                                ? "दुसरा शब्द शोधून पहा"
-                                : "Try clearing search or filters",
+                            "try_clearing_filters".tr(),
                             style: commonTextStyle.copyWith(
                               fontSize: 12,
                               color: Colors.grey,
@@ -273,7 +267,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                       itemCount: state.articles.length,
                       itemBuilder: (context, index) {
                         final article = state.articles[index];
-                        return _buildArticleCard(context, article, isMarathi);
+                        return _buildArticleCard(context, article);
                       },
                     ),
                   );
@@ -287,9 +281,10 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
   }
 
   Widget _buildArticleCard(
-      BuildContext context, CurrentAffairsModel article, bool isMarathi) {
-    final title = isMarathi ? article.titleMr : article.titleEn;
-    final desc = isMarathi ? article.descriptionMr : article.descriptionEn;
+      BuildContext context, CurrentAffairsModel article) {
+    final isMr = context.locale.languageCode == 'mr';
+    final title = isMr ? article.titleMr : article.titleEn;
+    final desc = isMr ? article.descriptionMr : article.descriptionEn;
 
     // Categorized colors for tags
     Color tagBg = Colors.grey.shade100;
@@ -374,7 +369,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              isMarathi ? "ट्रेंडिंग" : "Trending",
+                              "trending".tr(),
                               style: commonTextStyle.copyWith(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -408,7 +403,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          isMarathi ? _getCategoryMr(article.category) : article.category,
+                          isMr ? _getCategoryMr(article.category) : article.category,
                           style: commonTextStyle.copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -463,7 +458,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        isMarathi ? "अधिक वाचा" : "Read Full Article",
+                        "read_full_article".tr(),
                         style: commonTextStyle.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
