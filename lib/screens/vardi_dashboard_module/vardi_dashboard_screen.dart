@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
+
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_state.dart';
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_screen.dart';
@@ -9,7 +9,7 @@ import 'package:mission_vardi/screens/physical_prep_module/physical_prep_screen.
 import 'package:mission_vardi/screens/profile_module/profile_screen.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
 import 'package:intl/intl.dart';
-import 'package:easy_localization/easy_localization.dart';
+
 import 'package:mission_vardi/utils/constants.dart';
 
 class VardiDashboardScreen extends StatefulWidget {
@@ -24,15 +24,14 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch LanguageCubit to update bottom navigation labels in real-time
-    context.watch<LanguageCubit>().state;
+
     final dashboardCubit = context.watch<VardiDashboardCubit>();
 
     List<Widget> screens = [
       const FarmerHomeScreen(), // Mapped to the home screen class in vardi_home_screen
-      const CurrentAffairsScreen(),
       const QuizzesScreen(),
       const PhysicalPrepScreen(),
+      const CurrentAffairsScreen(),
       const ProfileScreen(),
     ];
 
@@ -68,23 +67,23 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_filled),
-          label: "home".tr(),
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.newspaper_rounded),
-          label: "affairs".tr(),
+          label: "Home",
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.quiz_rounded),
-          label: "quizzes".tr(),
+          label: "Quiz",
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.directions_run_rounded),
-          label: "physical".tr(),
+          label: "Physical",
         ),
         BottomNavigationBarItem(
-          icon: const Icon(Icons.analytics_rounded),
-          label: "profile".tr(),
+          icon: const Icon(Icons.newspaper_rounded),
+          label: "News",
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person_rounded),
+          label: "Profile",
         ),
       ],
     );

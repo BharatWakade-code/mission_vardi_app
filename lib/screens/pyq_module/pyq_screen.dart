@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
+
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -169,8 +168,7 @@ class _PYQScreenState extends State<PYQScreen>
 
   @override
   Widget build(BuildContext context) {
-    context.watch<LanguageCubit>().state;
-    final isMr = context.locale.languageCode == 'mr';
+    final isMr = false;
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
@@ -428,7 +426,7 @@ class _PYQScreenState extends State<PYQScreen>
               ),
               const SizedBox(width: 8),
               Text(
-                '${papers.length} ${isMr ? 'पेपर' : 'papers'}',
+                '${papers.length} papers',
                 style: TextStyle(
                   color: Colors.grey.shade500,
                   fontSize: 11,
@@ -466,9 +464,7 @@ class _PYQScreenState extends State<PYQScreen>
                 size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
             Text(
-              isMr
-                  ? 'प्रश्नपत्रिका लोड करण्यात अडचण आली'
-                  : 'Could not load papers',
+              'Could not load papers',
               style: const TextStyle(
                 fontFamily: 'Outfit',
                 fontWeight: FontWeight.bold,
@@ -496,7 +492,7 @@ class _PYQScreenState extends State<PYQScreen>
               },
               icon: const Icon(Icons.arrow_back_rounded, size: 18),
               label: Text(
-                isMr ? 'मागे जा' : 'Go Back',
+                'Go Back',
                 style: const TextStyle(
                   fontFamily: 'Outfit',
                   fontWeight: FontWeight.bold,
@@ -575,7 +571,7 @@ class _PaperCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isMr ? paper.titleMr : paper.title,
+                          paper.title,
                           style: const TextStyle(
                             color: Colors.white,
                             fontFamily: 'Outfit',
@@ -585,7 +581,7 @@ class _PaperCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          isMr ? paper.subjectMr : paper.subject,
+                          paper.subject,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                             fontFamily: 'Outfit',
@@ -626,14 +622,14 @@ class _PaperCard extends StatelessWidget {
                   _stat(
                       Icons.help_outline_rounded,
                       '${paper.totalQuestions}',
-                      isMr ? 'प्रश्न' : 'Questions',
+                      'Questions',
                       paper.accentColor),
                   _divider(),
                   _stat(Icons.score_rounded, '${paper.totalMarks}',
-                      isMr ? 'गुण' : 'Marks', Colors.green),
+                      'Marks', Colors.green),
                   _divider(),
                   _stat(Icons.timer_outlined, paper.duration,
-                      isMr ? 'वेळ' : 'Duration', Colors.orange),
+                      'Duration', Colors.orange),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -646,7 +642,7 @@ class _PaperCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          isMr ? 'सुरू करा' : 'Start',
+                          'Start',
                           style: const TextStyle(
                             color: Colors.white,
                             fontFamily: 'Outfit',

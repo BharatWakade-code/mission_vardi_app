@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/data/current_affairs_model.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/common_widgets/common_toast_message.dart';
@@ -19,23 +17,13 @@ class CurrentAffairsDetailScreen extends StatefulWidget {
 }
 
 class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen> {
-  late bool _isMarathiReadingMode;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Default the reading language to the device/app current language setting
-    final currentLanguageCode = Localizations.localeOf(context).languageCode;
-    _isMarathiReadingMode = currentLanguageCode == 'mr';
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
-    final title = _isMarathiReadingMode ? widget.article.titleMr : widget.article.titleEn;
-    final content = _isMarathiReadingMode ? widget.article.contentMr : widget.article.contentEn;
-    final category = _isMarathiReadingMode
-        ? _getCategoryMr(widget.article.category)
-        : widget.article.category;
+    final title = widget.article.titleEn;
+    final content = widget.article.contentEn;
+    final category = widget.article.category;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,32 +50,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
-                actions: [
-                  // Language Toggle Button inside transparent circle
-                  Container(
-                    margin: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
-                    decoration: const BoxDecoration(
-                      color: Colors.black26,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        _isMarathiReadingMode ? Icons.translate_rounded : Icons.g_translate_rounded,
-                        color: Colors.amber,
-                        size: 20,
-                      ),
-                      tooltip: _isMarathiReadingMode ? "Switch to English" : "मराठीत वाचा",
-                      onPressed: () {
-                        final targetLang = _isMarathiReadingMode ? 'en' : 'mr';
-                        context.read<LanguageCubit>().changeLanguage(targetLang);
-                        context.setLocale(Locale(targetLang));
-                        setState(() {
-                          _isMarathiReadingMode = !_isMarathiReadingMode;
-                        });
-                      },
-                    ),
-                  ),
-                ],
+            
                 flexibleSpace: FlexibleSpaceBar(
                   stretchModes: const [
                     StretchMode.zoomBackground,
@@ -210,7 +173,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                               await launchUrl(uri, mode: LaunchMode.externalApplication);
                             } else {
                               GlobalToast.show(
-                                "could_not_open_article".tr(),
+                                "could_not_open_article",
                                 icon: Icons.error_outline_rounded,
                                 accentColor: Colors.red,
                               );
@@ -246,7 +209,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "read_original_article".tr(),
+                                        "read_original_article",
                                         style: commonTextStyle.copyWith(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
@@ -255,7 +218,7 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        "read_full_article_source".tr(),
+                                        "read_full_article_source",
                                         style: commonTextStyle.copyWith(
                                           fontSize: 11,
                                           color: const Color(0xFF15803D),
@@ -389,20 +352,4 @@ class _CurrentAffairsDetailScreenState extends State<CurrentAffairsDetailScreen>
     return widgets;
   }
 
-  String _getCategoryMr(String key) {
-    switch (key.toLowerCase()) {
-      case 'national':
-        return 'राष्ट्रीय';
-      case 'maharashtra':
-        return 'महाराष्ट्र';
-      case 'sports':
-        return 'क्रीडा';
-      case 'defense':
-        return 'संरक्षण';
-      case 'awards':
-        return 'पुरस्कार';
-      default:
-        return key;
-    }
-  }
 }

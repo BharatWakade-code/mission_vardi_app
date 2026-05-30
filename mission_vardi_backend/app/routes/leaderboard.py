@@ -7,7 +7,7 @@ router = APIRouter(
 )
 
 @router.get("/{quiz_id}")
-async def get_leaderboard(quiz_id: str, limit: int = 10):
+def get_leaderboard(quiz_id: str, limit: int = 10):
     # Fetch top results for this quiz sorted by score descending directly in MongoDB
     results = list(
         results_collection.find({"quiz_id": quiz_id}, {"_id": 0})
@@ -37,7 +37,7 @@ async def get_leaderboard(quiz_id: str, limit: int = 10):
     }
 
 @router.get("/global")
-async def get_global_leaderboard(limit: int = 10):
+def get_global_leaderboard(limit: int = 10):
     from app.services.mongodb_service import user_stats_collection
     # Fetch all stats
     stats = list(user_stats_collection.find({}, {"_id": 0}))
@@ -71,5 +71,45 @@ async def get_global_leaderboard(limit: int = 10):
     return {
         "status": True,
         "message": "Global leaderboard fetched",
+        "data": leaderboard[:limit]
+    }
+
+@router.get("/global/district/{district_name}")
+def get_district_leaderboard(district_name: str, limit: int = 10):
+    from app.services.mongodb_service import user_stats_collection
+    
+    # Fetch users belonging to this district
+    users_in_district = list(users_collection.find({"district": district_name}, {"_id": 0}))
+    if not users_in_district:
+        return {"status": True, "message": f"No data found for district {district_name}", "data": []}
+        
+    user_ids = [u["id"] for u in users_in_district]
+    user_map = {u["id"]: u for u in users_in_district}
+    
+    # Fetch stats only for these users
+    stats = list(user_stats_collection.find({"user_id": {"$in": user_ids}}, {"_id": 0}))
+    
+    leaderboard = []
+    for st in stats:
+        u_id = st["user_id"]
+        u_name = user_map.get(u_id, {}).get("name", "Unknown User")
+        score = st.get("average_score_percent", 0.0)
+        quizzes = st.get("total_quizzes", 0)
+        
+        # Points = average accuracy * total quizzes taken
+        points = int(score * quizzes)
+        
+        leaderboard.append({
+            "user_id": u_id,
+            "name": u_name,
+            "points": points,
+            "score_str": f"{points} Points",
+            "district": district_name
+        })
+        
+    leaderboard.sort(key=lambda x: x["points"], reverse=True)
+    return {
+        "status": True,
+        "message": f"Leaderboard for {district_name} fetched",
         "data": leaderboard[:limit]
     }

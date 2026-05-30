@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
+
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
-import 'package:easy_localization/easy_localization.dart';
+
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget? title;
@@ -45,8 +45,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.locale.languageCode == 'mr';
+    final isMarathi = false;
 
     // Build the dynamic unified title if titleText is provided
     Widget? appBarTitle = widget.title;
@@ -81,8 +80,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
               const SizedBox(height: 2),
               Text(
                 isOffline
-                    ? "offline_mode_active".tr()
-                    : "focus_train_conquer".tr(),
+                    ? "Offline Mode Active ⚠️"
+                    : "Focus, Train, Conquer!",
                 style: commonTextStyle.copyWith(
                   fontSize: 10,
                   color: isOffline ? Colors.red.shade300 : Colors.white70,
@@ -97,20 +96,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
     // Build default unified actions if none are specified
     List<Widget>? appBarActions = widget.actions;
-    appBarActions ??= [
-      TextButton(
-        onPressed: () {
-          final targetLang = isMarathi ? 'en' : 'mr';
-          context.read<LanguageCubit>().changeLanguage(targetLang);
-          context.setLocale(Locale(targetLang));
-        },
-        child: Text(
-          isMarathi ? "मराठी" : "English",
-          style: commonTextStyle.copyWith(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
-        ),
-      ),
-    ];
+    appBarActions ??= [];
 
     return AppBar(
       title: appBarTitle,

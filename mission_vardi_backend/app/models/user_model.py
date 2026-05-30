@@ -21,3 +21,4 @@ class ProfileUpdate(BaseModel):
     bio: Optional[str] = None
     target_exam: Optional[str] = None   # "police_bharti" | "psi" | "sti" | "other"
     study_goal_minutes: Optional[int] = None
+    district: Optional[str] = None      # For district-wise leaderboards

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
+
+
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
@@ -38,7 +38,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
   @override
   Widget build(BuildContext context) {
     // Watch LanguageCubit to trigger an instant rebuild when language changes
-    context.watch<LanguageCubit>().state;
+
     
     // Watch ProfileCubit to get the current streak
     final profileState = context.watch<ProfileCubit>().state;
@@ -47,7 +47,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: "exam_practice_center".tr(),
+        titleText: "Exam & Practice Center",
         titleIcon: Icons.quiz,
       ),
       body: BlocBuilder<QuizzesCubit, QuizzesState>(
@@ -102,7 +102,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "daily_challenge_available".tr(),
+                                "Daily Challenge Available!",
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -117,11 +117,9 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                                       size: 14),
                                   const SizedBox(width: 4),
                                   Text(
-                                    currentStreak > 0 
-                                      ? (context.locale.languageCode == 'mr' 
-                                          ? '$currentStreak दिवसांची सलगता (Streak)' 
-                                          : '$currentStreak Day Streak!')
-                                      : "complete_win_coins".tr(),
+                                    currentStreak > 0
+                                      ? '$currentStreak Day Streak!'
+                                      : "Complete and win 2x Coins",
                                     style: commonTextStyle.copyWith(
                                       color: currentStreak > 0 ? Colors.orange.shade200 : Colors.white70,
                                       fontSize: 12,
@@ -145,7 +143,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                             context.push(RoutesNames.quizPlayScreen, extra: 'daily-challenge');
                           },
                           child: Text(
-                            "start".tr(),
+                            "Start",
                             style: commonTextStyle.copyWith(
                               color: const Color(0xFF0A2540),
                               fontWeight: FontWeight.bold,
@@ -198,10 +196,8 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  context.locale.languageCode == 'mr'
-                                      ? 'मागील वर्षांच्या प्रश्नपत्रिका (PYQs)'
-                                      : 'Previous Year Question Papers',
-                                  style: commonTextStyle.copyWith(
+                                  'Previous Year Question Papers',
+                                style: commonTextStyle.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
@@ -209,9 +205,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                                 ),
                                 const SizedBox(height: 3),
                                 Text(
-                                  context.locale.languageCode == 'mr'
-                                      ? '२०२१ – २०२४ | ७ पेपर्स उपलब्ध'
-                                      : '2021 – 2024  |  7 Papers Available',
+                                  '2021 – 2024  |  7 Papers Available',
                                   style: commonTextStyle.copyWith(
                                     color: Colors.white70,
                                     fontSize: 12,
@@ -230,9 +224,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                             child: Row(
                               children: [
                                 Text(
-                                  context.locale.languageCode == 'mr'
-                                      ? 'पहा'
-                                      : 'View',
+                                  'View',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Outfit',
@@ -255,7 +247,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
                   /// Practice mode
                   Text(
-                    "select_practice_mode".tr(),
+                    "Select Practice Mode",
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -268,7 +260,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                     children: [
                       _ModeCard(
                         icon: Icons.timer,
-                        title: "mock_timed".tr(),
+                        title: "Mock (Timed)",
                         isSelected: state.selectedPracticeMode == "Timed",
                         onTap: () {
                           context
@@ -279,7 +271,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       const SizedBox(width: 10),
                       _ModeCard(
                         icon: Icons.menu_book,
-                        title: "practice_mode".tr(),
+                        title: "Practice Mode",
                         isSelected: state.selectedPracticeMode == "Practice",
                         onTap: () {
                           context
@@ -290,7 +282,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       const SizedBox(width: 10),
                       _ModeCard(
                         icon: Icons.shuffle,
-                        title: "random_quiz".tr(),
+                        title: "Random Quiz",
                         isSelected: state.selectedPracticeMode == "Random",
                         onTap: () {
                           context
@@ -306,7 +298,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
                   /// Categories
                   Text(
-                    "choose_quiz_subject".tr(),
+                    "Choose Quiz Subject",
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -431,7 +423,7 @@ class _ModeCard extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          "feature_coming_soon".tr(),
+                          "This feature is coming soon!",
                           style: commonTextStyle.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -558,7 +550,7 @@ class _ModeCard extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        "soon".tr(),
+                        "SOON",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 8,
@@ -596,8 +588,7 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi =
-        context.locale.languageCode == 'mr';
+    final isMarathi = false;
 
     return GestureDetector(
       onTap: onTap,
@@ -653,7 +644,7 @@ class _CategoryCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "start_now".tr(),
+                      "Start now",
                       style: commonTextStyle.copyWith(
                           fontSize: 11,
                           color: Constants.primaryBlueColour,

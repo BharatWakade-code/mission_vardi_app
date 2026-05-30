@@ -2,16 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_cubit.dart';
 import 'package:mission_vardi/screens/current_affairs_module/current_affairs_state.dart';
 import 'package:mission_vardi/screens/current_affairs_module/data/current_affairs_model.dart';
 import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 
 class CurrentAffairsScreen extends StatefulWidget {
   const CurrentAffairsScreen({super.key});
@@ -51,13 +47,11 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch LanguageCubit to trigger an instant rebuild when language changes
-    context.watch<LanguageCubit>().state;
-
+  
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: "affairs".tr().toUpperCase(),
+        titleText: "affairs",
         titleIcon: Icons.newspaper_rounded,
       ),
       body: SafeArea(
@@ -95,7 +89,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           }
                         });
                       },
-                      hintText: "search_articles".tr(),
+                      hintText: "search_articles",
                       prefixIcon: Icons.search_rounded,
                     ),
                   ),
@@ -158,7 +152,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
-                                        context.locale.languageCode == 'mr' ? cat['mr'] : cat['en'],
+                                         cat['en'],
                                         style: commonTextStyle.copyWith(
                                           fontSize: 12,
                                           fontWeight: isSelected
@@ -205,7 +199,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                               size: 54, color: Colors.red),
                           const SizedBox(height: 12),
                           Text(
-                            "failed_to_load_affairs".tr(),
+                            "failed_to_load_affairs",
                             style: commonTextStyle.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.red,
@@ -219,7 +213,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Constants.primaryBlueColour,
                             ),
-                            child: Text("retry".tr()),
+                            child: Text("retry"),
                           )
                         ],
                       ),
@@ -238,7 +232,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            "no_articles_found".tr(),
+                            "no_articles_found",
                             style: commonTextStyle.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -247,7 +241,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "try_clearing_filters".tr(),
+                            "try_clearing_filters",
                             style: commonTextStyle.copyWith(
                               fontSize: 12,
                               color: Colors.grey,
@@ -282,9 +276,8 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
 
   Widget _buildArticleCard(
       BuildContext context, CurrentAffairsModel article) {
-    final isMr = context.locale.languageCode == 'mr';
-    final title = isMr ? article.titleMr : article.titleEn;
-    final desc = isMr ? article.descriptionMr : article.descriptionEn;
+    final title = article.titleEn;
+    final desc = article.descriptionEn;
 
     // Categorized colors for tags
     Color tagBg = Colors.grey.shade100;
@@ -369,7 +362,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              "trending".tr(),
+                              "trending",
                               style: commonTextStyle.copyWith(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -403,7 +396,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          isMr ? _getCategoryMr(article.category) : article.category,
+                           article.category,
                           style: commonTextStyle.copyWith(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -458,7 +451,7 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        "read_full_article".tr(),
+                        "read_full_article",
                         style: commonTextStyle.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -509,11 +502,5 @@ class _CurrentAffairsScreenState extends State<CurrentAffairsScreen> {
     );
   }
 
-  String _getCategoryMr(String key) {
-    final match = _categories.firstWhere(
-      (element) => element['key'].toString().toLowerCase() == key.toLowerCase(),
-      orElse: () => {'mr': key},
-    );
-    return match['mr'] ?? key;
-  }
+  
 }

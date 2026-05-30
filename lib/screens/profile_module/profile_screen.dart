@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
+
 import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:easy_localization/easy_localization.dart';
+
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
 import 'package:mission_vardi/utils/common_widgets/common_bottom_sheet.dart';
@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     // Watch LanguageCubit to trigger an instant rebuild when language changes
-    context.watch<LanguageCubit>().state;
+
     final profileState = context.watch<ProfileCubit>().state;
     final user = profileState.profileData;
 
@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return Scaffold(
         backgroundColor: Constants.scaffoldBackgroundColour,
         appBar: CustomAppBar(
-          titleText: "profile_statistics".tr(),
+          titleText: "Profile & Statistics",
           titleIcon: Icons.person,
         ),
         body: const Center(
@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: "profile_statistics".tr(),
+        titleText: "Profile & Statistics",
         titleIcon: Icons.person,
       ),
       body: SingleChildScrollView(
@@ -202,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    '${"email".tr()} : ${user?.email ?? "test@gmail.com"}',
+                                    'Email : ${user?.email ?? "test@gmail.com"}',
                                     style: commonTextStyle.copyWith(
                                       color: const Color(0xFF0A2540),
                                       fontWeight: FontWeight.bold,
@@ -227,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ?.sendEmailVerification();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                          content: Text("verification_link_sent".tr())),
+                                          content: Text("Verification link sent!")),
                                     );
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -243,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
-                                    "verify".tr(),
+                                    "Verify",
                                     style: commonTextStyle.copyWith(
                                         color: Colors.white,
                                         fontSize: 10,
@@ -273,7 +273,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Statistics Header
             Text(
-              "study_progress_accuracy".tr(),
+              "Study Progress & Accuracy",
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -293,7 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "overall_mcq_accuracy".tr(),
+                        "Overall MCQ Accuracy",
                         style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
@@ -324,12 +324,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "weekly_study_hours".tr(),
+                        "Weekly Study Hours",
                         style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       Text(
-                        "$hoursStr ${"hrs_total".tr()}",
+                        "$hoursStr hrs",
                         style: commonTextStyle.copyWith(
                             color: Colors.grey, fontSize: 12),
                       ),
@@ -369,7 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Achievement Badges
             Text(
-              "achievement_badges".tr(),
+              "Achievement Badges",
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -379,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Center(
                       child: Text(
-                        "no_badges_earned_yet".tr(),
+                        "No badges earned yet",
                         style: commonTextStyle.copyWith(color: Colors.grey),
                       ),
                     ),
@@ -425,7 +425,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Recent Activity History
             Text(
-              "recent_activity_history".tr(),
+              "Recent Activity History",
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -441,7 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
                         child: Text(
-                          "no_history_found".tr(),
+                          "No history found",
                           style: commonTextStyle.copyWith(color: Colors.grey),
                         ),
                       ),
@@ -456,7 +456,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             DateFormat('dd MMM, hh:mm a').format(date);
                         String quizTitle = session['quiz_title'] ??
                             (session['category'] ??
-                                "practice".tr());
+                                "practice");
                         int score = session['score'] ?? 0;
                         int total = session['total'] ?? 0;
                         int attempted = session['attempted'] ?? score;
@@ -519,17 +519,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         Row(
                                           children: [
                                             _buildStatChip(
-                                                "attempted".tr(),
+                                                "Attempted",
                                                 "$attempted/$total",
                                                 Colors.blue),
                                             const SizedBox(width: 8),
                                             _buildStatChip(
-                                                "correct".tr(),
+                                                "Correct",
                                                 "$score",
                                                 Colors.green),
                                             const SizedBox(width: 8),
                                             _buildStatChip(
-                                                "wrong".tr(),
+                                                "Wrong",
                                                 "$wrong",
                                                 Colors.red),
                                           ],
@@ -565,7 +565,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: Text(
-                  "logout_account".tr(),
+                  "Logout Account",
                   style: commonTextStyle.copyWith(
                       color: Colors.red, fontWeight: FontWeight.bold),
                 ),
@@ -685,7 +685,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "choose_profile_photo".tr(),
+                  "Choose Profile Photo",
                   style: commonTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -705,7 +705,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       icon: const Icon(Icons.camera_alt, color: Colors.white),
                       label: Text(
-                        "camera".tr(),
+                        "Camera",
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () => Navigator.pop(context, ImageSource.camera),
@@ -720,7 +720,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       icon: const Icon(Icons.photo_library, color: Colors.white),
                       label: Text(
-                        "gallery".tr(),
+                        "Gallery",
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () => Navigator.pop(context, ImageSource.gallery),
@@ -763,7 +763,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         } else {
           messenger.showSnackBar(
             SnackBar(
-              content: Text("profile_photo_updated_successfully".tr()),
+              content: Text("Profile photo updated successfully!"),
               backgroundColor: Colors.green,
             ),
           );
@@ -786,47 +786,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     CommonBottomSheet.show(
       context: context,
-      title: "update_profile".tr(),
+      title: "Update Profile",
       child: Column(
         children: [
           CommonAuthInputField(
             controller: nameController,
-            label: "full_name".tr(),
-            hint: "enter_full_name".tr(),
+            label: "Full Name",
+            hint: "Enter your full name",
             icon: Icons.person_outline,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: mobileController,
-            label: "mobile".tr(),
-            hint: "enter_mobile_number".tr(),
+            label: "Mobile Number",
+            hint: "Enter your mobile number",
             icon: Icons.phone_outlined,
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: avatarController,
-            label: "avatar_url".tr(),
-            hint: "enter_avatar_url".tr(),
+            label: "Avatar URL",
+            hint: "Enter a valid image URL for your profile",
             icon: Icons.image_outlined,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: bioController,
-            label: "bio".tr(),
-            hint: "short_description".tr(),
+            label: "Bio",
+            hint: "Short description about yourself",
             icon: Icons.info_outline,
           ),
           const SizedBox(height: 16),
           CommonAuthInputField(
             controller: examController,
-            label: "target_exam".tr(),
+            label: "Target Exam",
             hint: "e.g. police_bharti",
             icon: Icons.track_changes_outlined,
           ),
           const SizedBox(height: 24),
           CommonAuthButton(
-            label: "save_changes".tr(),
+            label: "Save Changes",
             onTap: () {
               final Map<String, dynamic> body = {};
               if (nameController.text.isNotEmpty)

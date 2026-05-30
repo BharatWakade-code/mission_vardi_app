@@ -4,6 +4,7 @@ from datetime import datetime
 
 from app.models.notification_model import NotificationCreate
 from app.services.mongodb_service import notifications_collection
+from app.services.firebase_service import send_push_notification
 
 router = APIRouter(
     prefix="/notifications",
@@ -24,10 +25,20 @@ async def create_notification(notification: NotificationCreate):
     
     notifications_collection.insert_one(notif_data)
     notif_data.pop("_id", None)
+    
+    # Send actual Push Notification to Mobile App
+    # Ensure your app subscribes to 'all_users' on app start
+    fcm_response = send_push_notification(
+        title=notification.title,
+        body=notification.body,
+        topic="all_users"
+    )
+    
     return {
         "status": True,
-        "message": "Notification created successfully",
-        "data": notif_data
+        "message": "Notification created and pushed successfully",
+        "data": notif_data,
+        "fcm_response": fcm_response
     }
 
 @router.get("")

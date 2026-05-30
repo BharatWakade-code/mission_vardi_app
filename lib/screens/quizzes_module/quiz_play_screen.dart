@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:mission_vardi/localization/language_cubit.dart';
+
+
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/ad_services/ad_manager.dart';
@@ -51,18 +51,18 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(
-          "submit_quiz_question".tr(),
+          "Submit Quiz?",
           style: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
         ),
         content: Text(
-          "submit_quiz_confirmation_params".tr(args: [attemptedCount.toString(), unanswered.toString()]),
+          "You have answered $attemptedCount questions and skipped $unanswered. Are you sure you want to final submit?",
           style: const TextStyle(fontFamily: 'Outfit'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
             child: Text(
-              "cancel".tr(),
+              "Cancel",
               style: const TextStyle(fontFamily: 'Outfit', color: Colors.grey),
             ),
           ),
@@ -75,7 +75,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               context.read<QuizzesCubit>().finishQuiz();
             },
             child: Text(
-              "yes_submit".tr(),
+              "Yes, Submit",
               style: const TextStyle(fontFamily: 'Outfit', color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
@@ -87,7 +87,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
   @override
   Widget build(BuildContext context) {
     // Watch LanguageCubit to trigger an instant rebuild when language changes
-    context.watch<LanguageCubit>().state;
+
 
     final TextStyle commonTextStyle = const TextStyle(
       fontFamily: 'Outfit',
@@ -110,7 +110,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
           return Scaffold(
             backgroundColor: Constants.scaffoldBackgroundColour,
             appBar: CustomAppBar(
-              titleText: "practice_test_in_progress".tr(),
+              titleText: "Practice Test in Progress",
               titleIcon: Icons.timer,
               leading: IconButton(
                 icon: const Icon(
@@ -138,7 +138,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       onPressed: () => _showSubmitConfirmationDialog(context, state),
                       icon: const Icon(Icons.done_all, size: 16),
                       label: Text(
-                        "final_submit".tr(),
+                        "Final Submit",
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -157,7 +157,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           ? const Center(child: CircularProgressIndicator())
                           : Center(
                               child: Text(
-                                "no_questions_available".tr(),
+                                "No questions available",
                                 style: commonTextStyle,
                               ),
                             ))
@@ -173,7 +173,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
   }
 
   Widget _buildQuizContent(QuizzesState state, TextStyle commonTextStyle) {
-    final isMr = context.locale.languageCode == 'mr';
+    final isMr = false;
     if (!state.isQuizRunning) {
       // Return a loading spinner while listener triggers redirection
       return const Center(child: CircularProgressIndicator());
@@ -192,7 +192,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${"question".tr()} ${state.currentQuestionIndex + 1} / ${state.questions.length}",
+                  "Question ${state.currentQuestionIndex + 1} / ${state.questions.length}",
                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 if (state.selectedPracticeMode == "Timed")
@@ -258,8 +258,8 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                               SnackBar(
                                 content: Text(
                                   wasBookmarked
-                                      ? "removed_from_bookmarks".tr()
-                                      : "added_to_bookmarks".tr(),
+                                      ? "Removed from Bookmarks!"
+                                      : "Added to Bookmarks!",
                                 ),
                                 duration: const Duration(seconds: 1),
                               ),
@@ -362,8 +362,8 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           : () => context.read<QuizzesCubit>().submitAnswer(),
                       child: Text(
                         state.selectedPracticeMode == "Timed"
-                            ? "submit_answer_timed".tr(args: ["${state.remainingSeconds}s"])
-                            : "submit_answer".tr(),
+                            ? "Submit Answer (${state.remainingSeconds}s)"
+                            : "Submit Answer",
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -379,8 +379,8 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       onPressed: () => context.read<QuizzesCubit>().nextQuestion(),
                       child: Text(
                         state.selectedPracticeMode == "Timed"
-                            ? "next_question_timed".tr(args: ["${state.remainingSeconds}s"])
-                            : "next_question".tr(),
+                            ? "Next Question (${state.remainingSeconds}s)"
+                            : "Next Question",
                         style: commonTextStyle.copyWith(color: const Color(0xFF0A2540), fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -403,7 +403,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "explanation_prefix".tr(),
+                      "💡 Explanation:",
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, color: Colors.amber.shade900),
                     ),
                     const SizedBox(height: 5),

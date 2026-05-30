@@ -7,6 +7,9 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+    <!-- Android 13+ push notification permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <!-- Android 13+ -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
