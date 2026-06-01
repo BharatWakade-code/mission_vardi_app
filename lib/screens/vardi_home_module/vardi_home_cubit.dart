@@ -12,50 +12,31 @@ class VardiHomeCubit extends Cubit<VardiHomeState> {
 
   final HomeRepository _repository;
 
-  /// Get PDF Notes & Solved Papers
-  Future<void> getPDFNotesAndSolvedPapers({String? search}) async {
-    print('api call');
-    emit(state.copyWith(
-      isLoading: true,
-      errorMsg: '',
-      successMsg: '',
-    ));
-
-    Map<String, dynamic>? queryParams;
-    if (search != null && search.isNotEmpty) {
-      queryParams = {'search': search};
-    }
-
-    final either = await _repository.getPDFNotesAndSolvedPapers(queryParameters: queryParams);
-
+  Future<void> getHomeDashboardData() async {
+    emit(state.copyWith(isLoading: true, errorMsg: '', successMsg: ''));
+    final either = await _repository.getHomeDashboard();
     either.fold(
       (error) {
+        emit(state.copyWith(isLoading: false, errorMsg: error.toString()));
+      },
+      (data) {
+        List<PdfNoteModel> notes = [];
+        if (data['notes'] != null) {
+          data['notes'].forEach((v) {
+            notes.add(PdfNoteModel.fromJson(v));
+          });
+        }
+        
         emit(state.copyWith(
           isLoading: false,
-          errorMsg: error.toString(),
+          isSuccess: true,
+          data: notes,
+          alerts: data['alerts'] ?? [],
+          dailyQuotes: data['daily_quotes'] ?? [],
+          countdown: data['countdown'],
         ));
-      },
-      (response) {
-        responseHandle(response);
-      },
+      }
     );
-  }
-
-  void responseHandle(GetPdfNotesResponseModel response) {
-    if (response.status == true) {
-      emit(state.copyWith(
-        isLoading: false,
-        successMsg: response.message ?? '',
-        isSuccess: true,
-        data: response.data,
-        errorMsg: '',
-      ));
-    } else {
-      emit(state.copyWith(
-        isLoading: false,
-        errorMsg: response.message ?? 'Something went wrong',
-      ));
-    }
   }
 
   Future<void> getGlobalData() async {
@@ -64,7 +45,6 @@ class VardiHomeCubit extends Cubit<VardiHomeState> {
       (error) => print("getGlobalData error: $error"),
       (data) {
         emit(state.copyWith(
-          alerts: data['alerts'],
           leaderboard: data['leaderboard']
         ));
       }

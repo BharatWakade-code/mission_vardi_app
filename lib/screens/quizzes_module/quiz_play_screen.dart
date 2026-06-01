@@ -196,25 +196,33 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 if (state.selectedPracticeMode == "Timed")
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: state.remainingSeconds < 15 ? Colors.red.shade100 : Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.timer, color: state.remainingSeconds < 15 ? Colors.red : Colors.blue, size: 16),
-                        const SizedBox(width: 5),
-                        Text(
-                          "${state.remainingSeconds} s",
-                          style: commonTextStyle.copyWith(
-                            color: state.remainingSeconds < 15 ? Colors.red : Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final int minutes = state.remainingSeconds ~/ 60;
+                      final int seconds = state.remainingSeconds % 60;
+                      final String timeStr = '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+                      final bool isLowTime = state.remainingSeconds < 60;
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: isLowTime ? Colors.red.shade100 : Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.timer, color: isLowTime ? Colors.red : Colors.blue, size: 16),
+                            const SizedBox(width: 5),
+                            Text(
+                              timeStr,
+                              style: commonTextStyle.copyWith(
+                                color: isLowTime ? Colors.red : Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   ),
               ],
             ),
@@ -361,9 +369,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           ? null
                           : () => context.read<QuizzesCubit>().submitAnswer(),
                       child: Text(
-                        state.selectedPracticeMode == "Timed"
-                            ? "Submit Answer (${state.remainingSeconds}s)"
-                            : "Submit Answer",
+                        "Submit Answer",
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -378,9 +384,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       ),
                       onPressed: () => context.read<QuizzesCubit>().nextQuestion(),
                       child: Text(
-                        state.selectedPracticeMode == "Timed"
-                            ? "Next Question (${state.remainingSeconds}s)"
-                            : "Next Question",
+                        "Next Question",
                         style: commonTextStyle.copyWith(color: const Color(0xFF0A2540), fontWeight: FontWeight.bold),
                       ),
                     ),

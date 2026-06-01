@@ -16,9 +16,15 @@ class QuizzesState {
 
   // NEW
   final List<QuizzListData> data;
-  final List<int?> userAnswers; // Tracks user's selected answers
+  final List<int?> userAnswers;
   final String? sessionId;
   final String? quizId;
+  final int timeLimit; // Store time limit in seconds
+
+  // NOTES & LEADERBOARD
+  final List<dynamic> notesList;
+  final List<dynamic> leaderboardData;
+  final String selectedDistrict;
 
   // OPTIONAL
   final String errorMsg;
@@ -44,6 +50,12 @@ class QuizzesState {
     this.userAnswers = const [],
     this.sessionId,
     this.quizId,
+    this.timeLimit = 1800, // Default 30 minutes in seconds
+
+    // NOTES & LEADERBOARD
+    this.notesList = const [],
+    this.leaderboardData = const [],
+    this.selectedDistrict = 'All Maharashtra',
 
     // OPTIONAL
     this.errorMsg = '',
@@ -70,6 +82,12 @@ class QuizzesState {
     List<int?>? userAnswers,
     String? sessionId,
     String? quizId,
+    int? timeLimit,
+
+    // NOTES & LEADERBOARD
+    List<dynamic>? notesList,
+    List<dynamic>? leaderboardData,
+    String? selectedDistrict,
 
     // OPTIONAL
     String? errorMsg,
@@ -95,6 +113,10 @@ class QuizzesState {
       userAnswers: userAnswers ?? this.userAnswers,
       sessionId: sessionId ?? this.sessionId,
       quizId: quizId ?? this.quizId,
+      timeLimit: timeLimit ?? this.timeLimit,
+      notesList: notesList ?? this.notesList,
+      leaderboardData: leaderboardData ?? this.leaderboardData,
+      selectedDistrict: selectedDistrict ?? this.selectedDistrict,
       errorMsg: errorMsg ?? this.errorMsg,
       successMsg: successMsg ?? this.successMsg,
       isSuccess: isSuccess ?? this.isSuccess,

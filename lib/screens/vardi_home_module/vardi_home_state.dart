@@ -9,6 +9,8 @@ class VardiHomeState {
   List<dynamic>? data;
   List<dynamic>? alerts;
   List<dynamic>? leaderboard;
+  List<dynamic>? dailyQuotes;
+  Map<String, dynamic>? countdown;
 
    VardiHomeState({
     this.isLoading = false,
@@ -18,6 +20,8 @@ class VardiHomeState {
     this.data,
     this.alerts,
     this.leaderboard,
+    this.dailyQuotes,
+    this.countdown,
   });
 
   VardiHomeState copyWith({
@@ -28,6 +32,8 @@ class VardiHomeState {
     dynamic data,
     List<dynamic>? alerts,
     List<dynamic>? leaderboard,
+    List<dynamic>? dailyQuotes,
+    Map<String, dynamic>? countdown,
   }) {
     return VardiHomeState(
       isLoading: isLoading ?? this.isLoading,
@@ -37,6 +43,8 @@ class VardiHomeState {
       data: data ?? this.data,
       alerts: alerts ?? this.alerts,
       leaderboard: leaderboard ?? this.leaderboard,
+      dailyQuotes: dailyQuotes ?? this.dailyQuotes,
+      countdown: countdown ?? this.countdown,
     );
   }
 }

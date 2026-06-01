@@ -53,3 +53,16 @@ async def list_notifications():
         "message": "Data fetched successfully",
         "data": notifications
     }
+
+@router.delete("/{notif_id}")
+async def delete_notification(notif_id: str):
+    result = notifications_collection.delete_one({"id": notif_id})
+    if result.deleted_count == 1:
+        return {
+            "status": True,
+            "message": "Notification deleted successfully"
+        }
+    return {
+        "status": False,
+        "message": "Notification not found"
+    }

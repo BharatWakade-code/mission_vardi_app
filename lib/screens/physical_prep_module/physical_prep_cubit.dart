@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mission_vardi/utils/network_services/api_services.dart';
+import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/utils/shared_pref_data.dart';
 import 'physical_prep_state.dart';
 
 class PhysicalPrepCubit extends Cubit<PhysicalPrepState> {
@@ -335,6 +338,48 @@ class PhysicalPrepCubit extends Cubit<PhysicalPrepState> {
     final updatedList = state.customEvents.where((e) => e.id != id).toList();
     emit(state.copyWith(customEvents: updatedList));
     calculatePhysicalMarks();
+  }
+
+  Future<void> saveFitnessLog() async {
+    try {
+      final userId = CommonHiveData.getString('userId') ?? 'test_user';
+      double runMinVal = 0;
+      double runSecVal = 0;
+      final cleanTime = state.runningTime.trim().replaceAll(' ', '');
+      if (cleanTime.isNotEmpty) {
+        if (cleanTime.contains(':')) {
+          final parts = cleanTime.split(':').where((x) => x.isNotEmpty).toList();
+          if (parts.isNotEmpty) {
+            runMinVal = double.tryParse(parts[0]) ?? 0;
+            if (parts.length > 1) runSecVal = double.tryParse(parts[1]) ?? 0;
+          }
+        } else if (cleanTime.contains('.')) {
+          final parts = cleanTime.split('.').where((x) => x.isNotEmpty).toList();
+          if (parts.isNotEmpty) {
+            runMinVal = double.tryParse(parts[0]) ?? 0;
+            if (parts.length > 1) runSecVal = double.tryParse(parts[1]) ?? 0;
+          }
+        } else {
+          runMinVal = double.tryParse(cleanTime) ?? 0;
+        }
+      }
+      final totalSeconds = (runMinVal * 60) + runSecVal;
+      final sprintVal = double.tryParse(state.sprint) ?? 0.0;
+      final shotPutVal = double.tryParse(state.shotPut) ?? 0.0;
+
+      final data = {
+        "user_id": userId,
+        "run_1600m_seconds": totalSeconds,
+        "run_100m_seconds": sprintVal,
+        "shot_put_meters": shotPutVal,
+        "notes": "Score: ${state.calculatedScore}"
+      };
+      
+      final response = await NetworkServices().postApi(ApiUrls.fitnessLogs, data);
+      print("Fitness log saved: $response");
+    } catch (e) {
+      print("Error saving fitness log: $e");
+    }
   }
 
   @override

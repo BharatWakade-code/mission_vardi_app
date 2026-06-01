@@ -5,6 +5,7 @@ import 'package:mission_vardi/models/quizz_model/quizz_list_reponse_model.dart';
 import 'package:mission_vardi/screens/quizzes_module/data/quizzes_repository.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:mission_vardi/utils/network_services/api_services.dart';
 
 @injectable
 class QuizzesCubit extends Cubit<QuizzesState> {
@@ -113,6 +114,8 @@ class QuizzesCubit extends Cubit<QuizzesState> {
       }
 
       if (mappedQuestions.isNotEmpty) {
+        final int limitSecs = (fetchedData.first.timeLimit ?? 30) * 60;
+        
         emit(state.copyWith(
           isLoading: false,
           successMsg: response.message ?? '',
@@ -128,7 +131,8 @@ class QuizzesCubit extends Cubit<QuizzesState> {
           selectedAnswerIndex: () => null,
           isAnswerSubmitted: false,
           score: 0,
-          remainingSeconds: state.selectedPracticeMode == "Timed" ? 30 : 60,
+          timeLimit: limitSecs,
+          remainingSeconds: state.selectedPracticeMode == "Timed" ? limitSecs : limitSecs,
           errorMsg: '',
         ));
 
@@ -187,7 +191,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
       selectedAnswerIndex: () => null,
       isAnswerSubmitted: false,
       score: 0,
-      remainingSeconds: state.selectedPracticeMode == "Timed" ? 30 : 60,
+      remainingSeconds: state.selectedPracticeMode == "Timed" ? state.timeLimit : state.timeLimit,
     ));
 
     _startQuizTimer();
@@ -254,7 +258,6 @@ class QuizzesCubit extends Cubit<QuizzesState> {
         currentQuestionIndex: state.currentQuestionIndex + 1,
         selectedAnswerIndex: () => null,
         isAnswerSubmitted: false,
-        remainingSeconds: state.selectedPracticeMode == "Timed" ? 30 : 60,
       ));
     } else {
       finishQuiz();
@@ -353,6 +356,66 @@ class QuizzesCubit extends Cubit<QuizzesState> {
       isAnswerSubmitted: false,
       errorMsg: '',
     ));
+  }
+
+  // ─── NOTES LIST LOGIC ────────────────────────────────────────────────────────
+  Future<void> getNotesList() async {
+    emit(state.copyWith(isLoading: true, errorMsg: '', notesList: []));
+    try {
+      final response = await NetworkServices().getApi('/notes');
+      if (response.data['status'] == true) {
+        emit(state.copyWith(
+          isLoading: false,
+          notesList: response.data['data'] ?? [],
+        ));
+      } else {
+        emit(state.copyWith(
+          isLoading: false,
+          errorMsg: response.data['message'] ?? 'Failed to load notes',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMsg: e.toString(),
+      ));
+    }
+  }
+
+  // ─── LEADERBOARD LOGIC ───────────────────────────────────────────────────────
+  void changeSelectedDistrict(String district) {
+    if (state.selectedDistrict != district) {
+      emit(state.copyWith(selectedDistrict: district));
+      getLeaderboardList();
+    }
+  }
+
+  Future<void> getLeaderboardList() async {
+    emit(state.copyWith(isLoading: true, errorMsg: '', leaderboardData: []));
+    try {
+      String endpoint = '/leaderboard/global';
+      if (state.selectedDistrict != 'All Maharashtra') {
+        endpoint = '/leaderboard/global/district/${state.selectedDistrict}';
+      }
+
+      final response = await NetworkServices().getApi(endpoint);
+      if (response.data['status'] == true) {
+        emit(state.copyWith(
+          isLoading: false,
+          leaderboardData: response.data['data'] ?? [],
+        ));
+      } else {
+        emit(state.copyWith(
+          isLoading: false,
+          errorMsg: response.data['message'] ?? 'Failed to load leaderboard',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMsg: e.toString(),
+      ));
+    }
   }
 
   @override

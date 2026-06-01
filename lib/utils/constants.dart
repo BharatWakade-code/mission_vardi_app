@@ -45,15 +45,14 @@ class ApiUrls {
    static String signUp ="/auth/register";
    static String googleAuth ="/auth/google"; // Google OAuth → backend profile sync
    static String forgotPassword ="/auth/forgot-password";
-   static String getPdfNotesAndSolvedPapers ="/notes";
    static String getQuizzesList ="/quiz";
    static String getProfile ="/user/getProfile/";
    static String updateProfile = "/user/updateProfile";
    static String getUploadUrl = "/upload/url";
    static String startStudySession ="/study/session/start";
-   static String getGlobalAlerts = "/alerts/global";
    static String getGlobalLeaderboard = "/leaderboard/global";
-   static String getCurrentAffairs = "/current_affairs";
+   static String getHomeDashboard = "/home/dashboard";
+   static String fitnessLogs = "/fitness";
 }
 
 class AppUtils {

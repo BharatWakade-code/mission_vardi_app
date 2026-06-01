@@ -52,6 +52,7 @@ async def get_profile(user_id: str):
         if session and "answers" in session:
             attempted = sum(1 for a in session["answers"] if a.get("selected_option") != "")
             result["attempted"] = attempted
+            result["session_id"] = session.get("id")
         else:
             result["attempted"] = result.get("score", 0) # Fallback to score if we can't find session
 

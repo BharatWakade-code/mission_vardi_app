@@ -587,6 +587,38 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 14),
+
+                      // "Save Fitness Log" Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Saving fitness log...')),
+                            );
+                            await cubit.saveFitnessLog();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Fitness log saved successfully!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.save_rounded, size: 20, color: Colors.white),
+                          label: Text(
+                            "Save Fitness Log",
+                            style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13.5, color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constants.primaryGreenColour,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 30),
                     ],
                   ),

@@ -14,6 +14,7 @@ import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
 import 'package:mission_vardi/utils/common_widgets/common_bottom_sheet.dart';
 import 'package:mission_vardi/utils/common_widgets/common_auth_widgets.dart';
+import 'package:mission_vardi/screens/profile_module/history_details_bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -68,8 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (m > maxWeeklyHours) maxWeeklyHours = m;
     }
     if (maxWeeklyHours == 0) maxWeeklyHours = 1; // prevent division by zero
-
-
 
     if (profileState.isLoading && user == null) {
       return Scaffold(
@@ -129,11 +128,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: CircleAvatar(
                             radius: 35,
                             backgroundColor: Colors.white,
-                            backgroundImage:
-                                user?.avatarUrl != null && user!.avatarUrl!.isNotEmpty
-                                    ? NetworkImage(user.avatarUrl!)
-                                    : null,
-                            child: user?.avatarUrl == null || user!.avatarUrl!.isEmpty
+                            backgroundImage: user?.avatarUrl != null &&
+                                    user!.avatarUrl!.isNotEmpty
+                                ? NetworkImage(user.avatarUrl!)
+                                : null,
+                            child: user?.avatarUrl == null ||
+                                    user!.avatarUrl!.isEmpty
                                 ? const Icon(Icons.person,
                                     size: 40, color: Colors.grey)
                                 : null,
@@ -150,7 +150,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: const Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 3,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.amber),
                                 ),
                               ),
                             ),
@@ -227,7 +228,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ?.sendEmailVerification();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                          content: Text("Verification link sent!")),
+                                          content:
+                                              Text("Verification link sent!")),
                                     );
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -423,135 +425,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
             const SizedBox(height: 25),
 
-            // Recent Activity History
-            Text(
-              "Recent Activity History",
-              style: commonTextStyle.copyWith(
-                  fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: recentSessions.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Text(
-                          "No history found",
-                          style: commonTextStyle.copyWith(color: Colors.grey),
-                        ),
+            // Activity History Tab
+            GestureDetector(
+              onTap: () {
+                context.push(RoutesNames.activityHistoryScreen);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Constants.primaryBlueColour.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    )
-                  : Column(
-                      children: recentSessions.map((session) {
-                        DateTime date = DateTime.tryParse(session['ended_at'] ??
-                                session['submittedAt'] ??
-                                '') ??
-                            DateTime.now();
-                        String timeStr =
-                            DateFormat('dd MMM, hh:mm a').format(date);
-                        String quizTitle = session['quiz_title'] ??
-                            (session['category'] ??
-                                "practice");
-                        int score = session['score'] ?? 0;
-                        int total = session['total'] ?? 0;
-                        int attempted = session['attempted'] ?? score;
-                        int wrong = attempted - score;
-                        if (wrong < 0) wrong = 0;
-
-                        return Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 14, horizontal: 16),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Constants.primaryBlueColour
-                                          .withOpacity(0.08),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(Icons.quiz_rounded,
-                                        color: Constants.primaryBlueColour,
-                                        size: 24),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                quizTitle,
-                                                style: commonTextStyle.copyWith(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 14,
-                                                  color: Colors.black87,
-                                                ),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              timeStr,
-                                              style: commonTextStyle.copyWith(
-                                                  fontSize: 10,
-                                                  color: Colors.grey.shade500),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            _buildStatChip(
-                                                "Attempted",
-                                                "$attempted/$total",
-                                                Colors.blue),
-                                            const SizedBox(width: 8),
-                                            _buildStatChip(
-                                                "Correct",
-                                                "$score",
-                                                Colors.green),
-                                            const SizedBox(width: 8),
-                                            _buildStatChip(
-                                                "Wrong",
-                                                "$wrong",
-                                                Colors.red),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (session != recentSessions.last)
-                              Divider(
-                                  height: 1,
-                                  color: Colors.grey.shade100,
-                                  indent: 70,
-                                  endIndent: 16),
-                          ],
-                        );
-                      }).toList(),
+                      child: Icon(Icons.history,
+                          color: Constants.primaryBlueColour, size: 28),
                     ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Activity History",
+                            style: commonTextStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "View your past quizzes and detailed answers",
+                            style: commonTextStyle.copyWith(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios,
+                        color: Colors.grey.shade400, size: 16),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 30),
+
+            // Admin CMS Portal (Only visible to admin)
+            if (user?.email == 'bharatwakade012@gmail.com' ||
+                user?.email == 'admin@missionvardi.com') ...[
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Colors.indigo,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  icon: const Icon(Icons.admin_panel_settings,
+                      color: Colors.white),
+                  label: Text(
+                    "Admin CMS Portal",
+                    style: commonTextStyle.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    context.push(RoutesNames.adminDashboardScreen);
+                  },
+                ),
+              ),
+              const SizedBox(height: 15),
+            ],
 
             // Logout Bypass button
             SizedBox(
@@ -670,7 +624,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _pickAndUploadImage(BuildContext context) async {
     final ImagePicker picker = ImagePicker();
-    
+
     final ImageSource? source = await showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: Colors.white,
@@ -698,7 +652,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constants.primaryBlueColour,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -706,24 +661,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: const Icon(Icons.camera_alt, color: Colors.white),
                       label: Text(
                         "Camera",
-                        style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: commonTextStyle.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
-                      onPressed: () => Navigator.pop(context, ImageSource.camera),
+                      onPressed: () =>
+                          Navigator.pop(context, ImageSource.camera),
                     ),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.shade800,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      icon: const Icon(Icons.photo_library, color: Colors.white),
+                      icon:
+                          const Icon(Icons.photo_library, color: Colors.white),
                       label: Text(
                         "Gallery",
-                        style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: commonTextStyle.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
-                      onPressed: () => Navigator.pop(context, ImageSource.gallery),
+                      onPressed: () =>
+                          Navigator.pop(context, ImageSource.gallery),
                     ),
                   ],
                 ),

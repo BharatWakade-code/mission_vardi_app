@@ -6,11 +6,15 @@ import 'package:mission_vardi/screens/quizzes_module/quiz_play_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quiz_result_screen.dart';
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_screen.dart';
 import 'package:mission_vardi/screens/welcome_screen.dart';
-import 'package:mission_vardi/screens/vardi_home_module/pdf_viewer_screen.dart';
+import 'package:mission_vardi/screens/pdf_viewer_module/pdf_viewer_screen.dart';
 import 'package:mission_vardi/screens/vardi_home_module/police_bharti_info_screen.dart';
-import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
-import 'package:mission_vardi/screens/current_affairs_module/current_affairs_detail_screen.dart';
-import 'package:mission_vardi/screens/current_affairs_module/data/current_affairs_model.dart';
+import 'package:mission_vardi/screens/quizzes_module/category_items_screen.dart';
+import 'package:mission_vardi/screens/quizzes_module/note_reading_screen.dart';
+import 'package:mission_vardi/screens/quizzes_module/leaderboard_screen.dart';
+import 'package:mission_vardi/screens/admin_module/admin_dashboard_screen.dart';
+import 'package:mission_vardi/screens/profile_module/activity_history_screen.dart';
+import 'package:mission_vardi/screens/profile_module/activity_history_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RoutesNames {
   /// Auth Module
@@ -24,9 +28,15 @@ class RoutesNames {
   static const String quizResultScreen = '/quizResultScreen';
   static const String pdfViewerScreen = '/pdfViewerScreen';
   static const String currentAffairsScreen = '/currentAffairsScreen';
-  static const String currentAffairsDetailScreen = '/currentAffairsDetailScreen';
+  static const String currentAffairsDetailScreen =
+      '/currentAffairsDetailScreen';
   static const String policeBhartiInfoScreen = '/policeBhartiInfoScreen';
   static const String pyqScreen = '/pyqScreen';
+  static const String categoryItemsScreen = '/categoryItemsScreen';
+  static const String noteReadingScreen = '/noteReadingScreen';
+  static const String leaderboardScreen = '/leaderboardScreen';
+  static const String adminDashboardScreen = '/adminDashboardScreen';
+  static const String activityHistoryScreen = '/activityHistoryScreen';
 }
 
 List<RouteBase> routesList() {
@@ -49,7 +59,8 @@ List<RouteBase> routesList() {
     ),
     GoRoute(
       path: RoutesNames.quizPlayScreen,
-      builder: (context, state) => QuizPlayScreen(quizId: state.extra as String),
+      builder: (context, state) =>
+          QuizPlayScreen(quizId: state.extra as String),
     ),
     GoRoute(
       path: RoutesNames.quizResultScreen,
@@ -67,23 +78,41 @@ List<RouteBase> routesList() {
       },
     ),
     GoRoute(
-      path: RoutesNames.currentAffairsScreen,
-      builder: (context, state) => const CurrentAffairsScreen(),
-    ),
-    GoRoute(
-      path: RoutesNames.currentAffairsDetailScreen,
-      builder: (context, state) {
-        final article = state.extra as CurrentAffairsModel;
-        return CurrentAffairsDetailScreen(article: article);
-      },
-    ),
-    GoRoute(
       path: RoutesNames.policeBhartiInfoScreen,
       builder: (context, state) => const PoliceBhartiInfoScreen(),
     ),
     GoRoute(
       path: RoutesNames.pyqScreen,
       builder: (context, state) => const PYQScreen(),
+    ),
+    GoRoute(
+      path: RoutesNames.categoryItemsScreen,
+      builder: (context, state) {
+        // We need to import the screen at the top later, or I'll just use dynamic imports if I use absolute paths, but better to import at the top. Wait, I will use `multi_replace` to add imports at the top.
+        // Actually, let me just add the import below.
+        return CategoryItemsScreen(categoryMode: state.extra as String);
+      },
+    ),
+    GoRoute(
+      path: RoutesNames.noteReadingScreen,
+      builder: (context, state) {
+        return NoteReadingScreen(noteData: state.extra as Map<String, dynamic>);
+      },
+    ),
+    GoRoute(
+      path: RoutesNames.leaderboardScreen,
+      builder: (context, state) => const LeaderboardScreen(),
+    ),
+    GoRoute(
+      path: RoutesNames.adminDashboardScreen,
+      builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
+      path: RoutesNames.activityHistoryScreen,
+      builder: (context, state) => BlocProvider(
+        create: (context) => ActivityHistoryCubit(),
+        child: const ActivityHistoryScreen(),
+      ),
     ),
   ];
 }

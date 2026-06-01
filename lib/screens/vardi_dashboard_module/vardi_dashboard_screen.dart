@@ -7,7 +7,6 @@ import 'package:mission_vardi/screens/vardi_home_module/vardi_home_screen.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_screen.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_screen.dart';
 import 'package:mission_vardi/screens/profile_module/profile_screen.dart';
-import 'package:mission_vardi/screens/current_affairs_module/current_affairs_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:mission_vardi/utils/constants.dart';
@@ -31,7 +30,6 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
       const FarmerHomeScreen(), // Mapped to the home screen class in vardi_home_screen
       const QuizzesScreen(),
       const PhysicalPrepScreen(),
-      const CurrentAffairsScreen(),
       const ProfileScreen(),
     ];
 
@@ -77,10 +75,7 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
           icon: const Icon(Icons.directions_run_rounded),
           label: "Physical",
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.newspaper_rounded),
-          label: "News",
-        ),
+
         BottomNavigationBarItem(
           icon: const Icon(Icons.person_rounded),
           label: "Profile",

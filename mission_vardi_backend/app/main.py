@@ -17,8 +17,8 @@ from app.routes.study import router as study_router
 from app.routes.leaderboard import router as leaderboard_router
 from app.routes.notification import router as notification_router
 from app.routes.note import router as note_router
-from app.routes.current_affairs import router as current_affairs_router
 from app.routes.fitness import router as fitness_router
+from app.routes.pyq import router as pyq_router
 
 app = FastAPI(
     title="Mission Vardi API",
@@ -43,7 +43,7 @@ app.include_router(quiz_router)
 app.include_router(study_router)
 
 from app.routes.alert import router as alert_router
-from app.routes.localization import router as localization_router
+from app.routes.home import router as home_router
 
 # Supporting
 app.include_router(upload_router)
@@ -51,9 +51,9 @@ app.include_router(leaderboard_router)
 app.include_router(notification_router)
 app.include_router(note_router)
 app.include_router(alert_router)
-app.include_router(current_affairs_router)
-app.include_router(localization_router)
 app.include_router(fitness_router)
+app.include_router(home_router)
+app.include_router(pyq_router)
 
 
 @app.get("/")

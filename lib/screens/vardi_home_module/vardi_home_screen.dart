@@ -4,10 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
-import 'package:mission_vardi/screens/current_affairs_module/current_affairs_cubit.dart';
-import 'package:mission_vardi/screens/current_affairs_module/current_affairs_state.dart';
+
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
 import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
@@ -66,10 +64,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<VardiHomeCubit>().getPDFNotesAndSolvedPapers();
-    context.read<VardiHomeCubit>().getGlobalData();
-    context.read<CurrentAffairsCubit>().loadCurrentAffairs();
-
+    context.read<VardiHomeCubit>().getHomeDashboardData();
+  
     // Ticking seconds countdown
     countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
@@ -107,42 +103,53 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF3F4F6); // Soft gray background
+    final themeColor = isDarkMode
+        ? const Color(0xFF121212)
+        : const Color(0xFFF3F4F6); // Soft gray background
 
     return Scaffold(
       backgroundColor: themeColor,
       appBar: homeAppBar(),
-      body: SafeArea(
-        child: RefreshIndicator(
-          color: Constants.primaryBlueColour,
-          onRefresh: () async {
-            context.read<VardiHomeCubit>().getGlobalData();
-            context.read<VardiHomeCubit>().getPDFNotesAndSolvedPapers();
-            context.read<CurrentAffairsCubit>().loadCurrentAffairs();
-          },
-          child: SingleChildScrollView(
+      body: BlocListener<VardiHomeCubit, VardiHomeState>(
+        listenWhen: (previous, current) => previous.countdown == null && current.countdown != null,
+        listener: (context, state) {
+          if (state.countdown != null) {
+             setState(() {
+               daysLeft = state.countdown!['daysLeft'] ?? 0;
+               hoursLeft = state.countdown!['hoursLeft'] ?? 0;
+               minutesLeft = state.countdown!['minutesLeft'] ?? 0;
+               secondsLeft = state.countdown!['secondsLeft'] ?? 0;
+             });
+          }
+        },
+        child: SafeArea(
+          child: RefreshIndicator(
+            color: Constants.primaryBlueColour,
+            onRefresh: () async {
+              context.read<VardiHomeCubit>().getHomeDashboardData();
+              context.read<VardiHomeCubit>().getGlobalData();
+            },
+            child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 30),
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildGreetingAndCountdown(),
                 const SizedBox(height: 24),
+                _buildMotivationCard(),
+                 const SizedBox(height: 24),
                 _buildQuickActionGrid(),
                 const SizedBox(height: 24),
                 _buildBhartiInfoBanner(isDarkMode),
                 const SizedBox(height: 24),
-                _buildMotivationCard(),
                 const SizedBox(height: 24),
-                _buildGlobalAlerts(),
-                _trendingCurrentAffairs(),
-                const SizedBox(height: 24),
-                _buildSectionTitle('📚 PDF Notes & Solved Papers', 'Download and study offline'),
-                const SizedBox(height: 12),
-                _pdfNotesLibrary(),
-                const SizedBox(height: 24),
-                if ((context.watch<VardiHomeCubit>().state.leaderboard ?? []).isNotEmpty) ...[
-                  _buildSectionTitle('🏆 Global Leaderboard', 'Top performers this week'),
+              
+                if ((context.watch<VardiHomeCubit>().state.leaderboard ?? [])
+                    .isNotEmpty) ...[
+                  _buildSectionTitle(
+                      '🏆 Global Leaderboard', 'Top performers this week'),
                   const SizedBox(height: 12),
                   _leaderboardList(),
                 ]
@@ -150,6 +157,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -161,7 +169,10 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF0F172A), Color(0xFF1E3A8A)], // Deep Navy to Royal Blue
+          colors: [
+            Color(0xFF0F172A),
+            Color(0xFF1E3A8A)
+          ], // Deep Navy to Royal Blue
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -207,7 +218,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   color: Colors.white.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.local_police_rounded, color: Colors.amber, size: 28),
+                child: const Icon(Icons.local_police_rounded,
+                    color: Colors.amber, size: 28),
               )
             ],
           ),
@@ -299,7 +311,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('⚡ Quick Actions', 'What do you want to practice today?'),
+        _buildSectionTitle(
+            '⚡ Quick Actions', 'What do you want to practice today?'),
         const SizedBox(height: 16),
         GridView.count(
           crossAxisCount: 2,
@@ -312,30 +325,44 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
             _actionCard(
               title: 'Mock Quizzes',
               subtitle: 'Test your skills',
-              icon: Icons.quiz_rounded,
+              icon: Icons.timer_rounded,
               gradient: const [Color(0xFF6366F1), Color(0xFF4338CA)], // Indigo
-              onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(1),
+              onTap: () => context.push(RoutesNames.categoryItemsScreen, extra: 'Timed'),
+            ),
+            _actionCard(
+              title: 'PYQ Papers',
+              subtitle: 'Previous year papers',
+              icon: Icons.history_edu_rounded,
+              gradient: const [Color(0xFF10B981), Color(0xFF047857)], // Emerald
+              onTap: () => context.push(RoutesNames.pyqScreen),
+            ),
+            _actionCard(
+              title: 'Subject Notes',
+              subtitle: 'Read notes',
+              icon: Icons.library_books_rounded,
+              gradient: const [Color(0xFFF59E0B), Color(0xFFB45309)], // Amber
+              onTap: () => context.push(RoutesNames.categoryItemsScreen, extra: 'Notes'),
+            ),
+            _actionCard(
+              title: 'Leaderboard',
+              subtitle: 'Check your rank',
+              icon: Icons.emoji_events_rounded,
+              gradient: const [Color(0xFFEC4899), Color(0xFFBE185D)], // Pink
+              onTap: () => context.push(RoutesNames.leaderboardScreen),
             ),
             _actionCard(
               title: 'Physical Test',
               subtitle: 'Track your run',
               icon: Icons.directions_run_rounded,
-              gradient: const [Color(0xFF10B981), Color(0xFF047857)], // Emerald
+              gradient: const [Color(0xFF06B6D4), Color(0xFF0891B2)], // Cyan
               onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(2),
-            ),
-            _actionCard(
-              title: 'Daily News',
-              subtitle: 'Stay updated',
-              icon: Icons.newspaper_rounded,
-              gradient: const [Color(0xFFF59E0B), Color(0xFFB45309)], // Amber
-              onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(3),
             ),
             _actionCard(
               title: 'My Profile',
               subtitle: 'View progress',
               icon: Icons.person_rounded,
-              gradient: const [Color(0xFFEC4899), Color(0xFFBE185D)], // Pink
-              onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(4),
+              gradient: const [Color(0xFF8B5CF6), Color(0xFF6D28D9)], // Violet
+              onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(3),
             ),
           ],
         ),
@@ -377,7 +404,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               Positioned(
                 right: -15,
                 bottom: -15,
-                child: Icon(icon, size: 80, color: Colors.white.withOpacity(0.15)),
+                child:
+                    Icon(icon, size: 80, color: Colors.white.withOpacity(0.15)),
               ),
               Padding(
                 padding: const EdgeInsets.all(14),
@@ -421,6 +449,16 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
 
   // ─── Motivation Card ────────────────────────────────────────────────────────
   Widget _buildMotivationCard() {
+    final state = context.watch<VardiHomeCubit>().state;
+    final quotesList = (state.dailyQuotes != null && state.dailyQuotes!.isNotEmpty) 
+        ? state.dailyQuotes! 
+        : quotes;
+        
+    if (quoteIndex >= quotesList.length) quoteIndex = 0;
+    
+    final currentQuote = quotesList[quoteIndex];
+    final quoteText = currentQuote["en"] ?? currentQuote["mr"] ?? "";
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -438,7 +476,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.format_quote_rounded, color: Colors.amber.shade600, size: 36),
+          Icon(Icons.format_quote_rounded,
+              color: Colors.amber.shade600, size: 36),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -454,7 +493,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  quotes[quoteIndex]["en"]!,
+                  quoteText,
                   style: commonTextStyle.copyWith(
                     fontStyle: FontStyle.italic,
                     fontSize: 14,
@@ -467,12 +506,13 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      quoteIndex = (quoteIndex + 1) % quotes.length;
+                      quoteIndex = (quoteIndex + 1) % quotesList.length;
                     });
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.refresh_rounded, size: 14, color: Constants.primaryBlueColour),
+                      Icon(Icons.refresh_rounded,
+                          size: 14, color: Constants.primaryBlueColour),
                       const SizedBox(width: 4),
                       Text(
                         "Next Quote",
@@ -518,7 +558,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               color: Colors.red.shade100,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.campaign_rounded, color: Colors.red.shade700, size: 24),
+            child: Icon(Icons.campaign_rounded,
+                color: Colors.red.shade700, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -549,132 +590,20 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 
-  // ─── Trending Affairs ───────────────────────────────────────────────────────
-  Widget _trendingCurrentAffairs() {
-    return BlocBuilder<CurrentAffairsCubit, CurrentAffairsState>(
-      builder: (context, state) {
-        final trendingArticles = state.articles.where((a) => a.isTrending).toList();
-        if (trendingArticles.isEmpty) return const SizedBox();
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildSectionTitle('🔥 Trending News', 'Important updates for exams'),
-                GestureDetector(
-                  onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(3),
-                  child: Text(
-                    'View All',
-                    style: commonTextStyle.copyWith(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Constants.primaryBlueColour,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            ListView.separated(
-              itemCount: trendingArticles.take(2).length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final article = trendingArticles[index];
-                
-                return InkWell(
-                  onTap: () => context.push('/currentAffairsDetailScreen', extra: article),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        children: [
-                          if (article.imageUrl != null && article.imageUrl!.isNotEmpty)
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                article.imageUrl!,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          else
-                            Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade50,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(Icons.newspaper_rounded, color: Colors.blue.shade300, size: 30),
-                            ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  article.titleEn,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: commonTextStyle.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    height: 1.2,
-                                    color: isDarkMode ? Colors.white : const Color(0xFF111827),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.local_fire_department_rounded, color: Colors.orange.shade600, size: 14),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'Trending Now',
-                                      style: commonTextStyle.copyWith(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.orange.shade700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+ 
   // ─── PDF Library ────────────────────────────────────────────────────────────
   Widget _pdfNotesLibrary() {
     final state = context.watch<VardiHomeCubit>().state;
-    final papers = state.data ?? [];
+    List<dynamic> papers = state.data ?? [];
+
+    if (searchQuery.isNotEmpty) {
+      final q = searchQuery.toLowerCase();
+      papers = papers.where((p) {
+        final title = (p.title ?? '').toString().toLowerCase();
+        final desc = (p.description ?? '').toString().toLowerCase();
+        return title.contains(q) || desc.contains(q);
+      }).toList();
+    }
 
     return Column(
       children: [
@@ -695,12 +624,6 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
             controller: searchController,
             onChanged: (val) {
               setState(() => searchQuery = val);
-              _searchDebounce?.cancel();
-              _searchDebounce = Timer(const Duration(milliseconds: 500), () {
-                if (mounted) {
-                  context.read<VardiHomeCubit>().getPDFNotesAndSolvedPapers(search: val);
-                }
-              });
             },
             hintText: 'Search Notes & Previous Papers...',
             prefixIcon: Icons.search_rounded,
@@ -718,7 +641,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
               padding: const EdgeInsets.symmetric(vertical: 24),
               child: Column(
                 children: [
-                  Icon(Icons.search_off_rounded, size: 48, color: Colors.grey.shade400),
+                  Icon(Icons.search_off_rounded,
+                      size: 48, color: Colors.grey.shade400),
                   const SizedBox(height: 12),
                   Text(
                     'No documents found',
@@ -774,7 +698,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                             color: Colors.red.shade50,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.picture_as_pdf_rounded, color: Colors.red.shade600, size: 28),
+                          child: Icon(Icons.picture_as_pdf_rounded,
+                              color: Colors.red.shade600, size: 28),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -786,7 +711,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                                 style: commonTextStyle.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: isDarkMode ? Colors.white : const Color(0xFF111827),
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : const Color(0xFF111827),
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -849,7 +776,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
         itemCount: leaders.length,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        separatorBuilder: (_, __) => Divider(height: 1, color: Colors.grey.shade100),
+        separatorBuilder: (_, __) =>
+            Divider(height: 1, color: Colors.grey.shade100),
         itemBuilder: (context, index) {
           final item = leaders[index];
           final isTopRank = index == 0;
@@ -862,7 +790,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
           if (isThird) rankColor = Colors.orange.shade300; // Bronze
 
           return ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
             leading: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -879,7 +808,9 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                   radius: 18,
                   backgroundColor: rankColor.withOpacity(0.2),
                   child: Icon(
-                    isTopRank ? Icons.emoji_events_rounded : Icons.person_rounded,
+                    isTopRank
+                        ? Icons.emoji_events_rounded
+                        : Icons.person_rounded,
                     color: rankColor,
                     size: 20,
                   ),
@@ -938,7 +869,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
             Positioned(
               right: -10,
               top: -20,
-              child: Icon(Icons.article_rounded, size: 100, color: Colors.white.withOpacity(0.1)),
+              child: Icon(Icons.article_rounded,
+                  size: 100, color: Colors.white.withOpacity(0.1)),
             ),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -950,7 +882,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.menu_book_rounded, color: Color(0xFF0D9488), size: 28),
+                    child: const Icon(Icons.menu_book_rounded,
+                        color: Color(0xFF0D9488), size: 28),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -976,7 +909,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
                       ],
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
+                  const Icon(Icons.arrow_forward_ios_rounded,
+                      color: Colors.white, size: 16),
                 ],
               ),
             ),
@@ -1019,4 +953,3 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 }
-

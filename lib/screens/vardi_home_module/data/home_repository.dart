@@ -8,27 +8,25 @@ import 'package:mission_vardi/utils/network_services/api_services.dart';
 @injectable
 class HomeRepository implements HomeRepositoryImpl {
 
-  @override
-  Future<Either<Exception, GetPdfNotesResponseModel>> getPDFNotesAndSolvedPapers({queryParameters})async {
-     try {
-      final response = await NetworkServices().getApi(ApiUrls.getPdfNotesAndSolvedPapers,queryParameters: queryParameters);
-      print('api response $response');
-      final responseData = GetPdfNotesResponseModel.fromJson(response.data);
-      return Right(responseData);
+  Future<Either<Exception, Map<String, dynamic>>> getHomeDashboard() async {
+    try {
+      final response = await NetworkServices().getApi(ApiUrls.getHomeDashboard);
+      if (response.data != null && response.data['data'] != null) {
+        return Right(response.data['data']);
+      } else {
+        return Left(Exception("Invalid API response format: ${response.data}"));
+      }
     } catch (e) {
-      print('api response ex: $e'); // Added $e to see the actual error
-
+      print('getHomeDashboard ex: $e');
       return Left(Exception(e));
     }
   }
 
+  // Keep leaderboards in getGlobalData or fetch separately
   Future<Either<Exception, Map<String, dynamic>>> getGlobalData() async {
     try {
-      final alertRes = await NetworkServices().getApi(ApiUrls.getGlobalAlerts);
       final leaderRes = await NetworkServices().getApi(ApiUrls.getGlobalLeaderboard);
-      
       return Right({
-        "alerts": alertRes.data['data'] ?? [],
         "leaderboard": leaderRes.data['data'] ?? []
       });
     } catch (e) {

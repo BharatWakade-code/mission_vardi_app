@@ -21,6 +21,7 @@ async def create_note(note: NoteCreate):
         "description": note.description,
         "pdfUrl": note.pdfUrl,
         "category": note.category,
+        "content": note.content,
         "createdAt": str(datetime.now())
     }
     
@@ -52,4 +53,17 @@ async def list_notes(category: Optional[str] = None, search: Optional[str] = Non
         "status": True,
         "message": "Data fetched successfully",
         "data": notes
+    }
+
+@router.delete("/{note_id}")
+async def delete_note(note_id: str):
+    result = notes_collection.delete_one({"id": note_id})
+    if result.deleted_count == 1:
+        return {
+            "status": True,
+            "message": "Note deleted successfully"
+        }
+    return {
+        "status": False,
+        "message": "Note not found"
     }

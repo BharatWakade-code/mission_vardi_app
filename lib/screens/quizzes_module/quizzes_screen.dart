@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
@@ -24,7 +23,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
     super.initState();
 
     context.read<QuizzesCubit>().getQuizzesList();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final profileCubit = context.read<ProfileCubit>();
@@ -39,15 +38,15 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
   Widget build(BuildContext context) {
     // Watch LanguageCubit to trigger an instant rebuild when language changes
 
-    
     // Watch ProfileCubit to get the current streak
     final profileState = context.watch<ProfileCubit>().state;
-    final int currentStreak = profileState.profileData?.stats?['current_streak_days'] ?? 0;
-    
+    final int currentStreak =
+        profileState.profileData?.stats?['current_streak_days'] ?? 0;
+
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: "Exam & Practice Center",
+        titleText: "Quiz and Notes",
         titleIcon: Icons.quiz,
       ),
       body: BlocBuilder<QuizzesCubit, QuizzesState>(
@@ -112,18 +111,24 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Icon(Icons.local_fire_department_rounded, 
-                                      color: currentStreak > 0 ? Colors.orange : Colors.grey.shade400, 
+                                  Icon(Icons.local_fire_department_rounded,
+                                      color: currentStreak > 0
+                                          ? Colors.orange
+                                          : Colors.grey.shade400,
                                       size: 14),
                                   const SizedBox(width: 4),
                                   Text(
                                     currentStreak > 0
-                                      ? '$currentStreak Day Streak!'
-                                      : "Complete and win 2x Coins",
+                                        ? '$currentStreak Day Streak!'
+                                        : "Complete and win 2x Coins",
                                     style: commonTextStyle.copyWith(
-                                      color: currentStreak > 0 ? Colors.orange.shade200 : Colors.white70,
+                                      color: currentStreak > 0
+                                          ? Colors.orange.shade200
+                                          : Colors.white70,
                                       fontSize: 12,
-                                      fontWeight: currentStreak > 0 ? FontWeight.bold : FontWeight.normal,
+                                      fontWeight: currentStreak > 0
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                                   ),
                                 ],
@@ -139,8 +144,11 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                             ),
                           ),
                           onPressed: () {
-                            context.read<QuizzesCubit>().changePracticeMode("Timed");
-                            context.push(RoutesNames.quizPlayScreen, extra: 'daily-challenge');
+                            context
+                                .read<QuizzesCubit>()
+                                .changePracticeMode("Timed");
+                            context.push(RoutesNames.quizPlayScreen,
+                                extra: 'daily-challenge');
                           },
                           child: Text(
                             "Start",
@@ -156,202 +164,36 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
                   const SizedBox(height: 16),
 
-                  /// ── PYQ Banner ──────────────────────────────────────────
-                  GestureDetector(
-                    onTap: () => context.push(RoutesNames.pyqScreen),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.purple.withOpacity(0.25),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.history_edu_rounded,
-                              color: Colors.white,
-                              size: 26,
-                            ),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Previous Year Question Papers',
-                                style: commonTextStyle.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
-                                  '2021 – 2024  |  7 Papers Available',
-                                  style: commonTextStyle.copyWith(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'View',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Outfit',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                const Icon(Icons.arrow_forward_ios_rounded,
-                                    color: Colors.white, size: 12),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// Practice mode
-                  Text(
-                    "Select Practice Mode",
-                    style: commonTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Row(
-                    children: [
-                      _ModeCard(
-                        icon: Icons.timer,
-                        title: "Mock (Timed)",
-                        isSelected: state.selectedPracticeMode == "Timed",
-                        onTap: () {
-                          context
-                              .read<QuizzesCubit>()
-                              .changePracticeMode("Timed");
-                        },
-                      ),
-                      const SizedBox(width: 10),
-                      _ModeCard(
-                        icon: Icons.menu_book,
-                        title: "Practice Mode",
-                        isSelected: state.selectedPracticeMode == "Practice",
-                        onTap: () {
-                          context
-                              .read<QuizzesCubit>()
-                              .changePracticeMode("Practice");
-                        },
-                      ),
-                      const SizedBox(width: 10),
-                      _ModeCard(
-                        icon: Icons.shuffle,
-                        title: "Random Quiz",
-                        isSelected: state.selectedPracticeMode == "Random",
-                        onTap: () {
-                          context
-                              .read<QuizzesCubit>()
-                              .changePracticeMode("Random");
-                        },
-                        isComingSoon: true,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-
+                
                   /// Categories
                   Text(
-                    "Choose Quiz Subject",
+                    "Categories",
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 12),
 
-                  const SizedBox(height: 10),
-
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.78,
-                    ),
-                    itemCount: state.data.length,
-                    itemBuilder: (context, index) {
-                      final item = state.data[index];
-
-                      Color cardColor = Colors.blue.shade400;
-                      IconData cardIcon = Icons.quiz;
-
-                      final category = item.category ?? "";
-                      if (category == "GK & Updates" ||
-                          category == "General Knowledge" ||
-                          category == "Police Bharti") {
-                        cardColor = Colors.red.shade400;
-                        cardIcon = Icons.public;
-                      } else if (category == "Marathi Grammar") {
-                        cardColor = Colors.teal.shade400;
-                        cardIcon = Icons.translate;
-                      } else if (category == "Mathematics") {
-                        cardColor = Colors.orange.shade400;
-                        cardIcon = Icons.calculate;
-                      } else if (category == "Intellectual Ability") {
-                        cardColor = Colors.purple.shade400;
-                        cardIcon = Icons.psychology;
-                      }
-
-                      return _CategoryCard(
-                        title: item.title ?? "",
-                        titleMr: item.title ?? "",
-                        color: cardColor,
-                        icon: cardIcon,
-                        count: item.type ?? "Mock Test",
-                        onTap: () => context.push(RoutesNames.quizPlayScreen,
-                            extra: item.id),
-                      );
-                    },
-                  ),
+                  _buildMenuCard(
+                      context,
+                      "Mock (Timed)",
+                      Icons.timer,
+                      Colors.orange,
+                      () => context.push(RoutesNames.categoryItemsScreen,
+                          extra: "Timed")),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(context, "Practice Mode", Icons.menu_book, Colors.blue, () => context.push(RoutesNames.categoryItemsScreen, extra: "Practice")),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(context, "Subject Wise Notes", Icons.library_books, Colors.green, () => context.push(RoutesNames.categoryItemsScreen, extra: "Notes")),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(context, "Previous Question Papers", Icons.history_edu, Colors.purple, () => context.push(RoutesNames.pyqScreen)),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(context, "Leaderboard", Icons.emoji_events, Colors.amber.shade600, () => context.push(RoutesNames.leaderboardScreen)),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(
+                      context, "Random Quiz", Icons.shuffle, Colors.red, null,
+                      isComingSoon: true),
                   const SizedBox(height: 20),
 
                   const BannerAdWidget(),
@@ -360,6 +202,114 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildMenuCard(BuildContext context, String title, IconData icon,
+      Color color, VoidCallback? onTap,
+      {bool isComingSoon = false}) {
+    return GestureDetector(
+      onTap: () {
+        if (isComingSoon) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              duration: const Duration(seconds: 1),
+              content: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      Constants.primaryBlueColour,
+                      Constants.primaryBlueColour.withOpacity(0.85),
+                    ],
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.rocket_launch_rounded,
+                        color: Colors.white, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "This feature is coming soon!",
+                        style: commonTextStyle.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else if (onTap != null) {
+          onTap();
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: commonTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF0A2540),
+                ),
+              ),
+            ),
+            if (isComingSoon)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "SOON",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange.shade800,
+                  ),
+                ),
+              )
+            else
+              const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+          ],
+        ),
       ),
     );
   }

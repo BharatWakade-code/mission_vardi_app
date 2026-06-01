@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class NoteCreate(BaseModel):
+class PYQCreate(BaseModel):
     title: str
-    description: str
+    year: int
+    description: Optional[str] = None
     pdfUrl: Optional[str] = None
     category: Optional[str] = None
-    content: Optional[str] = None

@@ -35,6 +35,7 @@ class QuizzListData {
   String? type;
   List<Questions>? questions;
   String? createdAt;
+  int? timeLimit;
 
   QuizzListData(
       {this.id,
@@ -43,7 +44,8 @@ class QuizzListData {
       this.category,
       this.type,
       this.questions,
-      this.createdAt});
+      this.createdAt,
+      this.timeLimit});
 
   QuizzListData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -58,6 +60,7 @@ class QuizzListData {
       });
     }
     createdAt = json['createdAt'];
+    timeLimit = json['timeLimit'] ?? json['time_limit'] ?? json['duration'];
   }
 
   Map<String, dynamic> toJson() {
@@ -71,6 +74,7 @@ class QuizzListData {
       data['questions'] = this.questions!.map((v) => v.toJson()).toList();
     }
     data['createdAt'] = this.createdAt;
+    data['timeLimit'] = this.timeLimit;
     return data;
   }
 }

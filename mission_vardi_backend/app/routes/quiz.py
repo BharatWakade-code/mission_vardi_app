@@ -76,23 +76,6 @@ async def list_quizzes(category: Optional[str] = None, type: Optional[str] = Non
 
 @router.get("/{quiz_id}")
 async def get_quiz(quiz_id: str):
-    if quiz_id == "pyq-catalogue":
-        config_doc = config_collection.find_one({"id": "pyq_catalogue"}, {"_id": 0})
-        catalogue = config_doc.get("data") if config_doc else None
-        
-        if not catalogue:
-            return {
-                "status": False,
-                "message": "PYQ catalogue not available yet",
-                "data": []
-            }
-
-        return {
-            "status": True,
-            "message": "PYQ catalogue fetched successfully",
-            "data": catalogue
-        }
-
     if quiz_id == "daily-challenge":
         today_str = datetime.now().strftime("%Y-%m-%d")
         daily_quiz_id = f"daily_challenge_{today_str}"
@@ -179,4 +162,17 @@ async def save_result(quiz_id: str, result: QuizResultSubmit):
         "status": True,
         "message": "Result saved successfully",
         "data": result_data
+    }
+
+@router.delete("/{quiz_id}")
+async def delete_quiz(quiz_id: str):
+    result = quizzes_collection.delete_one({"id": quiz_id})
+    if result.deleted_count == 1:
+        return {
+            "status": True,
+            "message": "Quiz deleted successfully"
+        }
+    return {
+        "status": False,
+        "message": "Quiz not found"
     }
