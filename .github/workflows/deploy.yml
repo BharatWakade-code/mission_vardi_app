@@ -18,8 +18,8 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
+          host: 13.207.44.5
+          username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd mission_vardi_backend
