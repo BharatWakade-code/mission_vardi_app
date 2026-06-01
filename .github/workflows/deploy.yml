@@ -27,7 +27,7 @@ jobs:
             # Pull latest changes from the repository
             git pull origin main
             
-            # Activate virtual environment and install dependencies
+            # Activate virtual environment & install dependencies
             source .venv/bin/activate
             pip install -r requirements.txt
             
