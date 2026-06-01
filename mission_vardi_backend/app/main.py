@@ -58,7 +58,7 @@ app.include_router(pyq_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Mission Vardi API v2.0 Running"}
+    return {"message": "Mission Vardi API v2.0 Running om EC2"}
 
 # --- Global Exception Handlers ---
 
