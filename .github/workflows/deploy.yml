@@ -1,0 +1,46 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'mission_vardi_backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "mission_vardi_backend/"
+          target: "/home/ubuntu/"
+
+      - name: Execute deployment commands via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # Navigate to the backend directory
+            cd /home/ubuntu/mission_vardi_backend
+            
+            # Setup virtual environment and install dependencies
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install -r requirements.txt
+            
+            # Restart the server (modify this line depending on how you run your backend, e.g., PM2, systemd, or uvicorn)
+            # pkill -f uvicorn || true
+            # nohup uvicorn main:app --host 0.0.0.0 --port 8000 > server.log 2>&1 &
+            
+            echo "Deployment successful!"
