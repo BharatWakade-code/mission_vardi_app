@@ -20,7 +20,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          password: ${{ secrets.EC2_PASSWORD }}
           source: "mission_vardi_backend/"
           target: "/home/ubuntu/"
 
@@ -29,7 +29,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          password: ${{ secrets.EC2_PASSWORD }}
           script: |
             # Navigate to the backend directory
             cd /home/ubuntu/mission_vardi_backend
