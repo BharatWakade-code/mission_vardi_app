@@ -25,13 +25,25 @@ Future<void> main() async {
   }
 
   if (!kIsWeb) {
-    await AdManager.instance.initialize();
+    try {
+      await AdManager.instance.initialize();
+    } catch (e) {
+      debugPrint('AdManager init error: $e');
+    }
   }
 
-  configureDependencies();
+  try {
+    configureDependencies();
+  } catch (e) {
+    debugPrint('Dependency injection error: $e');
+  }
 
-  await Hive.initFlutter();
-  await CommonHiveData.init();
+  try {
+    await Hive.initFlutter();
+    await CommonHiveData.init();
+  } catch (e) {
+    debugPrint('Hive init error: $e');
+  }
 
   // .env file — not supported on web filesystem
   if (!kIsWeb) {
@@ -43,7 +55,11 @@ Future<void> main() async {
   }
 
   // Initialize push notifications (FCM + local)
-  await PushNotificationService.instance.initialize();
+  try {
+    await PushNotificationService.instance.initialize();
+  } catch (e) {
+    debugPrint('Push notifications init error: $e');
+  }
 
   runApp(
     MultiBlocProvider(
