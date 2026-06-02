@@ -9,34 +9,28 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Copy files via SCP
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "mission_vardi_backend/"
-          target: "/home/ubuntu/"
-
-      - name: Execute deployment commands via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/mission_vardi_backend
-
-            python3 -m venv .venv
-            source .venv/bin/activate
-
-            pip install --upgrade pip
-            pip install -r requirements.txt
-
-            echo "Deployment successful!"
+      - name: Setup and Restart Backend
+        run: |
+          # The runner is already inside your EC2 instance, so we just enter the backend directory
+          cd mission_vardi_backend
+          
+          # Setup python environment
+          python3 -m venv .venv
+          source .venv/bin/activate
+          
+          # Install dependencies
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          
+          # --- ADD YOUR RESTART COMMAND HERE ---
+          # Depending on how you run your server, uncomment or adjust the line below:
+          # pkill -f uvicorn || true
+          # nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > server.log 2>&1 &
+          
+          echo "Deployment successful!"
