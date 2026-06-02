@@ -29,8 +29,7 @@ jobs:
           pip install -r requirements.txt
           
           # --- ADD YOUR RESTART COMMAND HERE ---
-          # Depending on how you run your server, uncomment or adjust the line below:
-          # pkill -f uvicorn || true
-          # nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > server.log 2>&1 &
+          # If you use PM2, restart it here. Make sure the PM2 name matches what you originally named it!
+          pm2 restart all || pm2 start "uvicorn app.main:app --host 0.0.0.0 --port 8000" --name "mission_vardi_backend"
           
           echo "Deployment successful!"
