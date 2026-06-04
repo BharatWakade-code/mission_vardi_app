@@ -1,16 +1,28 @@
-# khrishi_wings
+# Mission Vardi App
 
-A new Flutter project.
+A Flutter-based educational application for students.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Environment Variables
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Create a `.env` file in the project root:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```env
+BASE_URL=
+```
+
+## Build
+
+```bash
+# Debug
+flutter build apk --debug
+
+# Release
+flutter build apk --release
+```

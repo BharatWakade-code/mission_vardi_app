@@ -1,6 +1,6 @@
 # Mission Vardi Backend
 
-FastAPI + AWS Lambda + API Gateway + S3 JSON Database
+FastAPI + MongoDB + Firebase Auth backend.
 
 ## Run Locally
 
@@ -9,22 +9,20 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Swagger Docs:
-http://127.0.0.1:8000/docs
+Swagger Docs: http://127.0.0.1:8000/docs
 
-## AWS Lambda Handler
+## Environment Variables
 
-app.main.handler
+Create a `.env` file in this directory:
 
-## AWS Runtime
+```env
+MONGODB_URI=
+DB_NAME=
 
-Python 3.12
+JWT_SECRET_KEY=
+JWT_ALGORITHM=
+JWT_EXPIRE_MINUTES=
 
-## Features
-
-- FastAPI backend
-- AWS Lambda ready
-- API Gateway compatible
-- S3 JSON database
-- Pre-signed S3 uploads
-- Firebase Auth ready
+FIREBASE_CREDENTIALS_PATH=
+FIREBASE_PROJECT_ID=
+```
