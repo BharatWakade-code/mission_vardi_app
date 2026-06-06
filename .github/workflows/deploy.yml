@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'mission_vardi_backend/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:  # Allows manual trigger from GitHub Actions UI
 
 jobs:
   deploy:
