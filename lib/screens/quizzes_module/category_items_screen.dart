@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
+
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const _surface = Color(0xFFFFFFFF);
+const _accent = Color(0xFF1D4ED8);
+const _accentLight = Color(0xFFDBEAFE);
+const _textPrimary = Color(0xFF0F172A);
+const _textSecondary = Color(0xFF4B5563);
+const _divider = Color(0xFFDBEAFE);
 
 class CategoryItemsScreen extends StatefulWidget {
   final String categoryMode; // "Timed", "Practice", "Notes"
-
   const CategoryItemsScreen({super.key, required this.categoryMode});
 
   @override
@@ -18,7 +25,6 @@ class CategoryItemsScreen extends StatefulWidget {
 }
 
 class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -32,70 +38,53 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.categoryMode == "Notes"
+    final isNotes = widget.categoryMode == "Notes";
+    final title = isNotes
         ? "Subject Wise Notes"
         : (widget.categoryMode == "Timed" ? "Mock Tests" : "Practice Tests");
+    final titleIcon = isNotes ? Icons.library_books_rounded : Icons.quiz_rounded;
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
         titleText: title,
-        titleIcon: widget.categoryMode == "Notes" ? Icons.menu_book : Icons.quiz,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        titleIcon: titleIcon,
       ),
-      body: widget.categoryMode == "Notes"
-          ? _buildNotesList()
-          : _buildQuizzesList(),
+      body: isNotes ? _buildNotesList() : _buildQuizzesList(),
     );
   }
 
+  // ─── Quizzes List ──────────────────────────────────────────────────────────
   Widget _buildQuizzesList() {
     return BlocBuilder<QuizzesCubit, QuizzesState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state.data.isEmpty) {
           return Center(
-            child: Text(
-              "No quizzes available for this category.",
-              style: TextStyle(fontFamily: 'Outfit', color: Colors.grey.shade600, fontSize: 16),
+            child: CircularProgressIndicator(
+              color: _accent,
+              strokeWidth: 2.5,
             ),
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
+        if (state.data.isEmpty) {
+          return _emptyState(
+            icon: Icons.quiz_rounded,
+            message: 'No quizzes available\nfor this category.',
+          );
+        }
+
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           itemCount: state.data.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final item = state.data[index];
-            return Card(
-              elevation: 2,
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                leading: CircleAvatar(
-                  backgroundColor: Constants.primaryBlueColour.withOpacity(0.1),
-                  child: Icon(Icons.quiz, color: Constants.primaryBlueColour),
-                ),
-                title: Text(
-                  item.title ?? "Untitled",
-                  style: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                subtitle: Text(
-                  item.category ?? "General",
-                  style: TextStyle(fontFamily: 'Outfit', color: Colors.grey.shade600, fontSize: 13),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-                onTap: () {
-                  context.push(RoutesNames.quizPlayScreen, extra: item.id);
-                },
-              ),
+            return _QuizCard(
+              title: item.title ?? 'Untitled',
+              subtitle: item.category ?? 'General',
+              index: index,
+              onTap: () => context.push(RoutesNames.quizPlayScreen, extra: item.id),
             );
           },
         );
@@ -103,73 +92,301 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
     );
   }
 
+  // ─── Notes List ────────────────────────────────────────────────────────────
   Widget _buildNotesList() {
     return BlocBuilder<QuizzesCubit, QuizzesState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(color: _accent, strokeWidth: 2.5),
+          );
         }
 
         if (state.errorMsg.isNotEmpty) {
-          return Center(
-            child: Text(
-              state.errorMsg,
-              style: TextStyle(fontFamily: 'Outfit', color: Colors.red.shade400, fontSize: 16),
-            ),
+          return _emptyState(
+            icon: Icons.error_outline_rounded,
+            message: state.errorMsg,
+            isError: true,
           );
         }
 
         if (state.notesList.isEmpty) {
-          return Center(
-            child: Text(
-              "No notes available yet.",
-              style: TextStyle(fontFamily: 'Outfit', color: Colors.grey.shade600, fontSize: 16),
-            ),
+          return _emptyState(
+            icon: Icons.library_books_rounded,
+            message: 'No notes available yet.',
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           itemCount: state.notesList.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final note = state.notesList[index];
             final title = note['title'] ?? 'Untitled Note';
-            
-            return Card(
-              elevation: 1,
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.blue.shade50,
-                  child: Icon(Icons.library_books, color: Colors.blue.shade700),
-                ),
-                title: Text(
-                  title,
-                  style: const TextStyle(
-                    fontFamily: 'Outfit', 
-                    fontWeight: FontWeight.w600, 
-                    fontSize: 15,
-                    color: Color(0xFF0A2540)
-                  ),
-                ),
-                subtitle: note['category'] != null
-                    ? Text(
-                        note['category'],
-                        style: TextStyle(fontFamily: 'Outfit', color: Colors.grey.shade600, fontSize: 12),
-                      )
-                    : null,
-                trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-                onTap: () {
-                  // Pass the note map as extra
-                  context.push(RoutesNames.noteReadingScreen, extra: note);
-                },
-              ),
+            final category = note['category'];
+            return _NoteCard(
+              title: title,
+              category: category,
+              index: index,
+              onTap: () => context.push(RoutesNames.noteReadingScreen, extra: note),
             );
           },
         );
       },
+    );
+  }
+
+  // ─── Empty State ───────────────────────────────────────────────────────────
+  Widget _emptyState({
+    required IconData icon,
+    required String message,
+    bool isError = false,
+  }) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: isError
+                  ? Colors.red.shade50
+                  : _accentLight,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 34,
+              color: isError ? Colors.red.shade400 : _accent,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: _textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Quiz Card ─────────────────────────────────────────────────────────────────
+class _QuizCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final int index;
+  final VoidCallback onTap;
+
+  const _QuizCard({
+    required this.title,
+    required this.subtitle,
+    required this.index,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Cycle through accent shades for variety
+    final iconColors = [
+      const Color(0xFF6366F1), // indigo
+      const Color(0xFF0891B2), // cyan
+      const Color(0xFF1D4ED8), // blue
+      const Color(0xFF7C3AED), // violet
+      const Color(0xFF059669), // emerald
+    ];
+    final color = iconColors[index % iconColors.length];
+    final lightColor = color.withValues(alpha: 0.1);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: _divider),
+          boxShadow: [
+            BoxShadow(
+              color: _accent.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: lightColor,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(Icons.quiz_rounded, color: color, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: _textPrimary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: _textSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: _accentLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: _accent,
+                size: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Note Card ─────────────────────────────────────────────────────────────────
+class _NoteCard extends StatelessWidget {
+  final String title;
+  final String? category;
+  final int index;
+  final VoidCallback onTap;
+
+  const _NoteCard({
+    required this.title,
+    required this.category,
+    required this.index,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final noteColors = [
+      const Color(0xFFD97706), // amber
+      const Color(0xFF059669), // emerald
+      const Color(0xFF7C3AED), // violet
+      const Color(0xFF0891B2), // cyan
+      const Color(0xFF1D4ED8), // blue
+    ];
+    final color = noteColors[index % noteColors.length];
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: _divider),
+          boxShadow: [
+            BoxShadow(
+              color: _accent.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(Icons.library_books_rounded, color: color, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: _textPrimary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (category != null) ...[
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _accentLight,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        category!,
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: _accent,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: _accentLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: _accent,
+                size: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

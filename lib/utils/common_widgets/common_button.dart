@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/utils/common_widgets/common_toast_message.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
 
@@ -39,30 +39,29 @@ class CommonButton extends StatelessWidget {
         onTap?.call();
       },
       child: Container(
-        padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
+        padding: padding ?? const EdgeInsets.symmetric(vertical: 14),
         width: width ?? double.infinity,
         margin: margin,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(14),
           border: border,
-          color: isGrey ? Colors.grey.shade400 : color,
+          color: isGrey ? const Color(0xFFE5E7EB) : null,
           gradient: isGrey
               ? null
-              : LinearGradient(
-                  colors: [
-                    Constants.secondaryGreenColour,
-                    Constants.secondaryGreenColour,
-                    Constants.primaryGreenColour,
-                  ],
+              : const LinearGradient(
+                  colors: [Color(0xFF0B1437), Color(0xFF1A3572), Color(0xFF2563EB)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
                 ),
         ),
         child: Text(
           title ?? 'Confirm',
           style: style ??
-              commonTextStyle.copyWith(
-                fontSize: 16,
-                color: isGrey ? Colors.black45 : Colors.white,
+              GoogleFonts.inter(
+                fontSize: 15,
+                color: isGrey ? const Color(0xFF6B7280) : Colors.white,
                 fontWeight: FontWeight.w600,
+                letterSpacing: 0.1,
               ),
           textAlign: TextAlign.center,
         ),

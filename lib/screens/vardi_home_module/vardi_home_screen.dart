@@ -5,13 +5,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
-
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
-import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/download_service.dart';
+
+// ─── Design Tokens (Blue Theme) ────────────────────────────────────────────
+const _surface = Color(0xFFFFFFFF);
+const _navyDark = Color(0xFF0B1437);
+const _navyMid = Color(0xFF1A3572);
+const _accent = Color(0xFF1D4ED8);       // rich royal blue
+const _accentLight = Color(0xFFDBEAFE); // pale blue for chips/tags
+const _textPrimary = Color(0xFF0F172A);
+const _textSecondary = Color(0xFF4B5563);
+const _divider = Color(0xFFDBEAFE);     // blue-tinted divider
 
 class FarmerHomeScreen extends StatefulWidget {
   const FarmerHomeScreen({super.key});
@@ -20,271 +27,355 @@ class FarmerHomeScreen extends StatefulWidget {
   State<FarmerHomeScreen> createState() => _FarmerHomeScreenState();
 }
 
-class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
-  // App Toggles (Active simulation)
-  bool isDarkMode = false;
-  bool isOfflineMode = false;
-  bool isLowDataMode = false;
-  bool isUpdateDismissed = false;
-
-  // Selection states
-  // Removed district string
-  String searchQuery = "";
-
-  // Controllers
-  final TextEditingController searchController = TextEditingController();
-  Timer? _searchDebounce;
-
-  // Dynamic Quote State
+class _FarmerHomeScreenState extends State<FarmerHomeScreen>
+    with TickerProviderStateMixin {
+  // Quote state
   int quoteIndex = 0;
   final List<Map<String, String>> quotes = [
     {
-      "en":
-          "“Duty, Honor, Courage. The uniform is not a job, it's a responsibility.”",
-      "mr": "“कर्तव्य, सन्मान, धाडस. वर्दी ही नोकरी नाही, ती एक जबाबदारी आहे.”"
+      "en": '"Duty, Honor, Courage — the uniform is a responsibility."',
+      "mr": '"कर्तव्य, सन्मान, धाडस — वर्दी ही जबाबदारी आहे."'
     },
     {
-      "en": "“Sweat more in training, bleed less in battle.”",
-      "mr": "“सराव करताना जास्त घाम गाळा, जेणेकरून युद्धात कमी रक्त सांडेल.”"
+      "en": '"Sweat more in training, bleed less in battle."',
+      "mr": '"सराव करताना जास्त घाम गाळा, युद्धात कमी रक्त सांडेल."'
     },
     {
-      "en":
-          "“Success isn't given. It's earned. On the track and in the books.”",
-      "mr": "“यश मिळत नाही, ते मिळवावे लागते. धावपट्टीवर आणि पुस्तकांमध्ये.”"
-    }
+      "en": '"Success is earned on the track and in the books."',
+      "mr": '"यश धावपट्टीवर आणि पुस्तकांमध्ये मिळवावे लागते."'
+    },
   ];
 
-  // Exam Countdown (Remaining duration mock: ~4 months, 12 days, 4 hours)
-  late Timer countdownTimer;
-  int daysLeft = 132;
-  int hoursLeft = 4;
-  int minutesLeft = 35;
-  int secondsLeft = 19;
+  // Countdown state
+  late Timer _countdownTimer;
+  late AnimationController _pulseController;
+  int daysLeft = 132, hoursLeft = 4, minutesLeft = 35, secondsLeft = 19;
 
   @override
   void initState() {
     super.initState();
     context.read<VardiHomeCubit>().getHomeDashboardData();
-  
-    // Ticking seconds countdown
-    countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {
-          if (secondsLeft > 0) {
-            secondsLeft--;
+    context.read<VardiHomeCubit>().getGlobalData();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() {
+        if (secondsLeft > 0) {
+          secondsLeft--;
+        } else {
+          secondsLeft = 59;
+          if (minutesLeft > 0) {
+            minutesLeft--;
           } else {
-            secondsLeft = 59;
-            if (minutesLeft > 0) {
-              minutesLeft--;
+            minutesLeft = 59;
+            if (hoursLeft > 0) {
+              hoursLeft--;
             } else {
-              minutesLeft = 59;
-              if (hoursLeft > 0) {
-                hoursLeft--;
-              } else {
-                hoursLeft = 23;
-                if (daysLeft > 0) {
-                  daysLeft--;
-                }
-              }
+              hoursLeft = 23;
+              if (daysLeft > 0) daysLeft--;
             }
           }
-        });
-      }
+        }
+      });
     });
   }
 
   @override
   void dispose() {
-    countdownTimer.cancel();
-    _searchDebounce?.cancel();
-    searchController.dispose();
+    _countdownTimer.cancel();
+    _pulseController.dispose();
     super.dispose();
   }
 
+  // ─── BUILD ──────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final themeColor = isDarkMode
-        ? const Color(0xFF121212)
-        : const Color(0xFFF3F4F6); // Soft gray background
-
     return Scaffold(
-      backgroundColor: themeColor,
-      appBar: homeAppBar(),
+      backgroundColor: Constants.scaffoldBackgroundColour,
+      appBar: _buildAppBar(),
       body: BlocListener<VardiHomeCubit, VardiHomeState>(
-        listenWhen: (previous, current) => previous.countdown == null && current.countdown != null,
+        listenWhen: (p, c) => p.countdown == null && c.countdown != null,
         listener: (context, state) {
           if (state.countdown != null) {
-             setState(() {
-               daysLeft = state.countdown!['daysLeft'] ?? 0;
-               hoursLeft = state.countdown!['hoursLeft'] ?? 0;
-               minutesLeft = state.countdown!['minutesLeft'] ?? 0;
-               secondsLeft = state.countdown!['secondsLeft'] ?? 0;
-             });
+            setState(() {
+              daysLeft = state.countdown!['daysLeft'] ?? 0;
+              hoursLeft = state.countdown!['hoursLeft'] ?? 0;
+              minutesLeft = state.countdown!['minutesLeft'] ?? 0;
+              secondsLeft = state.countdown!['secondsLeft'] ?? 0;
+            });
           }
         },
-        child: SafeArea(
-          child: RefreshIndicator(
-            color: Constants.primaryBlueColour,
-            onRefresh: () async {
-              context.read<VardiHomeCubit>().getHomeDashboardData();
-              context.read<VardiHomeCubit>().getGlobalData();
-            },
-            child: SingleChildScrollView(
+        child: RefreshIndicator(
+          color: _accent,
+          backgroundColor: _surface,
+          onRefresh: () async {
+            context.read<VardiHomeCubit>().getHomeDashboardData();
+            context.read<VardiHomeCubit>().getGlobalData();
+          },
+          child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 30),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildGreetingAndCountdown(),
-                const SizedBox(height: 24),
-                _buildMotivationCard(),
-                 const SizedBox(height: 24),
-                _buildQuickActionGrid(),
-                const SizedBox(height: 24),
-                _buildBhartiInfoBanner(isDarkMode),
-                const SizedBox(height: 24),
-                const SizedBox(height: 24),
-              
-                if ((context.watch<VardiHomeCubit>().state.leaderboard ?? [])
-                    .isNotEmpty) ...[
-                  _buildSectionTitle(
-                      '🏆 Global Leaderboard', 'Top performers this week'),
-                  const SizedBox(height: 12),
-                  _leaderboardList(),
-                ]
+                      const SizedBox(height: 20),
+                      _buildHeroCountdown(),
+                      const SizedBox(height: 24),
+                      _buildQuickActionsGrid(),
+                      const SizedBox(height: 24),
+                      _buildMotivationCard(),
+                      const SizedBox(height: 24),
+                      _buildBhartiInfoBanner(),
+                      const SizedBox(height: 24),
+                _buildLeaderboardSection(),
               ],
             ),
           ),
         ),
       ),
-      ),
     );
   }
 
-  // ─── Modern Hero Countdown ──────────────────────────────────────────────────
-  Widget _buildGreetingAndCountdown() {
+  // ─── App Bar ──────────────────────────────────────────────────────────────────
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: _navyDark,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      titleSpacing: 16,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [_navyDark, _navyMid, Color(0xFF1E40AF)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+      ),
+      title: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            ),
+            child: const Icon(Icons.local_police_rounded,
+                color: Colors.amber, size: 20),
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Mission Vardi',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              Text(
+                'Maharashtra Police Bharti',
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  color: Colors.white60,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {},
+          icon: Stack(
+            children: [
+              const Icon(Icons.notifications_outlined,
+                  color: Colors.white, size: 24),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFBBF24),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 4),
+      ],
+    );
+  }
+
+  // ─── Hero Countdown Card ─────────────────────────────────────────────────────
+  Widget _buildHeroCountdown() {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF0F172A),
-            Color(0xFF1E3A8A)
-          ], // Deep Navy to Royal Blue
+          colors: [_navyDark, _navyMid, Color(0xFF1D4ED8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          stops: [0.0, 0.5, 1.0],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E3A8A).withOpacity(0.3),
-            blurRadius: 15,
+            color: _navyMid.withOpacity(0.4),
+            blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome, Future Officer! 🇮🇳',
-                    style: commonTextStyle.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Your dream uniform awaits.',
-                    style: commonTextStyle.copyWith(
-                      color: Colors.blue.shade100,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.local_police_rounded,
-                    color: Colors.amber, size: 28),
-              )
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Divider(color: Colors.white24, height: 1),
-          ),
-          Center(
-            child: Text(
-              'MAHARASHTRA POLICE BHARTI EXAM',
-              style: commonTextStyle.copyWith(
-                color: Colors.white70,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
+          // Decorative circle
+          Positioned(
+            top: -30,
+            right: -30,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.04),
               ),
             ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _modernTimerDigit(daysLeft.toString(), 'Days'),
-              _timerColon(),
-              _modernTimerDigit(hoursLeft.toString().padLeft(2, '0'), 'Hrs'),
-              _timerColon(),
-              _modernTimerDigit(minutesLeft.toString().padLeft(2, '0'), 'Min'),
-              _timerColon(),
-              _modernTimerDigit(secondsLeft.toString().padLeft(2, '0'), 'Sec'),
-            ],
+          Positioned(
+            bottom: -20,
+            left: -20,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.04),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header row
+                Row(
+                  children: [
+                    AnimatedBuilder(
+                      animation: _pulseController,
+                      builder: (_, child) => Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: Color.lerp(
+                            const Color(0xFF4ADE80),
+                            const Color(0xFF86EFAC),
+                            _pulseController.value,
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'EXAM COUNTDOWN',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white60,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Welcome, Future Officer! 🇮🇳',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                Text(
+                  'Your dream uniform awaits. Keep going.',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: Colors.white54,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Countdown tiles
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _countdownTile(daysLeft.toString(), 'Days'),
+                    _countdownDivider(),
+                    _countdownTile(hoursLeft.toString().padLeft(2, '0'), 'Hrs'),
+                    _countdownDivider(),
+                    _countdownTile(
+                        minutesLeft.toString().padLeft(2, '0'), 'Min'),
+                    _countdownDivider(),
+                    _countdownTile(
+                        secondsLeft.toString().padLeft(2, '0'), 'Sec'),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _modernTimerDigit(String value, String label) {
+  Widget _countdownTile(String value, String label) {
     return Column(
       children: [
         Container(
-          width: 55,
+          width: 60,
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withOpacity(0.3)),
+            border: Border.all(color: Colors.white.withOpacity(0.15)),
           ),
           child: Center(
             child: Text(
               value,
               style: GoogleFonts.shareTechMono(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 5),
         Text(
           label.toUpperCase(),
-          style: commonTextStyle.copyWith(
+          style: GoogleFonts.inter(
             fontSize: 9,
             color: Colors.blue.shade200,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             letterSpacing: 1,
           ),
         ),
@@ -292,154 +383,319 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 
-  Widget _timerColon() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Text(
-        ':',
-        style: GoogleFonts.shareTechMono(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white54,
+  Widget _countdownDivider() => Padding(
+        padding: const EdgeInsets.only(bottom: 22),
+        child: Text(
+          ':',
+          style: GoogleFonts.shareTechMono(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white30,
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  // ─── Quick Actions Grid ─────────────────────────────────────────────────────
-  Widget _buildQuickActionGrid() {
+  // ─── Quick Actions Grid ──────────────────────────────────────────────────────
+  Widget _buildQuickActionsGrid() {
+    final actions = [
+      _ActionItem(
+        title: 'Mock Quizzes',
+        subtitle: 'Test your skills',
+        icon: Icons.timer_rounded,
+        color: const Color(0xFF6366F1),
+        lightColor: const Color(0xFFEEF2FF),
+        onTap: () =>
+            context.push(RoutesNames.categoryItemsScreen, extra: 'Timed'),
+      ),
+      _ActionItem(
+        title: 'PYQ Papers',
+        subtitle: 'Previous year papers',
+        icon: Icons.history_edu_rounded,
+        color: const Color(0xFF059669),
+        lightColor: const Color(0xFFECFDF5),
+        onTap: () => context.push(RoutesNames.pyqScreen),
+      ),
+      _ActionItem(
+        title: 'Subject Notes',
+        subtitle: 'Read & study',
+        icon: Icons.library_books_rounded,
+        color: const Color(0xFFD97706),
+        lightColor: const Color(0xFFFFFBEB),
+        onTap: () =>
+            context.push(RoutesNames.categoryItemsScreen, extra: 'Notes'),
+      ),
+      _ActionItem(
+        title: 'Leaderboard',
+        subtitle: 'Your rank & score',
+        icon: Icons.emoji_events_rounded,
+        color: const Color(0xFFDB2777),
+        lightColor: const Color(0xFFFDF2F8),
+        onTap: () => context.push(RoutesNames.leaderboardScreen),
+      ),
+      _ActionItem(
+        title: 'Physical Test',
+        subtitle: 'Track your run',
+        icon: Icons.directions_run_rounded,
+        color: const Color(0xFF0891B2),
+        lightColor: const Color(0xFFECFEFF),
+        onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(2),
+      ),
+      _ActionItem(
+        title: 'My Profile',
+        subtitle: 'View your progress',
+        icon: Icons.person_rounded,
+        color: const Color(0xFF7C3AED),
+        lightColor: const Color(0xFFF5F3FF),
+        onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(3),
+      ),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(
-            '⚡ Quick Actions', 'What do you want to practice today?'),
-        const SizedBox(height: 16),
-        GridView.count(
-          crossAxisCount: 2,
+        _sectionHeader('Quick Actions', 'What do you want to do today?'),
+        const SizedBox(height: 14),
+        GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 14,
-          crossAxisSpacing: 14,
-          childAspectRatio: 1.8,
-          children: [
-            _actionCard(
-              title: 'Mock Quizzes',
-              subtitle: 'Test your skills',
-              icon: Icons.timer_rounded,
-              gradient: const [Color(0xFF6366F1), Color(0xFF4338CA)], // Indigo
-              onTap: () => context.push(RoutesNames.categoryItemsScreen, extra: 'Timed'),
-            ),
-            _actionCard(
-              title: 'PYQ Papers',
-              subtitle: 'Previous year papers',
-              icon: Icons.history_edu_rounded,
-              gradient: const [Color(0xFF10B981), Color(0xFF047857)], // Emerald
-              onTap: () => context.push(RoutesNames.pyqScreen),
-            ),
-            _actionCard(
-              title: 'Subject Notes',
-              subtitle: 'Read notes',
-              icon: Icons.library_books_rounded,
-              gradient: const [Color(0xFFF59E0B), Color(0xFFB45309)], // Amber
-              onTap: () => context.push(RoutesNames.categoryItemsScreen, extra: 'Notes'),
-            ),
-            _actionCard(
-              title: 'Leaderboard',
-              subtitle: 'Check your rank',
-              icon: Icons.emoji_events_rounded,
-              gradient: const [Color(0xFFEC4899), Color(0xFFBE185D)], // Pink
-              onTap: () => context.push(RoutesNames.leaderboardScreen),
-            ),
-            _actionCard(
-              title: 'Physical Test',
-              subtitle: 'Track your run',
-              icon: Icons.directions_run_rounded,
-              gradient: const [Color(0xFF06B6D4), Color(0xFF0891B2)], // Cyan
-              onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(2),
-            ),
-            _actionCard(
-              title: 'My Profile',
-              subtitle: 'View progress',
-              icon: Icons.person_rounded,
-              gradient: const [Color(0xFF8B5CF6), Color(0xFF6D28D9)], // Violet
-              onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(3),
-            ),
-          ],
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 1.15,
+          ),
+          itemCount: actions.length,
+          itemBuilder: (context, i) => _buildActionTile(actions[i]),
         ),
       ],
     );
   }
 
-  Widget _actionCard({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required List<Color> gradient,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+  Widget _buildActionTile(_ActionItem item) {
+    return GestureDetector(
+      onTap: item.onTap,
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradient,
+          color: _surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: _divider),
+          boxShadow: [
+            BoxShadow(
+              color: _accent.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: item.lightColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(item.icon, color: item.color, size: 17),
+              ),
+              const Spacer(),
+              Text(
+                item.title,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: _textPrimary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                item.subtitle,
+                style: GoogleFonts.inter(
+                  fontSize: 9,
+                  color: _textSecondary,
+                  fontWeight: FontWeight.w400,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ─── Motivation Card ─────────────────────────────────────────────────────────
+  Widget _buildMotivationCard() {
+    final state = context.watch<VardiHomeCubit>().state;
+    final quotesList =
+        (state.dailyQuotes != null && state.dailyQuotes!.isNotEmpty)
+            ? state.dailyQuotes!
+            : quotes;
+    if (quoteIndex >= quotesList.length) quoteIndex = 0;
+    final currentQuote = quotesList[quoteIndex];
+    final quoteText =
+        (currentQuote is Map) ? (currentQuote["en"] ?? currentQuote["mr"] ?? "") : currentQuote.toString();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: _surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFFBEB),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.format_quote_rounded,
+                      color: Color(0xFFD97706), size: 18),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Daily Motivation',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: _textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: _accentLight,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: _accent.withValues(alpha: 0.2)),
+              ),
+              child: Text(
+                quoteText,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontStyle: FontStyle.italic,
+                  height: 1.6,
+                  fontWeight: FontWeight.w500,
+                  color: _textPrimary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () => setState(
+                  () => quoteIndex = (quoteIndex + 1) % quotesList.length),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.refresh_rounded, size: 14, color: _accent),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Next Quote',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: _accent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── Bharti Info Banner ──────────────────────────────────────────────────────
+  Widget _buildBhartiInfoBanner() {
+    return GestureDetector(
+      onTap: () => context.push(RoutesNames.policeBhartiInfoScreen),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1E3A8A), Color(0xFF1D4ED8), Color(0xFF2563EB)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: gradient.last.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: _accent.withValues(alpha: 0.3),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
             children: [
-              // Decorative large background icon
-              Positioned(
-                right: -15,
-                bottom: -15,
-                child:
-                    Icon(icon, size: 80, color: Colors.white.withOpacity(0.15)),
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(Icons.menu_book_rounded,
+                    color: Colors.white, size: 24),
               ),
-              Padding(
-                padding: const EdgeInsets.all(14),
+              const SizedBox(width: 14),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(icon, color: Colors.white, size: 22),
-                    ),
-                    const Spacer(),
                     Text(
-                      title,
-                      style: commonTextStyle.copyWith(
-                        fontWeight: FontWeight.bold,
+                      'Police Bharti Complete Guide',
+                      style: GoogleFonts.inter(
                         fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
                     Text(
-                      subtitle,
-                      style: commonTextStyle.copyWith(
-                        fontSize: 10,
-                        color: Colors.white.withOpacity(0.8),
+                      'Syllabus · Age limit · Salary & more',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: Colors.white70,
                       ),
                     ),
                   ],
                 ),
               ),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.arrow_forward_rounded,
+                    color: Colors.white, size: 16),
+              ),
             ],
           ),
         ),
@@ -447,509 +703,170 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen> {
     );
   }
 
-  // ─── Motivation Card ────────────────────────────────────────────────────────
-  Widget _buildMotivationCard() {
+  // ─── Leaderboard Section ─────────────────────────────────────────────────────
+  Widget _buildLeaderboardSection() {
     final state = context.watch<VardiHomeCubit>().state;
-    final quotesList = (state.dailyQuotes != null && state.dailyQuotes!.isNotEmpty) 
-        ? state.dailyQuotes! 
-        : quotes;
-        
-    if (quoteIndex >= quotesList.length) quoteIndex = 0;
-    
-    final currentQuote = quotesList[quoteIndex];
-    final quoteText = currentQuote["en"] ?? currentQuote["mr"] ?? "";
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.format_quote_rounded,
-              color: Colors.amber.shade600, size: 36),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Daily Motivation",
-                  style: commonTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  quoteText,
-                  style: commonTextStyle.copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 14,
-                    height: 1.4,
-                    fontWeight: FontWeight.w600,
-                    color: isDarkMode ? Colors.white : const Color(0xFF1F2937),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      quoteIndex = (quoteIndex + 1) % quotesList.length;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.refresh_rounded,
-                          size: 14, color: Constants.primaryBlueColour),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Next Quote",
-                        style: commonTextStyle.copyWith(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Constants.primaryBlueColour,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ─── Global Alerts ──────────────────────────────────────────────────────────
-  Widget _buildGlobalAlerts() {
-    final state = context.watch<VardiHomeCubit>().state;
-    final alerts = state.alerts ?? [];
-    if (alerts.isEmpty) return const SizedBox.shrink();
-
-    final latest = alerts.first;
-    final message = latest['message_en'] ?? "New updates available.";
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.red.shade200),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.red.shade100,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.campaign_rounded,
-                color: Colors.red.shade700, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Official Alert',
-                  style: commonTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: Colors.red.shade900,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  message,
-                  style: commonTextStyle.copyWith(
-                    fontSize: 13,
-                    color: Colors.red.shade900,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
- 
-  // ─── PDF Library ────────────────────────────────────────────────────────────
-  Widget _pdfNotesLibrary() {
-    final state = context.watch<VardiHomeCubit>().state;
-    List<dynamic> papers = state.data ?? [];
-
-    if (searchQuery.isNotEmpty) {
-      final q = searchQuery.toLowerCase();
-      papers = papers.where((p) {
-        final title = (p.title ?? '').toString().toLowerCase();
-        final desc = (p.description ?? '').toString().toLowerCase();
-        return title.contains(q) || desc.contains(q);
-      }).toList();
-    }
+    final leaders = state.leaderboard ?? [];
+    if (leaders.isEmpty) return const SizedBox.shrink();
 
     return Column(
       children: [
+        _sectionHeader('🏆 Global Leaderboard', 'Top performers this week'),
+        const SizedBox(height: 14),
         Container(
-          height: 48,
           decoration: BoxDecoration(
-            color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            color: _surface,
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: CommonTextFormField(
-            controller: searchController,
-            onChanged: (val) {
-              setState(() => searchQuery = val);
-            },
-            hintText: 'Search Notes & Previous Papers...',
-            prefixIcon: Icons.search_rounded,
-          ),
-        ),
-        const SizedBox(height: 16),
-        if (state.isLoading)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(child: CircularProgressIndicator()),
-          )
-        else if (papers.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Column(
-                children: [
-                  Icon(Icons.search_off_rounded,
-                      size: 48, color: Colors.grey.shade400),
-                  const SizedBox(height: 12),
-                  Text(
-                    'No documents found',
-                    style: commonTextStyle.copyWith(
-                      color: Colors.grey.shade600,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        else
-          ListView.separated(
-            itemCount: papers.length,
+          child: ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemCount: leaders.length,
+            separatorBuilder: (_, __) =>
+                const Divider(height: 1, color: _divider, indent: 16, endIndent: 16),
             itemBuilder: (context, index) {
-              final item = papers[index];
-              return InkWell(
-                onTap: () {
-                  context.push(
-                    RoutesNames.pdfViewerScreen,
-                    extra: {
-                      'pdfUrl': item.pdfUrl ?? '',
-                      'title': item.title ?? '',
-                      'description': item.description ?? '',
-                    },
-                  );
-                },
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+              final item = leaders[index];
+              final rankColors = [
+                const Color(0xFFFBBF24), // Gold
+                const Color(0xFF94A3B8), // Silver
+                const Color(0xFFF97316), // Bronze
+              ];
+              final rankColor = index < 3 ? rankColors[index] : _textSecondary;
+              final isTop3 = index < 3;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    // Rank badge
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: rankColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(Icons.picture_as_pdf_rounded,
-                              color: Colors.red.shade600, size: 28),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.title ?? 'Untitled Document',
-                                style: commonTextStyle.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  color: isDarkMode
-                                      ? Colors.white
-                                      : const Color(0xFF111827),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                item.description ?? 'No description available.',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: commonTextStyle.copyWith(
+                      child: Center(
+                        child: isTop3
+                            ? Text(
+                                ['🥇', '🥈', '🥉'][index],
+                                style: const TextStyle(fontSize: 16),
+                              )
+                            : Text(
+                                '#${index + 1}',
+                                style: GoogleFonts.inter(
                                   fontSize: 11,
-                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w700,
+                                  color: _textSecondary,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        IconButton(
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.blue.shade50,
-                            foregroundColor: Constants.primaryBlueColour,
-                          ),
-                          onPressed: () async {
-                            await DownloadService.downloadPDF(
-                              context: context,
-                              url: item.pdfUrl ?? '',
-                              title: item.title ?? '',
-                            );
-                          },
-                          icon: const Icon(Icons.file_download_outlined),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    // Avatar
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: rankColor.withOpacity(0.15),
+                      child: Icon(
+                        Icons.person_rounded,
+                        color: rankColor,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    // Name
+                    Expanded(
+                      child: Text(
+                        item["name"] ?? "Unknown User",
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          color: _textPrimary,
+                        ),
+                      ),
+                    ),
+                    // Score chip
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: _accentLight,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: _accent.withValues(alpha: 0.2)),
+                      ),
+                      child: Text(
+                        '${item["score_str"] ?? "0"} pts',
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w700,
+                          color: _accent,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
           ),
+        ),
       ],
     );
   }
 
-  // ─── Global Leaderboard ─────────────────────────────────────────────────────
-  Widget _leaderboardList() {
-    final state = context.watch<VardiHomeCubit>().state;
-    final List<dynamic> leaders = state.leaderboard ?? [];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ListView.separated(
-        itemCount: leaders.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        separatorBuilder: (_, __) =>
-            Divider(height: 1, color: Colors.grey.shade100),
-        itemBuilder: (context, index) {
-          final item = leaders[index];
-          final isTopRank = index == 0;
-          final isSecond = index == 1;
-          final isThird = index == 2;
-
-          Color rankColor = Colors.grey.shade500;
-          if (isTopRank) rankColor = Colors.amber;
-          if (isSecond) rankColor = Colors.grey.shade400; // Silver
-          if (isThird) rankColor = Colors.orange.shade300; // Bronze
-
-          return ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-            leading: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "#${index + 1}",
-                  style: commonTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: rankColor,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: rankColor.withOpacity(0.2),
-                  child: Icon(
-                    isTopRank
-                        ? Icons.emoji_events_rounded
-                        : Icons.person_rounded,
-                    color: rankColor,
-                    size: 20,
-                  ),
-                ),
-              ],
-            ),
-            title: Text(
-              item["name"] ?? "Unknown User",
-              style: commonTextStyle.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-                color: isDarkMode ? Colors.white : const Color(0xFF111827),
-              ),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                "${item["score_str"] ?? "0"} Pts",
-                style: commonTextStyle.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Constants.primaryBlueColour,
-                  fontSize: 11,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // ─── Bharti Banner ──────────────────────────────────────────────────────────
-  Widget _buildBhartiInfoBanner(bool isDarkMode) {
-    return InkWell(
-      onTap: () => context.push(RoutesNames.policeBhartiInfoScreen),
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: const Color(0xFF0D9488), // Teal color for a fresh look
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0D9488).withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              right: -10,
-              top: -20,
-              child: Icon(Icons.article_rounded,
-                  size: 100, color: Colors.white.withOpacity(0.1)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.menu_book_rounded,
-                        color: Color(0xFF0D9488), size: 28),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Police Bharti Complete Guide',
-                          style: commonTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Syllabus, Age limit, Salary & more',
-                          style: commonTextStyle.copyWith(
-                            fontSize: 11,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      color: Colors.white, size: 16),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ─── Helper: App Bar ──────────────────────────────────────────────────────
-  CustomAppBar homeAppBar() {
-    return const CustomAppBar(
-      titleText: "Mission Vardi",
-      titleIcon: Icons.shield_rounded,
-    );
-  }
-
-  // ─── Helper: Section Title ────────────────────────────────────────────────
-  Widget _buildSectionTitle(String title, String subtitle) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  // ─── Section Header ───────────────────────────────────────────────────────────
+  Widget _sectionHeader(String title, String subtitle) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          title,
-          style: commonTextStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: isDarkMode ? Colors.white : const Color(0xFF111827),
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          subtitle,
-          style: commonTextStyle.copyWith(
-            fontSize: 11,
-            color: Colors.grey.shade600,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: _textPrimary,
+                letterSpacing: -0.3,
+              ),
+            ),
+            Text(
+              subtitle,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: _textSecondary,
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
+}
+
+// ─── Data Class ───────────────────────────────────────────────────────────────
+class _ActionItem {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final Color lightColor;
+  final VoidCallback onTap;
+
+  const _ActionItem({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.lightColor,
+    required this.onTap,
+  });
 }

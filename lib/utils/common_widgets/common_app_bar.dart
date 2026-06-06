@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
 
+// ─── Design tokens (navy blue theme) ─────────────────────────────────────────
+const _navyDark = Color(0xFF0B1437);
+const _navyMid = Color(0xFF1A3572);
+const _navyLight = Color(0xFF1E40AF);
 
-class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? title;
   final String? titleText;
   final IconData? titleIcon;
@@ -13,6 +15,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget? leading;
   final PreferredSizeWidget? bottom;
   final ShapeBorder? shape;
+  // Legacy fields kept for API compatibility
   final Gradient? gradient;
   final Color? backgroundColor;
 
@@ -30,26 +33,18 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   });
 
   @override
-  State<CustomAppBar> createState() => _CustomAppBarState();
-
-  @override
-  Size get preferredSize => Size.fromHeight(bottom == null
-      ? kToolbarHeight
-      : kToolbarHeight + bottom!.preferredSize.height);
-}
-
-class _CustomAppBarState extends State<CustomAppBar> {
-  bool isDarkMode = false;
-  bool isOfflineMode = false;
-  bool isLowDataMode = false;
+  Size get preferredSize => Size.fromHeight(
+        bottom == null
+            ? kToolbarHeight
+            : kToolbarHeight + bottom!.preferredSize.height,
+      );
 
   @override
   Widget build(BuildContext context) {
-    final isMarathi = false;
+    final canPop = Navigator.of(context).canPop();
 
-    // Build the dynamic unified title if titleText is provided
-    Widget? appBarTitle = widget.title;
-    if (widget.titleText != null) {
+    Widget appBarTitle = title ?? const SizedBox.shrink();
+    if (titleText != null) {
       appBarTitle = ValueListenableBuilder<bool>(
         valueListenable: CheckInternetService.connectionStatusNotifier,
         builder: (context, isOffline, child) {
@@ -57,75 +52,104 @@ class _CustomAppBarState extends State<CustomAppBar> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(widget.titleIcon ?? Icons.shield,
-                      color: Colors.amber, size: 20),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      widget.titleText!,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: commonTextStyle.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 2),
               Text(
-                isOffline
-                    ? "Offline Mode Active ⚠️"
-                    : "Focus, Train, Conquer!",
-                style: commonTextStyle.copyWith(
-                  fontSize: 10,
-                  color: isOffline ? Colors.red.shade300 : Colors.white70,
-                  fontWeight: isOffline ? FontWeight.bold : FontWeight.normal,
+                titleText!,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: -0.3,
                 ),
               ),
+              if (isOffline)
+                Text(
+                  'Offline Mode ⚠️',
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    color: Colors.amber.shade300,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
             ],
           );
         },
       );
     }
 
-    // Build default unified actions if none are specified
-    List<Widget>? appBarActions = widget.actions;
-    appBarActions ??= [];
-
     return AppBar(
-      title: appBarTitle,
-      leading: widget.leading,
-      iconTheme: IconThemeData(color: Colors.white),
-      backgroundColor: widget.gradient == null
-          ? (widget.backgroundColor ?? Constants.primaryBlueColour)
-          : Colors.transparent,
+      backgroundColor: Colors.transparent,
       elevation: 0,
-      actions: [
-        ...appBarActions,
-        const SizedBox(width: 5),
-      ],
-      centerTitle: false,
-      bottom: widget.bottom,
+      scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
-      shape: widget.shape,
-      flexibleSpace: widget.gradient != null
-          ? ClipRRect(
-              borderRadius: widget.shape is RoundedRectangleBorder
-                  ? (widget.shape as RoundedRectangleBorder).borderRadius
-                  : BorderRadius.zero,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: widget.gradient,
-                ),
-              ),
+      centerTitle: false,
+      titleSpacing: canPop ? 0 : 16,
+      bottom: bottom,
+      shape: shape,
+      // Navy gradient background — same across all screens
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [_navyDark, _navyMid, _navyLight],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+      ),
+
+      // Back button — frosted white pill
+      leading: leading ??
+          (canPop
+              ? IconButton(
+                  icon: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2)),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null),
+
+      title: titleText != null
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (titleIcon != null) ...[
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2)),
+                    ),
+                    child: Icon(titleIcon, color: Colors.amber, size: 16),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+                Flexible(child: appBarTitle),
+              ],
             )
-          : null,
+          : appBarTitle,
+
+      actions: [
+        ...(actions ?? []),
+        const SizedBox(width: 4),
+      ],
+
+      iconTheme: const IconThemeData(color: Colors.white),
     );
   }
 }

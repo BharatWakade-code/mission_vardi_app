@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-final TextStyle commonTextStyle = GoogleFonts.philosopher(
-  color: Colors.black,
+final TextStyle commonTextStyle = GoogleFonts.inter(
+  color: const Color(0xFF111827),
   fontSize: 14,
   fontWeight: FontWeight.w400,
 );
@@ -16,7 +16,7 @@ class Constants {
    static Color whiteColour = Colors.white;
    static const Color primaryGreenColour = Color(0xFF0D47A1); // Deep Police Blue (Mapped for legacy references)
    static const Color secondaryGreenColour = Color(0xFF1976D2); // Steel Blue (Mapped for legacy references)
-   static Color scaffoldBackgroundColour = Color(0xFFF4F6FA);
+   static Color scaffoldBackgroundColour = const Color(0xFFEEF2FF);
 
    static const Color primaryBlueColour = Color(0xFF0D47A1); // Primary Blue
    static const Color secondaryBlueColour = Color(0xFF1E88E5); // Secondary Blue

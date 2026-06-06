@@ -19,11 +19,8 @@ jobs:
 
       - name: Setup and Restart Backend
         run: |
+          # The runner is already inside your EC2 instance, so we just enter the backend directory
           cd mission_vardi_backend
-
-          # Capture absolute path of the backend directory
-          BACKEND_DIR=$(pwd)
-          echo "Backend directory: $BACKEND_DIR"
           
           # Setup python environment
           python3 -m venv .venv
@@ -33,17 +30,9 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           
-          # Stop old process if running (ignore error if not found)
-          pm2 delete mission-vardi-backend 2>/dev/null || true
-          
-          # Start with absolute paths so PM2 can always find uvicorn
-          pm2 start "$BACKEND_DIR/.venv/bin/uvicorn" \
-            --name mission-vardi-backend \
-            --interpreter none \
-            -- app.main:app --host 0.0.0.0 --port 8000
-          
-          # Save process list so PM2 restores it on server reboot
+          # Start or restart using ecosystem.config.js
+          # startOrRestart handles both: fresh start (no process) and subsequent restarts
+          pm2 startOrRestart ecosystem.config.js --update-env
           pm2 save
           
           echo "Deployment successful!"
-          pm2 list

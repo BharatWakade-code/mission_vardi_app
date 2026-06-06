@@ -17,12 +17,8 @@ import 'package:mission_vardi/utils/push_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-  } catch (e) {
-    debugPrint('Firebase init error (web may need firebase_options.dart): $e');
-  }
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform);
 
   if (!kIsWeb) {
     try {
@@ -93,6 +89,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         canvasColor: Colors.white,
+        scaffoldBackgroundColor: Constants.scaffoldBackgroundColour,
       ),
     );
   }
