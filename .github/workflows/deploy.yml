@@ -28,8 +28,9 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           
-          # --- ADD YOUR RESTART COMMAND HERE ---
-          # Restart using your ecosystem.config.js
-          pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js
+          # Start or restart using ecosystem.config.js
+          # startOrRestart handles both: fresh start (no process) and subsequent restarts
+          pm2 startOrRestart ecosystem.config.js --update-env
+          pm2 save
           
           echo "Deployment successful!"
