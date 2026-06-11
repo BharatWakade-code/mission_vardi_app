@@ -64,9 +64,18 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
   Widget _buildUserStickyBar(Map<String, dynamic> userRankData) {
     final rank = userRankData['rank'] ?? 0;
+    final globalRank = userRankData['global_rank'];
+    final districtRank = userRankData['district_rank'];
     final name = userRankData['name'] ?? 'You';
     final points = userRankData['points'] ?? 0;
     final district = userRankData['district'];
+
+    String rankDisplay = "#$rank";
+    if (globalRank != null && districtRank != null && district != "Unknown") {
+      rankDisplay = "State #$globalRank • District #$districtRank";
+    } else if (globalRank != null) {
+      rankDisplay = "State #$globalRank";
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -84,24 +93,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         top: false,
         child: Row(
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                "#$rank",
-                style: commonTextStyle.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,16 +106,22 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       fontSize: 14,
                     ),
                   ),
-                  if (district != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      district,
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      rankDisplay,
                       style: commonTextStyle.copyWith(
-                        color: Colors.white70,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                         fontSize: 11,
                       ),
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),

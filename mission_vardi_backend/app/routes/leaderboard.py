@@ -36,15 +36,11 @@ def get_leaderboard(quiz_id: str, limit: int = 10):
         "data": leaderboard
     }
 
-@router.get("/global")
-def get_global_leaderboard(limit: int = 10, user_id: str = None):
-    from app.services.mongodb_service import user_stats_collection
-    # Fetch all stats
+def _get_computed_global_leaderboard(user_stats_collection, users_collection):
     stats = list(user_stats_collection.find({}, {"_id": 0}))
-    
     if not stats:
-        return {"status": True, "message": "No data found", "data": [], "user_rank": None}
-    
+        return []
+        
     user_ids = [st["user_id"] for st in stats]
     users = list(users_collection.find({"id": {"$in": user_ids}}, {"_id": 0}))
     user_map = {u["id"]: u for u in users}
@@ -57,7 +53,6 @@ def get_global_leaderboard(limit: int = 10, user_id: str = None):
         score = st.get("average_score_percent", 0.0)
         quizzes = st.get("total_quizzes", 0)
         
-        # Points = average accuracy * total quizzes taken
         points = int(score * quizzes)
         
         leaderboard.append({
@@ -69,21 +64,45 @@ def get_global_leaderboard(limit: int = 10, user_id: str = None):
         })
         
     leaderboard.sort(key=lambda x: x["points"], reverse=True)
+    return leaderboard
+
+def _get_user_ranks(user_id, full_leaderboard):
+    user_item = next((u for u in full_leaderboard if u["user_id"] == user_id), None)
+    if not user_item:
+        return None
+        
+    global_rank = full_leaderboard.index(user_item) + 1
     
+    district_rank = None
+    district = user_item.get("district")
+    if district and district != "Unknown":
+        district_users = [u for u in full_leaderboard if u.get("district") == district]
+        district_rank = district_users.index(user_item) + 1
+        
+    return {
+        "global_rank": global_rank,
+        "district_rank": district_rank,
+        **user_item
+    }
+
+@router.get("/global")
+def get_global_leaderboard(limit: int = 10, user_id: str = None):
+    from app.services.mongodb_service import user_stats_collection
+    
+    full_leaderboard = _get_computed_global_leaderboard(user_stats_collection, users_collection)
+    if not full_leaderboard:
+        return {"status": True, "message": "No data found", "data": [], "user_rank": None}
+        
     user_rank_data = None
     if user_id:
-        for idx, item in enumerate(leaderboard):
-            if item["user_id"] == user_id:
-                user_rank_data = {
-                    "rank": idx + 1,
-                    **item
-                }
-                break
-                
+        user_rank_data = _get_user_ranks(user_id, full_leaderboard)
+        if user_rank_data:
+            user_rank_data["rank"] = user_rank_data["global_rank"]
+            
     return {
         "status": True,
         "message": "Global leaderboard fetched",
-        "data": leaderboard[:limit],
+        "data": full_leaderboard[:limit],
         "user_rank": user_rank_data
     }
 
@@ -91,50 +110,21 @@ def get_global_leaderboard(limit: int = 10, user_id: str = None):
 def get_district_leaderboard(district_name: str, limit: int = 10, user_id: str = None):
     from app.services.mongodb_service import user_stats_collection
     
-    # Fetch users belonging to this district
-    users_in_district = list(users_collection.find({"district": district_name}, {"_id": 0}))
-    if not users_in_district:
+    full_leaderboard = _get_computed_global_leaderboard(user_stats_collection, users_collection)
+    district_leaderboard = [u for u in full_leaderboard if u.get("district") == district_name]
+    
+    if not district_leaderboard:
         return {"status": True, "message": f"No data found for district {district_name}", "data": [], "user_rank": None}
         
-    user_ids = [u["id"] for u in users_in_district]
-    user_map = {u["id"]: u for u in users_in_district}
-    
-    # Fetch stats only for these users
-    stats = list(user_stats_collection.find({"user_id": {"$in": user_ids}}, {"_id": 0}))
-    
-    leaderboard = []
-    for st in stats:
-        u_id = st["user_id"]
-        u_name = user_map.get(u_id, {}).get("name", "Unknown User")
-        score = st.get("average_score_percent", 0.0)
-        quizzes = st.get("total_quizzes", 0)
-        
-        # Points = average accuracy * total quizzes taken
-        points = int(score * quizzes)
-        
-        leaderboard.append({
-            "user_id": u_id,
-            "name": u_name,
-            "points": points,
-            "score_str": f"{points} Points",
-            "district": district_name
-        })
-        
-    leaderboard.sort(key=lambda x: x["points"], reverse=True)
-    
     user_rank_data = None
     if user_id:
-        for idx, item in enumerate(leaderboard):
-            if item["user_id"] == user_id:
-                user_rank_data = {
-                    "rank": idx + 1,
-                    **item
-                }
-                break
+        user_rank_data = _get_user_ranks(user_id, full_leaderboard)
+        if user_rank_data:
+            user_rank_data["rank"] = user_rank_data.get("district_rank", user_rank_data["global_rank"])
 
     return {
         "status": True,
         "message": f"Leaderboard for {district_name} fetched",
-        "data": leaderboard[:limit],
+        "data": district_leaderboard[:limit],
         "user_rank": user_rank_data
     }

@@ -1018,6 +1018,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.info_outline_rounded, size: 14, color: Colors.blueGrey),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        "Add your district to participate in local District Leaderboard competitions! Otherwise you'll only compete globally.",
+                        style: commonTextStyle.copyWith(
+                          fontSize: 11,
+                          color: Colors.blueGrey,
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 24),
                 CommonAuthButton(
                   label: "Save Changes",
