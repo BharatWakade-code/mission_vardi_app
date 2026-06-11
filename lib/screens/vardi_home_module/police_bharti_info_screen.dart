@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mission_vardi/utils/constants.dart';
 
@@ -97,7 +96,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
               titlePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               title: Text(
                 "पोलीस भरती माहिती केंद्र",
-                style: GoogleFonts.philosopher(
+                style: commonTextStyle.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -314,7 +313,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
                   Expanded(
                     child: Text(
                       "महाराष्ट्र पोलीस भरती",
-                      style: GoogleFonts.philosopher(
+                      style: commonTextStyle.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : Colors.black87,
@@ -340,7 +339,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Quick Facts Grid Section
         Text(
           "👮‍♂️ भरती ठळक वैशिष्ट्ये",
-          style: GoogleFonts.philosopher(
+          style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: isDark ? Colors.white : Colors.black87,
@@ -366,7 +365,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Why Join section
         Text(
           "💡 पोलीस भरतीमध्ये सहभागी का व्हावे?",
-          style: GoogleFonts.philosopher(
+          style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: isDark ? Colors.white : Colors.black87,
@@ -410,7 +409,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
           const SizedBox(height: 8),
           Text(
             value,
-            style: GoogleFonts.philosopher(
+            style: commonTextStyle.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white : Colors.black87,
@@ -513,7 +512,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
                   const SizedBox(width: 12),
                   Text(
                     "📅 वयोमर्यादा (Age Limit)",
-                    style: GoogleFonts.philosopher(
+                    style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: isDark ? Colors.white : Colors.black87,
@@ -555,7 +554,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
                   const SizedBox(width: 12),
                   Text(
                     "💰 वेतन श्रेणी व भत्ते (Salary & Perks)",
-                    style: GoogleFonts.philosopher(
+                    style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: isDark ? Colors.white : Colors.black87,
@@ -631,7 +630,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Timeline Title
         Text(
           "🎯 पोलीस भरती टप्प्याटप्प्याची निवड प्रक्रिया",
-          style: GoogleFonts.philosopher(
+          style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: isDark ? Colors.white : Colors.black87,
@@ -724,7 +723,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
               child: Center(
                 child: Text(
                   stepNo,
-                  style: GoogleFonts.shareTechMono(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
             ),
@@ -997,7 +996,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Section Header
         Text(
           "🔗 महाराष्ट्र पोलीस भरती २०२६ : महत्वाच्या लिंक्स",
-          style: GoogleFonts.philosopher(
+          style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: isDark ? Colors.white : Colors.black87,

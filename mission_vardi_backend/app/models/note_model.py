@@ -6,4 +6,5 @@ class NoteCreate(BaseModel):
     description: str
     pdfUrl: Optional[str] = None
     category: Optional[str] = None
+    subject: Optional[str] = None
     content: Optional[str] = None

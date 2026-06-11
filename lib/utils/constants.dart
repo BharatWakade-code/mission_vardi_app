@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-final TextStyle commonTextStyle = GoogleFonts.inter(
+TextStyle get commonTextStyle => GoogleFonts.philosopher(
   color: const Color(0xFF111827),
   fontSize: 14,
   fontWeight: FontWeight.w400,

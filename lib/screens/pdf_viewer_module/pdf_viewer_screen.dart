@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:mission_vardi/utils/constants.dart';
@@ -53,7 +52,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               widget.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              style: commonTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             actions: [
               state.isDownloading
@@ -85,7 +84,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   color: Colors.grey.shade100,
                   child: Text(
                     widget.description,
-                    style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey.shade800),
+                    style: commonTextStyle.copyWith(fontSize: 14, color: Colors.grey.shade800),
                   ),
                 ),
               Expanded(

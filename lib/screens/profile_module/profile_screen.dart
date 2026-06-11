@@ -73,9 +73,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (profileState.isLoading && user == null) {
       return Scaffold(
         backgroundColor: Constants.scaffoldBackgroundColour,
-        appBar: CustomAppBar(
+      appBar: CustomAppBar(
           titleText: "Profile & Statistics",
           titleIcon: Icons.person,
+          actions: [
+            _buildLogoutButton(context),
+          ],
         ),
         body: const Center(
           child: CircularProgressIndicator(),
@@ -88,6 +91,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: CustomAppBar(
         titleText: "Profile & Statistics",
         titleIcon: Icons.person,
+        actions: [
+          _buildLogoutButton(context),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -539,7 +545,163 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildLogoutButton(BuildContext context) {
+    return IconButton(
+      tooltip: 'Logout',
+      icon: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: Colors.red.withOpacity(0.18),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.red.withOpacity(0.35)),
+        ),
+        child: const Icon(
+          Icons.logout_rounded,
+          color: Colors.redAccent,
+          size: 18,
+        ),
+      ),
+      onPressed: () async {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF0B1437), Color(0xFF1A3572)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    color: Colors.white.withOpacity(0.1)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Icon
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: Colors.red.withOpacity(0.3)),
+                    ),
+                    child: const Icon(Icons.logout_rounded,
+                        color: Colors.redAccent, size: 28),
+                  ),
+                  const SizedBox(height: 16),
+                  // Title
+                  Text(
+                    'Logout',
+                    style: commonTextStyle.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Message
+                  Text(
+                    'Are you sure you want to logout?',
+                    textAlign: TextAlign.center,
+                    style: commonTextStyle.copyWith(
+                      color: Colors.white60,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Buttons
+                  Row(
+                    children: [
+                      // Cancel
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(ctx, false),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                  color:
+                                      Colors.white.withOpacity(0.15)),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Cancel',
+                                style: commonTextStyle.copyWith(
+                                  color: Colors.white70,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // Logout
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(ctx, true),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.red.withOpacity(0.4),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Logout',
+                                style: commonTextStyle.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        if (confirmed == true && context.mounted) {
+          context.read<ProfileCubit>().clearProfile();
+          await context.read<AuthCubit>().signOut();
+          if (context.mounted) {
+            context.go(RoutesNames.signInScreen);
+          }
+        }
+      },
+    );
+  }
+
   Widget _barItem(String label, double fill, String value) {
+
     return Column(
       children: [
         Text(value,
@@ -734,78 +896,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showEditProfileBottomSheet(BuildContext context, user) {
+    final _formKey = GlobalKey<FormState>();
     final TextEditingController nameController =
         TextEditingController(text: user.name);
     final TextEditingController mobileController =
         TextEditingController(text: user.mobile);
-    final TextEditingController avatarController =
-        TextEditingController(text: user.avatarUrl);
-    final TextEditingController bioController =
-        TextEditingController(text: user.bio);
-    final TextEditingController examController =
-        TextEditingController(text: user.targetExam);
 
     CommonBottomSheet.show(
       context: context,
       title: "Update Profile",
-      child: Column(
-        children: [
-          CommonAuthInputField(
-            controller: nameController,
-            label: "Full Name",
-            hint: "Enter your full name",
-            icon: Icons.person_outline,
-          ),
-          const SizedBox(height: 16),
-          CommonAuthInputField(
-            controller: mobileController,
-            label: "Mobile Number",
-            hint: "Enter your mobile number",
-            icon: Icons.phone_outlined,
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 16),
-          CommonAuthInputField(
-            controller: avatarController,
-            label: "Avatar URL",
-            hint: "Enter a valid image URL for your profile",
-            icon: Icons.image_outlined,
-          ),
-          const SizedBox(height: 16),
-          CommonAuthInputField(
-            controller: bioController,
-            label: "Bio",
-            hint: "Short description about yourself",
-            icon: Icons.info_outline,
-          ),
-          const SizedBox(height: 16),
-          CommonAuthInputField(
-            controller: examController,
-            label: "Target Exam",
-            hint: "e.g. police_bharti",
-            icon: Icons.track_changes_outlined,
-          ),
-          const SizedBox(height: 24),
-          CommonAuthButton(
-            label: "Save Changes",
-            onTap: () {
-              final Map<String, dynamic> body = {};
-              if (nameController.text.isNotEmpty)
-                body["name"] = nameController.text;
-              if (mobileController.text.isNotEmpty)
-                body["mobile"] = mobileController.text;
-              if (avatarController.text.isNotEmpty)
-                body["avatar_url"] = avatarController.text;
-              if (bioController.text.isNotEmpty)
-                body["bio"] = bioController.text;
-              if (examController.text.isNotEmpty)
-                body["target_exam"] = examController.text;
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            CommonAuthInputField(
+              controller: nameController,
+              label: "Full Name",
+              hint: "Enter your full name",
+              icon: Icons.person_outline,
+            ),
+            const SizedBox(height: 16),
+            CommonAuthInputField(
+              controller: mobileController,
+              label: "Mobile Number",
+              hint: "Enter 10-digit mobile number",
+              icon: Icons.phone_outlined,
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value == null || value.isEmpty) return null; // optional field
+                final digits = value.replaceAll(RegExp(r'\D'), '');
+                if (digits.length != 10) {
+                  return 'Please enter a valid 10-digit mobile number';
+                }
+                if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+                  return 'Mobile number must start with 6, 7, 8, or 9';
+                }
+                return null;
+              },
+            ),
 
-              context.read<ProfileCubit>().updateProfile(body: body);
-              Navigator.pop(context);
-            },
-          ),
-        ],
+            const SizedBox(height: 24),
+            CommonAuthButton(
+              label: "Save Changes",
+              onTap: () {
+                if (!_formKey.currentState!.validate()) return;
+
+                final Map<String, dynamic> body = {};
+                if (nameController.text.isNotEmpty)
+                  body["name"] = nameController.text;
+                if (mobileController.text.isNotEmpty)
+                  body["mobile"] = mobileController.text.replaceAll(RegExp(r'\D'), '');
+
+                context.read<ProfileCubit>().updateProfile(body: body);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

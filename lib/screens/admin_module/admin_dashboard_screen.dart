@@ -21,6 +21,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final _pdfCtrl = TextEditingController();
   final _contentCtrl = TextEditingController();
   final _descCtrl = TextEditingController(); // For Note desc / Quiz desc / Notif body
+  final _subjectCtrl = TextEditingController(); // For Note subject
   final _typeCtrl = TextEditingController(); // For Quiz type
   final _yearCtrl = TextEditingController(); // For PYQ year
 
@@ -69,6 +70,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   void _showCreateDialog(BuildContext context) {
     _titleCtrl.clear();
     _categoryCtrl.clear();
+    _subjectCtrl.clear();
     _pdfCtrl.clear();
     _contentCtrl.clear();
     _descCtrl.clear();
@@ -136,7 +138,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       // Notes
       fields.add(_buildTextField(_descCtrl, "Description (Required)", maxLines: 2));
       fields.add(const SizedBox(height: 12));
-      fields.add(_buildTextField(_categoryCtrl, "Category"));
+      fields.add(_buildTextField(_categoryCtrl, "Category (e.g. 10th Class, Police Bharti)"));
+      fields.add(const SizedBox(height: 12));
+      fields.add(_buildTextField(_subjectCtrl, "Subject (e.g. Mathematics, Science)"));
       fields.add(const SizedBox(height: 12));
       fields.add(_buildTextField(_pdfCtrl, "PDF URL (Optional)"));
       fields.add(const SizedBox(height: 12));
@@ -174,6 +178,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         title: _titleCtrl.text,
         description: _descCtrl.text.isEmpty ? "No description provided." : _descCtrl.text,
         category: _categoryCtrl.text,
+        subject: _subjectCtrl.text,
         pdfUrl: _pdfCtrl.text,
         content: _contentCtrl.text,
       );

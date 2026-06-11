@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
 
+import 'package:mission_vardi/utils/constants.dart';
 // ─── Design tokens (navy blue theme) ─────────────────────────────────────────
 const _navyDark = Color(0xFF0B1437);
 const _navyMid = Color(0xFF1A3572);
@@ -56,7 +56,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 titleText!,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -66,7 +66,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               if (isOffline)
                 Text(
                   'Offline Mode ⚠️',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     fontSize: 10,
                     color: Colors.amber.shade300,
                     fontWeight: FontWeight.w600,

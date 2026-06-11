@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_cubit.dart';
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_state.dart';
 import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
@@ -233,7 +232,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                             const SizedBox(height: 15),
                             Text(
                               cubit.formatTime(state.stopwatchMilliseconds),
-                              style: GoogleFonts.shareTechMono(
+                              style: commonTextStyle.copyWith(
                                 fontSize: 48,
                                 fontWeight: FontWeight.bold,
                                 color: Constants.primaryBlueColour,
@@ -305,7 +304,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                         ),
                                         Text(
                                           state.lapTimes[index],
-                                          style: GoogleFonts.shareTechMono(
+                                          style: commonTextStyle.copyWith(
                                               fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                                         ),
                                       ],
@@ -411,7 +410,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                             const SizedBox(height: 8),
                             Text(
                               "${state.calculatedScore} / ${state.totalMaxMarks}",
-                              style: GoogleFonts.shareTechMono(
+                              style: commonTextStyle.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 42,
@@ -893,7 +892,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     child: CommonTextFormField(
                       controller: controller,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      customTextStyle: GoogleFonts.shareTechMono(fontWeight: FontWeight.bold, fontSize: 14),
+                      customTextStyle: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                       hintText: hint,
                       maxLength: null,
                       inputFormatters: [DoubleOrTimeInputFormatter()],

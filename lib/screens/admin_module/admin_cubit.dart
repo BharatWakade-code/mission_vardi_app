@@ -65,13 +65,15 @@ class AdminCubit extends Cubit<AdminState> {
     required String title,
     required String description,
     required String category,
+    required String subject,
     required String pdfUrl,
     required String content,
   }) async {
     _createGeneric('/notes', {
       "title": title,
       "description": description,
-      "category": category,
+      "category": category.isEmpty ? "General" : category,
+      "subject": subject.isEmpty ? "General" : subject,
       "pdfUrl": pdfUrl.isEmpty ? null : pdfUrl,
       "content": content.isEmpty ? null : content,
     }, '/notes');

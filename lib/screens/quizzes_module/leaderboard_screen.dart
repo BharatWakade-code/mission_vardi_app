@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
@@ -87,7 +86,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     isExpanded: true,
                     icon: const Icon(Icons.keyboard_arrow_down_rounded,
                         color: _accent),
-                    style: GoogleFonts.inter(
+                    style: commonTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: _textPrimary,
@@ -182,7 +181,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
+            style: commonTextStyle.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.w500,
               color: _textSecondary,
@@ -264,7 +263,7 @@ class _LeaderboardCard extends StatelessWidget {
                         style: const TextStyle(fontSize: 18))
                     : Text(
                         '#${index + 1}',
-                        style: GoogleFonts.inter(
+                        style: commonTextStyle.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                           color: _textSecondary,
@@ -292,7 +291,7 @@ class _LeaderboardCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: GoogleFonts.inter(
+                    style: commonTextStyle.copyWith(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: isGold ? Colors.white : _textPrimary,
@@ -302,7 +301,7 @@ class _LeaderboardCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       district!,
-                      style: GoogleFonts.inter(
+                      style: commonTextStyle.copyWith(
                         fontSize: 10,
                         color: isGold ? Colors.white54 : _textSecondary,
                       ),
@@ -328,7 +327,7 @@ class _LeaderboardCard extends StatelessWidget {
               ),
               child: Text(
                 '$points pts',
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.w700,
                   fontSize: 12,
                   color: isGold ? Colors.white : _accent,

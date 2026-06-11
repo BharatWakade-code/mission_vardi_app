@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
@@ -178,7 +177,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
             children: [
               Text(
                 'Mission Vardi',
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -187,7 +186,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
               ),
               Text(
                 'Maharashtra Police Bharti',
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 10,
                   color: Colors.white60,
                   fontWeight: FontWeight.w500,
@@ -296,7 +295,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                     const SizedBox(width: 6),
                     Text(
                       'EXAM COUNTDOWN',
-                      style: GoogleFonts.inter(
+                      style: commonTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                         color: Colors.white60,
@@ -308,7 +307,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                 const SizedBox(height: 6),
                 Text(
                   'Welcome, Future Officer! 🇮🇳',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -317,7 +316,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                 ),
                 Text(
                   'Your dream uniform awaits. Keep going.',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     fontSize: 12,
                     color: Colors.white54,
                     fontWeight: FontWeight.w400,
@@ -361,7 +360,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
           child: Center(
             child: Text(
               value,
-              style: GoogleFonts.shareTechMono(
+              style: commonTextStyle.copyWith(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -372,7 +371,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
         const SizedBox(height: 5),
         Text(
           label.toUpperCase(),
-          style: GoogleFonts.inter(
+          style: commonTextStyle.copyWith(
             fontSize: 9,
             color: Colors.blue.shade200,
             fontWeight: FontWeight.w600,
@@ -387,7 +386,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
         padding: const EdgeInsets.only(bottom: 22),
         child: Text(
           ':',
-          style: GoogleFonts.shareTechMono(
+          style: commonTextStyle.copyWith(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.white30,
@@ -504,7 +503,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
               const Spacer(),
               Text(
                 item.title,
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: _textPrimary,
@@ -515,7 +514,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
               const SizedBox(height: 2),
               Text(
                 item.subtitle,
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 9,
                   color: _textSecondary,
                   fontWeight: FontWeight.w400,
@@ -574,7 +573,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                 const SizedBox(width: 10),
                 Text(
                   'Daily Motivation',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: _textPrimary,
@@ -593,7 +592,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
               ),
               child: Text(
                 quoteText,
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 13,
                   fontStyle: FontStyle.italic,
                   height: 1.6,
@@ -613,7 +612,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                   const SizedBox(width: 4),
                   Text(
                     'Next Quote',
-                    style: GoogleFonts.inter(
+                    style: commonTextStyle.copyWith(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: _accent,
@@ -669,7 +668,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                   children: [
                     Text(
                       'Police Bharti Complete Guide',
-                      style: GoogleFonts.inter(
+                      style: commonTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
@@ -678,7 +677,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                     const SizedBox(height: 3),
                     Text(
                       'Syllabus · Age limit · Salary & more',
-                      style: GoogleFonts.inter(
+                      style: commonTextStyle.copyWith(
                         fontSize: 11,
                         color: Colors.white70,
                       ),
@@ -762,7 +761,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                               )
                             : Text(
                                 '#${index + 1}',
-                                style: GoogleFonts.inter(
+                                style: commonTextStyle.copyWith(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
                                   color: _textSecondary,
@@ -786,7 +785,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                     Expanded(
                       child: Text(
                         item["name"] ?? "Unknown User",
-                        style: GoogleFonts.inter(
+                        style: commonTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                           color: _textPrimary,
@@ -804,7 +803,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                       ),
                       child: Text(
                         '${item["score_str"] ?? "0"} pts',
-                        style: GoogleFonts.inter(
+                        style: commonTextStyle.copyWith(
                           fontWeight: FontWeight.w700,
                           color: _accent,
                           fontSize: 11,
@@ -831,7 +830,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
           children: [
             Text(
               title,
-              style: GoogleFonts.inter(
+              style: commonTextStyle.copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: _textPrimary,
@@ -840,7 +839,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
             ),
             Text(
               subtitle,
-              style: GoogleFonts.inter(
+              style: commonTextStyle.copyWith(
                 fontSize: 11,
                 color: _textSecondary,
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
@@ -125,7 +124,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'Previous Year Papers',
-          style: GoogleFonts.outfit(
+          style: commonTextStyle.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -139,7 +138,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
                 indicatorWeight: 3,
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.white70,
-                labelStyle: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 15),
+                labelStyle: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
                 tabs: _years.map((y) => Tab(text: y)).toList(),
               )
             : null,
@@ -161,7 +160,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
             const SizedBox(height: 16),
             Text(
               "Could not load papers",
-              style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold),
+              style: commonTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(_errorMessage, style: TextStyle(color: Colors.grey.shade600)),
@@ -179,7 +178,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
       return Center(
         child: Text(
           "No papers available for this year.",
-          style: GoogleFonts.outfit(fontSize: 16, color: Colors.grey),
+          style: commonTextStyle.copyWith(fontSize: 16, color: Colors.grey),
         ),
       );
     }
@@ -272,7 +271,7 @@ class _PaperCard extends StatelessWidget {
                   children: [
                     Text(
                       paper.title,
-                      style: GoogleFonts.outfit(
+                      style: commonTextStyle.copyWith(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -289,7 +288,7 @@ class _PaperCard extends StatelessWidget {
                           ),
                           child: Text(
                             paper.year,
-                            style: GoogleFonts.outfit(
+                            style: commonTextStyle.copyWith(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                               color: Colors.grey.shade700,
@@ -302,7 +301,7 @@ class _PaperCard extends StatelessWidget {
                             paper.subject,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.outfit(
+                            style: commonTextStyle.copyWith(
                               fontSize: 13,
                               color: Colors.grey.shade600,
                             ),

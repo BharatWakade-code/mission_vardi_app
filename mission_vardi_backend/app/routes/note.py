@@ -21,6 +21,7 @@ async def create_note(note: NoteCreate):
         "description": note.description,
         "pdfUrl": note.pdfUrl,
         "category": note.category,
+        "subject": note.subject,
         "content": note.content,
         "createdAt": str(datetime.now())
     }

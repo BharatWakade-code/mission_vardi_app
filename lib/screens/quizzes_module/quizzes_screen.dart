@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
@@ -75,7 +74,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 // ─── Section header ─────────────────────────────────────
                 Text(
                   'Study Modes',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: _textPrimary,
@@ -85,7 +84,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 const SizedBox(height: 3),
                 Text(
                   'Choose how you want to prepare',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                       fontSize: 11, color: _textSecondary),
                 ),
                 const SizedBox(height: 14),
@@ -190,7 +189,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
               children: [
                 Text(
                   'Daily Challenge',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
@@ -211,7 +210,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       currentStreak > 0
                           ? '$currentStreak Day Streak!'
                           : 'Complete and earn 2x Coins',
-                      style: GoogleFonts.inter(
+                      style: commonTextStyle.copyWith(
                         color: currentStreak > 0
                             ? Colors.orange.shade200
                             : Colors.white60,
@@ -243,7 +242,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
             },
             child: Text(
               'Start',
-              style: GoogleFonts.inter(
+              style: commonTextStyle.copyWith(
                 color: _navyDark,
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
@@ -291,7 +290,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                       const SizedBox(width: 10),
                       Text(
                         'This feature is coming soon!',
-                        style: GoogleFonts.inter(
+                        style: commonTextStyle.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
@@ -335,7 +334,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
             Expanded(
               child: Text(
                 title,
-                style: GoogleFonts.inter(
+                style: commonTextStyle.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: _textPrimary,
@@ -353,7 +352,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 ),
                 child: Text(
                   'SOON',
-                  style: GoogleFonts.inter(
+                  style: commonTextStyle.copyWith(
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
                     color: Colors.orange.shade700,
