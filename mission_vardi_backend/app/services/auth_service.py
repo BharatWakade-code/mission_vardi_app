@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime, timedelta
 
@@ -9,6 +10,37 @@ from jose import JWTError, jwt
 from jose.exceptions import JWTError as JoseJWTError
 
 from app.services.mongodb_service import users_collection
+
+
+def _resolve_firebase_project_id() -> str:
+    """
+    Return the Firebase project ID.
+    Priority:
+      1. FIREBASE_PROJECT_ID env var (set in .env or server environment)
+      2. project_id field inside FIREBASE_CREDENTIALS_PATH (service account JSON)
+    Returns an empty string if neither source provides a value.
+    """
+    project_id = os.getenv("FIREBASE_PROJECT_ID", "").strip()
+    if project_id:
+        return project_id
+
+    # Fallback: read from the service account JSON file
+    cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "./firebase_service_account.json").strip()
+    # Resolve relative to the backend root (two levels up from this file)
+    if not os.path.isabs(cred_path):
+        backend_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+        cred_path = os.path.join(backend_root, cred_path.lstrip("./"))
+
+    try:
+        with open(cred_path, "r") as f:
+            sa = json.load(f)
+        project_id = sa.get("project_id", "").strip()
+        if project_id:
+            print(f"[auth_service] FIREBASE_PROJECT_ID resolved from service account JSON: {project_id}")
+        return project_id
+    except Exception as e:
+        print(f"[auth_service] Could not read Firebase project_id from {cred_path}: {e}")
+        return ""
 
 # ─── Google public certs URL (Firebase tokens are standard RS256 JWTs) ─────────
 _GOOGLE_CERTS_URL = (
@@ -80,11 +112,11 @@ def verify_google_token(id_token: str) -> dict:
 
     Returns a dict with at least: uid, email, name, picture.
     """
-    project_id = os.getenv("FIREBASE_PROJECT_ID", "").strip()
+    project_id = _resolve_firebase_project_id()
     if not project_id:
         raise HTTPException(
             status_code=500,
-            detail="Server misconfiguration: FIREBASE_PROJECT_ID is not set.",
+            detail="Server misconfiguration: FIREBASE_PROJECT_ID is not set and could not be resolved from the service account file.",
         )
 
     try:

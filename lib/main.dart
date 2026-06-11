@@ -20,6 +20,16 @@ Future<void> main() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
 
+  // .env must be loaded FIRST before dependency injection
+  // so ApiClient gets BASE_URL when it is constructed by GetIt
+  if (!kIsWeb) {
+    try {
+      await dotenv.load(fileName: ".env");
+    } catch (e) {
+      debugPrint('Error loading .env file: $e');
+    }
+  }
+
   if (!kIsWeb) {
     try {
       await AdManager.instance.initialize();
@@ -39,15 +49,6 @@ Future<void> main() async {
     await CommonHiveData.init();
   } catch (e) {
     debugPrint('Hive init error: $e');
-  }
-
-  // .env file — not supported on web filesystem
-  if (!kIsWeb) {
-    try {
-      await dotenv.load(fileName: ".env");
-    } catch (e) {
-      debugPrint('Error loading .env file: $e');
-    }
   }
 
   // Initialize push notifications (FCM + local)
