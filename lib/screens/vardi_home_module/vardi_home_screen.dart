@@ -54,7 +54,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
   void initState() {
     super.initState();
     context.read<VardiHomeCubit>().getHomeDashboardData();
-    context.read<VardiHomeCubit>().getGlobalData();
+   // context.read<VardiHomeCubit>().getGlobalData();
 
     _pulseController = AnimationController(
       vsync: this,

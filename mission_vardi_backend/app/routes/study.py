@@ -32,13 +32,18 @@ def _update_user_stats(user_id: str):
     if not sessions:
         return
 
-    total_quizzes = len(sessions)
-    total_time = sum(s.get("time_spent_seconds", 0) for s in sessions)
-    avg_score = round(
-        sum(s.get("percentage", 0) for s in sessions) / total_quizzes, 2
-    )
+    # Filter for Timed quizzes only for Leaderboard calculations
+    timed_sessions = [s for s in sessions if s.get("mode", "Timed") == "Timed"]
+    
+    total_quizzes = len(timed_sessions)
+    total_time = sum(s.get("time_spent_seconds", 0) for s in timed_sessions)
+    avg_score = 0.0
+    if total_quizzes > 0:
+        avg_score = round(
+            sum(s.get("percentage", 0) for s in timed_sessions) / total_quizzes, 2
+        )
 
-    # Category breakdown
+    # Category breakdown (for all completed sessions or just timed? Let's keep category stats for all sessions so they can track practice too)
     category_stats: dict = {}
     for s in sessions:
         cat = s.get("category") or "general"
@@ -78,7 +83,7 @@ def _update_user_stats(user_id: str):
         else:
             cur = 1
 
-    last_session = max(sessions, key=lambda s: s.get("ended_at", ""))
+    last_session = max(sessions, key=lambda s: s.get("ended_at", "")) if sessions else {}
 
     # Weekly study hours calculation (last 7 days including today)
     weekly_hours = []
@@ -98,9 +103,9 @@ def _update_user_stats(user_id: str):
 
     stats = {
         "user_id": user_id,
-        "total_quizzes": total_quizzes,
-        "total_time_seconds": total_time,
-        "average_score_percent": avg_score,
+        "total_quizzes": total_quizzes, # Only timed
+        "total_time_seconds": total_time, # Only timed
+        "average_score_percent": avg_score, # Only timed
         "current_streak_days": streak,
         "best_streak_days": best_streak,
         "category_stats": category_stats,
@@ -129,6 +134,7 @@ async def start_session(data: StudySessionStart):
         "quiz_id": data.quiz_id,
         "quiz_title": quiz.get("title", ""),
         "category": quiz.get("category"),
+        "mode": data.mode,
         "started_at": now,
         "ended_at": None,
         "time_spent_seconds": 0,

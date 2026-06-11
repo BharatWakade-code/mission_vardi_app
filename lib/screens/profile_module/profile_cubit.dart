@@ -78,6 +78,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileState());
   }
 
+  void initEditDistrict(String? district) {
+    emit(state.copyWith(editDistrict: district ?? "null"));
+  }
+
+  void changeEditDistrict(String? district) {
+    emit(state.copyWith(editDistrict: district ?? "null"));
+  }
+
   Future<void> uploadAvatar({required List<int> bytes}) async {
     emit(state.copyWith(isLoading: true, errorMsg: '', successMsg: ''));
 

@@ -25,6 +25,7 @@ class QuizzesState {
   final List<dynamic> notesList;
   final List<dynamic> leaderboardData;
   final String selectedDistrict;
+  final Map<String, dynamic>? userRankData;
 
   // OPTIONAL
   final String errorMsg;
@@ -56,6 +57,7 @@ class QuizzesState {
     this.notesList = const [],
     this.leaderboardData = const [],
     this.selectedDistrict = 'All Maharashtra',
+    this.userRankData,
 
     // OPTIONAL
     this.errorMsg = '',
@@ -88,6 +90,7 @@ class QuizzesState {
     List<dynamic>? notesList,
     List<dynamic>? leaderboardData,
     String? selectedDistrict,
+    Map<String, dynamic>? userRankData,
 
     // OPTIONAL
     String? errorMsg,
@@ -117,6 +120,7 @@ class QuizzesState {
       notesList: notesList ?? this.notesList,
       leaderboardData: leaderboardData ?? this.leaderboardData,
       selectedDistrict: selectedDistrict ?? this.selectedDistrict,
+      userRankData: userRankData ?? this.userRankData,
       errorMsg: errorMsg ?? this.errorMsg,
       successMsg: successMsg ?? this.successMsg,
       isSuccess: isSuccess ?? this.isSuccess,

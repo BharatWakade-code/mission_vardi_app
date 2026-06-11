@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
 import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
+import 'package:mission_vardi/screens/profile_module/profile_state.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:intl/intl.dart';
@@ -262,7 +263,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ],
                         ),
-                        // District removed
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            const Icon(Icons.location_on, size: 12, color: Colors.amber),
+                            const SizedBox(width: 4),
+                            Text(
+                              user?.district ?? "Global Student",
+                              style: commonTextStyle.copyWith(
+                                color: Colors.white70,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -902,57 +917,130 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final TextEditingController mobileController =
         TextEditingController(text: user.mobile);
 
+    final List<String> districts = [
+      'Ahmednagar', 'Akola', 'Amravati', 'Chhatrapati Sambhajinagar (Aurangabad)', 
+      'Beed', 'Bhandara', 'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 
+      'Hingoli', 'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 
+      'Mumbai Suburban', 'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 
+      'Dharashiv (Osmanabad)', 'Palghar', 'Parbhani', 'Pune', 'Raigad', 
+      'Ratnagiri', 'Sangli', 'Satara', 'Sindhudurg', 'Solapur', 'Thane', 
+      'Wardha', 'Washim', 'Yavatmal',
+    ];
+
+    String? initialDistrict = user.district;
+    if (initialDistrict != null && !districts.contains(initialDistrict)) {
+      initialDistrict = null;
+    }
+
+    // Initialize Cubit state for the dropdown
+    context.read<ProfileCubit>().initEditDistrict(initialDistrict);
+
     CommonBottomSheet.show(
       context: context,
       title: "Update Profile",
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            CommonAuthInputField(
-              controller: nameController,
-              label: "Full Name",
-              hint: "Enter your full name",
-              icon: Icons.person_outline,
-            ),
-            const SizedBox(height: 16),
-            CommonAuthInputField(
-              controller: mobileController,
-              label: "Mobile Number",
-              hint: "Enter 10-digit mobile number",
-              icon: Icons.phone_outlined,
-              keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value == null || value.isEmpty) return null; // optional field
-                final digits = value.replaceAll(RegExp(r'\D'), '');
-                if (digits.length != 10) {
-                  return 'Please enter a valid 10-digit mobile number';
-                }
-                if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
-                  return 'Mobile number must start with 6, 7, 8, or 9';
-                }
-                return null;
-              },
-            ),
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          final selectedDistrict = state.editDistrict;
 
-            const SizedBox(height: 24),
-            CommonAuthButton(
-              label: "Save Changes",
-              onTap: () {
-                if (!_formKey.currentState!.validate()) return;
+          return Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonAuthInputField(
+                  controller: nameController,
+                  label: "Full Name",
+                  hint: "Enter your full name",
+                  icon: Icons.person_outline,
+                ),
+                const SizedBox(height: 16),
+                CommonAuthInputField(
+                  controller: mobileController,
+                  label: "Mobile Number",
+                  hint: "Enter 10-digit mobile number",
+                  icon: Icons.phone_outlined,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return null; // optional field
+                    final digits = value.replaceAll(RegExp(r'\D'), '');
+                    if (digits.length != 10) {
+                      return 'Please enter a valid 10-digit mobile number';
+                    }
+                    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+                      return 'Mobile number must start with 6, 7, 8, or 9';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Text(
+                    "District (Optional)",
+                    style: commonTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedDistrict,
+                      isExpanded: true,
+                      hint: Text(
+                        "Select your district (Global if none)",
+                        style: commonTextStyle.copyWith(color: Colors.grey),
+                      ),
+                      icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
+                      style: commonTextStyle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                      onChanged: (String? newValue) {
+                        context.read<ProfileCubit>().changeEditDistrict(newValue);
+                      },
+                      items: districts
+                          .map((v) => DropdownMenuItem<String>(
+                                value: v,
+                                child: Text(v),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                CommonAuthButton(
+                  label: "Save Changes",
+                  onTap: () {
+                    if (!_formKey.currentState!.validate()) return;
 
-                final Map<String, dynamic> body = {};
-                if (nameController.text.isNotEmpty)
-                  body["name"] = nameController.text;
-                if (mobileController.text.isNotEmpty)
-                  body["mobile"] = mobileController.text.replaceAll(RegExp(r'\D'), '');
+                    final Map<String, dynamic> body = {};
+                    if (nameController.text.isNotEmpty)
+                      body["name"] = nameController.text;
+                    if (mobileController.text.isNotEmpty)
+                      body["mobile"] = mobileController.text.replaceAll(RegExp(r'\D'), '');
+                    if (selectedDistrict != null) {
+                      body["district"] = selectedDistrict;
+                    }
 
-                context.read<ProfileCubit>().updateProfile(body: body);
-                Navigator.pop(context);
-              },
+                    context.read<ProfileCubit>().updateProfile(body: body);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        }
       ),
     );
   }

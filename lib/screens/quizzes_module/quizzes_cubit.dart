@@ -204,7 +204,8 @@ class QuizzesCubit extends Cubit<QuizzesState> {
       String userId = CommonHiveData.getString('userId');
       final either = await _repository.startStudySession({
         "user_id": userId,
-        "quiz_id": quizId
+        "quiz_id": quizId,
+        "mode": state.selectedPracticeMode
       });
       either.fold(
         (error) => print("Error starting session: $error"),
@@ -391,11 +392,12 @@ class QuizzesCubit extends Cubit<QuizzesState> {
   }
 
   Future<void> getLeaderboardList() async {
-    emit(state.copyWith(isLoading: true, errorMsg: '', leaderboardData: []));
+    emit(state.copyWith(isLoading: true, errorMsg: '', leaderboardData: [], userRankData: {}));
     try {
-      String endpoint = '/leaderboard/global';
+      final userId = CommonHiveData.getString('userId');
+      String endpoint = '/leaderboard/global?user_id=$userId';
       if (state.selectedDistrict != 'All Maharashtra') {
-        endpoint = '/leaderboard/global/district/${state.selectedDistrict}';
+        endpoint = '/leaderboard/global/district/${state.selectedDistrict}?user_id=$userId';
       }
 
       final response = await NetworkServices().getApi(endpoint);
@@ -403,6 +405,7 @@ class QuizzesCubit extends Cubit<QuizzesState> {
         emit(state.copyWith(
           isLoading: false,
           leaderboardData: response.data['data'] ?? [],
+          userRankData: response.data['user_rank'],
         ));
       } else {
         emit(state.copyWith(

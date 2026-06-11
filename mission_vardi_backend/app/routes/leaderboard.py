@@ -37,13 +37,13 @@ def get_leaderboard(quiz_id: str, limit: int = 10):
     }
 
 @router.get("/global")
-def get_global_leaderboard(limit: int = 10):
+def get_global_leaderboard(limit: int = 10, user_id: str = None):
     from app.services.mongodb_service import user_stats_collection
     # Fetch all stats
     stats = list(user_stats_collection.find({}, {"_id": 0}))
     
     if not stats:
-        return {"status": True, "message": "No data found", "data": []}
+        return {"status": True, "message": "No data found", "data": [], "user_rank": None}
     
     user_ids = [st["user_id"] for st in stats]
     users = list(users_collection.find({"id": {"$in": user_ids}}, {"_id": 0}))
@@ -63,25 +63,38 @@ def get_global_leaderboard(limit: int = 10):
         leaderboard.append({
             "user_id": u_id,
             "name": u_name,
+            "district": u_district,
             "points": points,
             "score_str": f"{points} Points",
         })
         
     leaderboard.sort(key=lambda x: x["points"], reverse=True)
+    
+    user_rank_data = None
+    if user_id:
+        for idx, item in enumerate(leaderboard):
+            if item["user_id"] == user_id:
+                user_rank_data = {
+                    "rank": idx + 1,
+                    **item
+                }
+                break
+                
     return {
         "status": True,
         "message": "Global leaderboard fetched",
-        "data": leaderboard[:limit]
+        "data": leaderboard[:limit],
+        "user_rank": user_rank_data
     }
 
 @router.get("/global/district/{district_name}")
-def get_district_leaderboard(district_name: str, limit: int = 10):
+def get_district_leaderboard(district_name: str, limit: int = 10, user_id: str = None):
     from app.services.mongodb_service import user_stats_collection
     
     # Fetch users belonging to this district
     users_in_district = list(users_collection.find({"district": district_name}, {"_id": 0}))
     if not users_in_district:
-        return {"status": True, "message": f"No data found for district {district_name}", "data": []}
+        return {"status": True, "message": f"No data found for district {district_name}", "data": [], "user_rank": None}
         
     user_ids = [u["id"] for u in users_in_district]
     user_map = {u["id"]: u for u in users_in_district}
@@ -108,8 +121,20 @@ def get_district_leaderboard(district_name: str, limit: int = 10):
         })
         
     leaderboard.sort(key=lambda x: x["points"], reverse=True)
+    
+    user_rank_data = None
+    if user_id:
+        for idx, item in enumerate(leaderboard):
+            if item["user_id"] == user_id:
+                user_rank_data = {
+                    "rank": idx + 1,
+                    **item
+                }
+                break
+
     return {
         "status": True,
         "message": f"Leaderboard for {district_name} fetched",
-        "data": leaderboard[:limit]
+        "data": leaderboard[:limit],
+        "user_rank": user_rank_data
     }

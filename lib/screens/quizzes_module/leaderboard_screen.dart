@@ -47,11 +47,111 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         titleText: 'Leaderboard',
         titleIcon: Icons.emoji_events_rounded,
       ),
-      body: Column(
-        children: [
-          _buildDistrictFilter(),
-          Expanded(child: _buildLeaderboardList()),
+      body: BlocBuilder<QuizzesCubit, QuizzesState>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              _buildDistrictFilter(),
+              Expanded(child: _buildLeaderboardList()),
+              if (state.userRankData != null)
+                _buildUserStickyBar(state.userRankData!),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildUserStickyBar(Map<String, dynamic> userRankData) {
+    final rank = userRankData['rank'] ?? 0;
+    final name = userRankData['name'] ?? 'You';
+    final points = userRankData['points'] ?? 0;
+    final district = userRankData['district'];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _navyDark,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
         ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                "#$rank",
+                style: commonTextStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "You ($name)",
+                    style: commonTextStyle.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  if (district != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      district,
+                      style: commonTextStyle.copyWith(
+                        color: Colors.white70,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: _accentLight.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.stars_rounded, size: 14, color: Color(0xFFFBBF24)),
+                  const SizedBox(width: 4),
+                  Text(
+                    "$points pts",
+                    style: commonTextStyle.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

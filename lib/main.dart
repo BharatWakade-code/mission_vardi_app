@@ -22,12 +22,10 @@ Future<void> main() async {
 
   // .env must be loaded FIRST before dependency injection
   // so ApiClient gets BASE_URL when it is constructed by GetIt
-  if (!kIsWeb) {
-    try {
-      await dotenv.load(fileName: ".env");
-    } catch (e) {
-      debugPrint('Error loading .env file: $e');
-    }
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint('Error loading .env file: $e');
   }
 
   if (!kIsWeb) {

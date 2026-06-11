@@ -7,12 +7,15 @@ class ProfileState {
   final String successMsg;
   final bool isSuccess;
 
+  final String? editDistrict;
+
   ProfileState({
     this.profileData,
     this.isLoading = false,
     this.errorMsg = '',
     this.successMsg = '',
     this.isSuccess = false,
+    this.editDistrict,
   });
 
   ProfileState copyWith({
@@ -21,6 +24,7 @@ class ProfileState {
     String? errorMsg,
     String? successMsg,
     bool? isSuccess,
+    String? editDistrict,
   }) {
     return ProfileState(
       profileData: profileData ?? this.profileData,
@@ -28,6 +32,7 @@ class ProfileState {
       errorMsg: errorMsg ?? this.errorMsg,
       successMsg: successMsg ?? this.successMsg,
       isSuccess: isSuccess ?? this.isSuccess,
+      editDistrict: editDistrict != null ? (editDistrict == "null" ? null : editDistrict) : this.editDistrict,
     );
   }
 }

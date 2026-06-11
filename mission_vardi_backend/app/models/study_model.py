@@ -10,6 +10,7 @@ class AnswerItem(BaseModel):
 class StudySessionStart(BaseModel):
     user_id: str
     quiz_id: str
+    mode: Optional[str] = "Timed"
 
 
 class StudySessionEnd(BaseModel):
