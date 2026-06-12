@@ -4,8 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:mission_vardi/screens/auth_module/auth_service.dart';
 import 'package:mission_vardi/screens/auth_module/auth_state.dart';
 import 'package:mission_vardi/screens/auth_module/data/auth_repository.dart';
+import 'package:mission_vardi/utils/push_notifications.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
-
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _repository;
@@ -99,6 +99,9 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.data?.user?.id != null) {
         CommonHiveData.setString('userId', response.data!.user!.id!);
       }
+
+      // Sync FCM token to backend
+      PushNotificationService.instance.syncTokenToBackend();
 
       emit(state.copyWith(
         isLoading: false,

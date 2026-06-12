@@ -21,25 +21,35 @@ if not firebase_admin._apps:
     except Exception as e:
         print(f"Error initializing Firebase Admin: {e}")
 
-def send_push_notification(title: str, body: str, topic: str = "all_users", data: dict = None):
+def send_push_notification(title: str, body: str, topic: str = None, token: str = None, data: dict = None):
     """
-    Sends a push notification to a specific FCM topic.
+    Sends a push notification to a specific FCM topic or device token.
     """
     # If firebase isn't initialized, skip sending to avoid crash
     if not firebase_admin._apps:
         print("Firebase Admin not initialized, cannot send notification.")
         return False
         
+    if not topic and not token:
+        print("Must provide either a topic or a token.")
+        return False
+
     try:
         # Define the message payload
-        message = messaging.Message(
-            notification=messaging.Notification(
+        kwargs = {
+            "notification": messaging.Notification(
                 title=title,
                 body=body,
             ),
-            data=data if data else {},
-            topic=topic,  # Ensure your mobile app subscribes to this topic
-        )
+            "data": data if data else {},
+        }
+        
+        if token:
+            kwargs["token"] = token
+        elif topic:
+            kwargs["topic"] = topic
+
+        message = messaging.Message(**kwargs)
         
         # Send the message
         response = messaging.send(message)
@@ -47,4 +57,35 @@ def send_push_notification(title: str, body: str, topic: str = "all_users", data
         return response
     except Exception as e:
         print(f"Error sending message via FCM: {e}")
+        return None
+
+def send_multicast_notification(title: str, body: str, tokens: list[str], data: dict = None):
+    """
+    Sends a push notification to multiple device tokens.
+    """
+    if not firebase_admin._apps:
+        print("Firebase Admin not initialized, cannot send multicast notification.")
+        return False
+        
+    if not tokens:
+        print("Must provide at least one token.")
+        return False
+
+    try:
+        # Define the message payload
+        message = messaging.MulticastMessage(
+            notification=messaging.Notification(
+                title=title,
+                body=body,
+            ),
+            data=data if data else {},
+            tokens=tokens,
+        )
+        
+        # Send the message
+        response = messaging.send_each_for_multicast(message)
+        print(f"Successfully sent multicast message to {response.success_count} devices. Failed: {response.failure_count}")
+        return {"success_count": response.success_count, "failure_count": response.failure_count}
+    except Exception as e:
+        print(f"Error sending multicast message via FCM: {e}")
         return None

@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/utils/network_services/api_services.dart';
+import 'package:mission_vardi/utils/shared_pref_data.dart';
 
 // ── Background message handler (must be top-level) ──────────────────────────
 @pragma('vm:entry-point')
@@ -64,13 +67,21 @@ class PushNotificationService {
     // 6. Register background handler
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-    // 7. Get & print the FCM token
+    // 7. Subscribe to all_users topic
+    try {
+      await _fcm.subscribeToTopic('all_users');
+      debugPrint('[FCM] Subscribed to all_users topic');
+    } catch (e) {
+      debugPrint('[FCM] Failed to subscribe to topic: $e');
+    }
+
+    // 8. Get & print the FCM token
     await _logToken();
 
-    // 8. Refresh token when it changes
+    // 9. Refresh token when it changes
     _fcm.onTokenRefresh.listen((newToken) {
       debugPrint('[FCM] Token refreshed: $newToken');
-      // TODO: Send newToken to your backend here
+      syncTokenToBackend();
     });
   }
 
@@ -121,4 +132,23 @@ class PushNotificationService {
 
   /// Call this to get the current FCM token (e.g. to send to your backend)
   Future<String?> getToken() => _fcm.getToken();
+
+  /// Syncs the current FCM token to the backend for the logged-in user
+  Future<void> syncTokenToBackend() async {
+    try {
+      final token = await _fcm.getToken();
+      if (token == null) return;
+      
+      final userId = CommonHiveData.getString('userId');
+      if (userId.isEmpty) return; // User not logged in yet
+      
+      await NetworkServices().putApi(
+        '${ApiUrls.updateProfile}/$userId',
+        request: {'fcmToken': token},
+      );
+      debugPrint('[FCM] Token synced to backend for user: $userId');
+    } catch (e) {
+      debugPrint('[FCM] Failed to sync token to backend: $e');
+    }
+  }
 }

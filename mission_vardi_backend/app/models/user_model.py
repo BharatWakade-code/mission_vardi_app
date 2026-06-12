@@ -11,7 +11,7 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     mobile: Optional[str] = None
     profileImage: Optional[str] = None
-
+    fcmToken: Optional[str] = None
 
 class ProfileUpdate(BaseModel):
     """Extended profile fields editable by the user."""
@@ -22,3 +22,5 @@ class ProfileUpdate(BaseModel):
     target_exam: Optional[str] = None   # "police_bharti" | "psi" | "sti" | "other"
     study_goal_minutes: Optional[int] = None
     district: Optional[str] = None      # For district-wise leaderboards
+    fcmToken: Optional[str] = None
+    interests: Optional[list[str]] = None
