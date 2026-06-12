@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -43,8 +44,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
-      appBar: const CustomAppBar(
-        titleText: 'Leaderboard',
+      appBar:  CustomAppBar(
+        titleText: 'leaderboard'.tr(),
         titleIcon: Icons.emoji_events_rounded,
       ),
       body: BlocBuilder<QuizzesCubit, QuizzesState>(
@@ -232,7 +233,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         if (state.leaderboardData.isEmpty) {
           return _emptyState(
             icon: Icons.emoji_events_rounded,
-            message: 'No top performers found\nfor this region yet.',
+            message: 'no_top_performers_foundnfor_this_region_yet'.tr(),
           );
         }
 

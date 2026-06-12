@@ -17,6 +17,9 @@ import 'package:mission_vardi/utils/common_widgets/common_bottom_sheet.dart';
 import 'package:mission_vardi/utils/common_widgets/common_auth_widgets.dart';
 import 'package:mission_vardi/screens/profile_module/history_details_bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -45,6 +48,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<LocaleCubit>();
+
     // Watch LanguageCubit to trigger an instant rebuild when language changes
 
     final profileState = context.watch<ProfileCubit>().state;
@@ -75,9 +80,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return Scaffold(
         backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-          titleText: "Profile & Statistics",
+          titleText: 'profile'.tr(),
           titleIcon: Icons.person,
           actions: [
+            IconButton(
+              icon: const Icon(Icons.language, color: Colors.blue),
+              onPressed: () => ChangeLanguageBottomSheet.show(context),
+            ),
             _buildLogoutButton(context),
           ],
         ),
@@ -90,9 +99,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: "Profile & Statistics",
+        titleText: 'profile'.tr(),
         titleIcon: Icons.person,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.language, color: Colors.blue),
+            onPressed: () => ChangeLanguageBottomSheet.show(context),
+          ),
           _buildLogoutButton(context),
         ],
       ),
@@ -236,7 +249,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content:
-                                              Text("Verification link sent!")),
+                                              Text('verification_link_sent'.tr())),
                                     );
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -252,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
-                                    "Verify",
+                                    'verify'.tr(),
                                     style: commonTextStyle.copyWith(
                                         color: Colors.white,
                                         fontSize: 10,
@@ -296,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Statistics Header
             Text(
-              "Study Progress & Accuracy",
+              'study_progress_accuracy'.tr(),
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -316,7 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Overall MCQ Accuracy",
+                        'overall_mcq_accuracy'.tr(),
                         style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
@@ -347,7 +360,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Weekly Study Hours",
+                        'weekly_study_hours'.tr(),
                         style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
@@ -392,7 +405,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Achievement Badges
             Text(
-              "Achievement Badges",
+              'achievement_badges'.tr(),
               style: commonTextStyle.copyWith(
                   fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -402,7 +415,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Center(
                       child: Text(
-                        "No badges earned yet",
+                        'no_badges_earned_yet'.tr(),
                         style: commonTextStyle.copyWith(color: Colors.grey),
                       ),
                     ),
@@ -476,7 +489,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Activity History",
+                            'activity_history'.tr(),
                             style: commonTextStyle.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -484,7 +497,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "View your past quizzes and detailed answers",
+                            'view_your_past_quizzes_and_detailed_answers'.tr(),
                             style: commonTextStyle.copyWith(
                               fontSize: 12,
                               color: Colors.grey.shade600,
@@ -516,7 +529,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: const Icon(Icons.admin_panel_settings,
                       color: Colors.white),
                   label: Text(
-                    "Admin CMS Portal",
+                    'admin_cms_portal'.tr(),
                     style: commonTextStyle.copyWith(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
@@ -540,7 +553,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: Text(
-                  "Logout Account",
+                  'logout_account'.tr(),
                   style: commonTextStyle.copyWith(
                       color: Colors.red, fontWeight: FontWeight.bold),
                 ),
@@ -562,7 +575,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildLogoutButton(BuildContext context) {
     return IconButton(
-      tooltip: 'Logout',
+      tooltip: 'logout'.tr(),
       icon: Container(
         width: 34,
         height: 34,
@@ -619,7 +632,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   // Title
                   Text(
-                    'Logout',
+                    'logout'.tr(),
                     style: commonTextStyle.copyWith(
                       color: Colors.white,
                       fontSize: 18,
@@ -629,7 +642,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 8),
                   // Message
                   Text(
-                    'Are you sure you want to logout?',
+                    'are_you_sure_you_want_to_logout'.tr(),
                     textAlign: TextAlign.center,
                     style: commonTextStyle.copyWith(
                       color: Colors.white60,
@@ -656,7 +669,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                'Cancel',
+                                'cancel'.tr(),
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white70,
                                   fontWeight: FontWeight.w600,
@@ -687,7 +700,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                'Logout',
+                                'logout'.tr(),
                                 style: commonTextStyle.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -816,7 +829,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Choose Profile Photo",
+                  'choose_profile_photo'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -837,7 +850,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       icon: const Icon(Icons.camera_alt, color: Colors.white),
                       label: Text(
-                        "Camera",
+                        'camera'.tr(),
                         style: commonTextStyle.copyWith(
                             color: Colors.white, fontWeight: FontWeight.bold),
                       ),
@@ -856,7 +869,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon:
                           const Icon(Icons.photo_library, color: Colors.white),
                       label: Text(
-                        "Gallery",
+                        'gallery'.tr(),
                         style: commonTextStyle.copyWith(
                             color: Colors.white, fontWeight: FontWeight.bold),
                       ),
@@ -901,7 +914,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         } else {
           messenger.showSnackBar(
             SnackBar(
-              content: Text("Profile photo updated successfully!"),
+              content: Text('profile_photo_updated_successfully'.tr()),
               backgroundColor: Colors.green,
             ),
           );
@@ -937,7 +950,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     CommonBottomSheet.show(
       context: context,
-      title: "Update Profile",
+      title: 'update_profile'.tr(),
       child: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           final selectedDistrict = state.editDistrict;
@@ -949,25 +962,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 CommonAuthInputField(
                   controller: nameController,
-                  label: "Full Name",
-                  hint: "Enter your full name",
+                  label: 'full_name'.tr(),
+                  hint: 'enter_your_full_name'.tr(),
                   icon: Icons.person_outline,
                 ),
                 const SizedBox(height: 16),
                 CommonAuthInputField(
                   controller: mobileController,
-                  label: "Mobile Number",
-                  hint: "Enter 10-digit mobile number",
+                  label: 'mobile_number'.tr(),
+                  hint: 'enter_10_digit_mobile_number'.tr(),
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.isEmpty) return null; // optional field
                     final digits = value.replaceAll(RegExp(r'\D'), '');
                     if (digits.length != 10) {
-                      return 'Please enter a valid 10-digit mobile number';
+                      return 'please_enter_a_valid_10_digit_mobile_number'.tr();
                     }
                     if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
-                      return 'Mobile number must start with 6, 7, 8, or 9';
+                      return 'mobile_number_must_start_with_6_7_8_or_9'.tr();
                     }
                     return null;
                   },
@@ -976,7 +989,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 4),
                   child: Text(
-                    "District (Optional)",
+                    'district_optional'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -997,7 +1010,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: selectedDistrict,
                       isExpanded: true,
                       hint: Text(
-                        "Select your district (Global if none)",
+                        'select_your_district_global_if_none'.tr(),
                         style: commonTextStyle.copyWith(color: Colors.grey),
                       ),
                       icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
@@ -1026,7 +1039,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        "Add your district to participate in local District Leaderboard competitions! Otherwise you'll only compete globally.",
+                        'add_your_district_to_participate_in_local_district_leaderboard_competitions_otherwise_youll_only_compete_globally'.tr(),
                         style: commonTextStyle.copyWith(
                           fontSize: 11,
                           color: Colors.blueGrey,
@@ -1038,7 +1051,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 24),
                 CommonAuthButton(
-                  label: "Save Changes",
+                  label: 'save_changes'.tr(),
                   onTap: () {
                     if (!_formKey.currentState!.validate()) return;
 

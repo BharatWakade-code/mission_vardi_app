@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
@@ -105,7 +106,7 @@ class _SignInScreenState extends State<SignInScreen>
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Forgot Password?',
+                      'forgot_password'.tr(),
                       style: commonTextStyle.copyWith(
                         color: Colors.white,
                         fontSize: 22,
@@ -114,7 +115,7 @@ class _SignInScreenState extends State<SignInScreen>
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      "Enter your registered email and we'll send you a reset link.",
+                      'enter_your_registered_email_and_well_send_you_a_reset_link'.tr(),
                       style: commonTextStyle.copyWith(
                         color: Colors.white60,
                         fontSize: 13,
@@ -132,7 +133,7 @@ class _SignInScreenState extends State<SignInScreen>
                         return null;
                       },
                       decoration: InputDecoration(
-                        hintText: 'your@email.com',
+                        hintText: 'your_email_com'.tr(),
                         hintStyle: commonTextStyle.copyWith(
                             color: Colors.white30, fontSize: 13),
                         prefixIcon: const Icon(Icons.email_outlined,
@@ -238,7 +239,7 @@ class _SignInScreenState extends State<SignInScreen>
                                   ),
                                   child: Center(
                                     child: Text(
-                                      'Send Reset Link',
+                                      'send_reset_link'.tr(),
                                       style: commonTextStyle.copyWith(
                                         color: const Color(0xFF0A2540),
                                         fontSize: 16,
@@ -339,7 +340,7 @@ class _SignInScreenState extends State<SignInScreen>
                       const SizedBox(height: 20),
 
                       Text(
-                        "Welcome Back!",
+                        'welcome_back'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.white,
                           fontSize: 28,
@@ -349,7 +350,7 @@ class _SignInScreenState extends State<SignInScreen>
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        "Sign in to continue your preparation",
+                        'sign_in_to_continue_your_preparation'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.white60,
                           fontSize: 13,
@@ -383,7 +384,7 @@ class _SignInScreenState extends State<SignInScreen>
                             children: [
                               _buildInputField(
                                 controller: _emailController,
-                                label: "Email",
+                                label: 'email'.tr(),
                                 hint: "Enter your email",
                                 icon: Icons.email_outlined,
                                 keyboardType: TextInputType.emailAddress,
@@ -402,7 +403,7 @@ class _SignInScreenState extends State<SignInScreen>
 
                               _buildInputField(
                                 controller: _passwordController,
-                                label: "Password",
+                                label: 'password'.tr(),
                                 hint: "Enter your password",
                                 icon: Icons.lock_outline_rounded,
                                 obscure: _obscurePassword,
@@ -436,7 +437,7 @@ class _SignInScreenState extends State<SignInScreen>
                                         MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: Text(
-                                    "Forgot Password?",
+                                    'forgot_password'.tr(),
                                     style: commonTextStyle.copyWith(
                                       color: Colors.amber.shade300,
                                       fontSize: 13,
@@ -457,7 +458,7 @@ class _SignInScreenState extends State<SignInScreen>
                                               color: Colors.amber),
                                         )
                                       : _buildPrimaryButton(
-                                          label: "Sign In",
+                                          label: 'sign_in'.tr(),
                                           onTap: _signIn,
                                         );
                                 },
@@ -479,7 +480,7 @@ class _SignInScreenState extends State<SignInScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
-                              "OR",
+                              'or'.tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.white38,
                                 fontSize: 12,
@@ -505,7 +506,7 @@ class _SignInScreenState extends State<SignInScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Don't have an account? ",
+                            'dont_have_an_account'.tr(),
                             style: commonTextStyle.copyWith(
                               color: Colors.white60,
                               fontSize: 14,
@@ -514,7 +515,7 @@ class _SignInScreenState extends State<SignInScreen>
                           GestureDetector(
                             onTap: () => context.go(RoutesNames.signUpScreen),
                             child: Text(
-                              "Sign Up",
+                              'signup'.tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.amber,
                                 fontSize: 14,
@@ -686,7 +687,7 @@ class _SignInScreenState extends State<SignInScreen>
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        "Continue with Google",
+                        'continue_with_google'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.black87,
                           fontSize: 15,

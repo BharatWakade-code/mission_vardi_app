@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import 'package:mission_vardi/utils/common_widgets/banner_ad_widget.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 
 // ─── Design tokens ──────────────────────────────────────────────────────────
 const _surface = Color(0xFFFFFFFF);
@@ -44,14 +46,16 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<LocaleCubit>();
+
     final profileState = context.watch<ProfileCubit>().state;
     final int currentStreak =
         profileState.profileData?.stats?['current_streak_days'] ?? 0;
 
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
-      appBar: const CustomAppBar(
-        titleText: 'Quiz & Notes',
+      appBar:  CustomAppBar(
+        titleText: 'quiz_notes'.tr(),
         titleIcon: Icons.quiz_rounded,
       ),
       body: BlocBuilder<QuizzesCubit, QuizzesState>(
@@ -73,7 +77,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
                 // ─── Section header ─────────────────────────────────────
                 Text(
-                  'Study Modes',
+                  'study_modes'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -83,7 +87,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  'Choose how you want to prepare',
+                  'choose_how_you_want_to_prepare'.tr(),
                   style: commonTextStyle.copyWith(
                       fontSize: 11, color: _textSecondary),
                 ),
@@ -92,7 +96,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 // ─── Menu Cards ─────────────────────────────────────────
                 _menuCard(
                   context,
-                  title: 'Mock (Timed)',
+                  title: 'mock_timed'.tr(),
                   icon: Icons.timer_rounded,
                   color: const Color(0xFF6366F1),
                   onTap: () => context.push(RoutesNames.categoryItemsScreen,
@@ -101,7 +105,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 const SizedBox(height: 10),
                 _menuCard(
                   context,
-                  title: 'Practice Mode',
+                  title: 'practice_mode'.tr(),
                   icon: Icons.menu_book_rounded,
                   color: _accent,
                   onTap: () => context.push(RoutesNames.categoryItemsScreen,
@@ -110,16 +114,16 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 const SizedBox(height: 10),
                 _menuCard(
                   context,
-                  title: 'Subject Wise Notes',
+                  title: 'subject_wise_notes'.tr(),
                   icon: Icons.library_books_rounded,
                   color: const Color(0xFF059669),
                   onTap: () => context.push(RoutesNames.categoryItemsScreen,
-                      extra: 'Notes'),
+                      extra: 'notes'.tr()),
                 ),
                 const SizedBox(height: 10),
                 _menuCard(
                   context,
-                  title: 'Previous Question Papers',
+                  title: 'previous_question_papers'.tr(),
                   icon: Icons.history_edu_rounded,
                   color: const Color(0xFF7C3AED),
                   onTap: () => context.push(RoutesNames.pyqScreen),
@@ -127,7 +131,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 const SizedBox(height: 10),
                 _menuCard(
                   context,
-                  title: 'Leaderboard',
+                  title: 'leaderboard'.tr(),
                   icon: Icons.emoji_events_rounded,
                   color: const Color(0xFFD97706),
                   onTap: () => context.push(RoutesNames.leaderboardScreen),
@@ -135,7 +139,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                 const SizedBox(height: 10),
                 _menuCard(
                   context,
-                  title: 'Random Quiz',
+                  title: 'random_quiz'.tr(),
                   icon: Icons.shuffle_rounded,
                   color: const Color(0xFFEF4444),
                   onTap: null,
@@ -188,7 +192,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Daily Challenge',
+                  'daily_challenge'.tr(),
                   style: commonTextStyle.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -241,7 +245,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                   extra: 'daily-challenge');
             },
             child: Text(
-              'Start',
+              'start'.tr(),
               style: commonTextStyle.copyWith(
                 color: _navyDark,
                 fontWeight: FontWeight.w700,
@@ -289,7 +293,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                           color: Colors.white, size: 18),
                       const SizedBox(width: 10),
                       Text(
-                        'This feature is coming soon!',
+                        'this_feature_is_coming_soon'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -351,7 +355,7 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
                   border: Border.all(color: Colors.orange.shade200),
                 ),
                 child: Text(
-                  'SOON',
+                  'soon'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 9,
                     fontWeight: FontWeight.w800,

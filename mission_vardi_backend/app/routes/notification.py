@@ -18,7 +18,9 @@ async def create_notification(notification: NotificationCreate):
     notif_data = {
         "id": notif_id,
         "title": notification.title,
+        "title_mr": notification.title_mr,
         "body": notification.body,
+        "body_mr": notification.body_mr,
         "imageUrl": notification.imageUrl,
         "targetUserId": notification.targetUserId,
         "filters": notification.filters.model_dump() if notification.filters else None,
@@ -32,7 +34,11 @@ async def create_notification(notification: NotificationCreate):
     kwargs = {
         "title": notification.title,
         "body": notification.body,
-        "data": {"imageUrl": notification.imageUrl} if notification.imageUrl else {}
+        "data": {
+            "imageUrl": notification.imageUrl or "",
+            "title_mr": notification.title_mr or "",
+            "body_mr": notification.body_mr or ""
+        }
     }
     
     fcm_response = None

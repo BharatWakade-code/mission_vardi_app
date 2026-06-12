@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_router/go_router.dart';
@@ -43,7 +44,7 @@ class QuizResultScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Constants.scaffoldBackgroundColour,
           appBar: CustomAppBar(
-            titleText: "Practice Test Result",
+            titleText: 'practice_test_result'.tr(),
             titleIcon: Icons.analytics,
             leading: IconButton(
               icon: const Icon(
@@ -79,7 +80,7 @@ class QuizResultScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            "Your Total Score",
+                            'your_total_score'.tr(),
                             style: commonTextStyle.copyWith(
                               color: Colors.white70,
                               fontSize: 16,
@@ -155,7 +156,7 @@ class QuizResultScreen extends StatelessWidget {
                   Row(
                     children: [
                       _buildStatCard(
-                        title: "Total Qs",
+                        title: 'total_qs'.tr(),
                         value: "$totalQuestions",
                         color: Colors.blue.shade700,
                         icon: Icons.format_list_numbered,
@@ -163,7 +164,7 @@ class QuizResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _buildStatCard(
-                        title: "Correct",
+                        title: 'correct'.tr(),
                         value: "$correctAnswers",
                         color: Colors.green,
                         icon: Icons.check_circle_outline,
@@ -171,7 +172,7 @@ class QuizResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _buildStatCard(
-                        title: "Incorrect",
+                        title: 'incorrect'.tr(),
                         value: "$incorrectAnswers",
                         color: Colors.red,
                         icon: Icons.highlight_off,
@@ -179,7 +180,7 @@ class QuizResultScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _buildStatCard(
-                        title: "Skipped",
+                        title: 'skipped'.tr(),
                         value: "$unansweredCount",
                         color: Colors.grey.shade600,
                         icon: Icons.next_plan_outlined,
@@ -191,7 +192,7 @@ class QuizResultScreen extends StatelessWidget {
 
                   // Review section header
                   Text(
-                    "Detailed Questions Review",
+                    'detailed_questions_review'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -241,8 +242,8 @@ class QuizResultScreen extends StatelessWidget {
                                     ),
                                     child: Text(
                                       selectedIdx == null
-                                          ? "Skipped"
-                                          : (isCorrect ? "Correct" : "Incorrect"),
+                                          ? 'skipped'.tr()
+                                          : (isCorrect ? 'correct'.tr() : 'incorrect'.tr()),
                                       style: commonTextStyle.copyWith(
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
@@ -333,7 +334,7 @@ class QuizResultScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "💡 Explanation:",
+                                      'explanation'.tr(),
                                       style: commonTextStyle.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.amber.shade900,
@@ -380,7 +381,7 @@ class QuizResultScreen extends StatelessWidget {
                     context.go(RoutesNames.dashboardScreen);
                   },
                   child: Text(
-                    "Back to Main Menu",
+                    'back_to_main_menu'.tr(),
                     style: commonTextStyle.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

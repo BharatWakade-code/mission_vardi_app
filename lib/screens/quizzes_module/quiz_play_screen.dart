@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -51,7 +52,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(
-          "Submit Quiz?",
+          'submit_quiz'.tr(),
           style: const TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.bold),
         ),
         content: Text(
@@ -62,7 +63,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
             child: Text(
-              "Cancel",
+              'cancel'.tr(),
               style: const TextStyle(fontFamily: 'Outfit', color: Colors.grey),
             ),
           ),
@@ -75,7 +76,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               context.read<QuizzesCubit>().finishQuiz();
             },
             child: Text(
-              "Yes, Submit",
+              'yes_submit'.tr(),
               style: const TextStyle(fontFamily: 'Outfit', color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
@@ -110,7 +111,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
           return Scaffold(
             backgroundColor: Constants.scaffoldBackgroundColour,
             appBar: CustomAppBar(
-              titleText: "Practice Test in Progress",
+              titleText: 'practice_test_in_progress'.tr(),
               titleIcon: Icons.timer,
               leading: IconButton(
                 icon: const Icon(
@@ -138,7 +139,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       onPressed: () => _showSubmitConfirmationDialog(context, state),
                       icon: const Icon(Icons.done_all, size: 16),
                       label: Text(
-                        "Final Submit",
+                        'final_submit'.tr(),
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -157,7 +158,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           ? const Center(child: CircularProgressIndicator())
                           : Center(
                               child: Text(
-                                "No questions available",
+                                'no_questions_available'.tr(),
                                 style: commonTextStyle,
                               ),
                             ))
@@ -369,7 +370,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                           ? null
                           : () => context.read<QuizzesCubit>().submitAnswer(),
                       child: Text(
-                        "Submit Answer",
+                        'submit_answer'.tr(),
                         style: commonTextStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -384,7 +385,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                       ),
                       onPressed: () => context.read<QuizzesCubit>().nextQuestion(),
                       child: Text(
-                        "Next Question",
+                        'next_question'.tr(),
                         style: commonTextStyle.copyWith(color: const Color(0xFF0A2540), fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -407,7 +408,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "💡 Explanation:",
+                      'explanation'.tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, color: Colors.amber.shade900),
                     ),
                     const SizedBox(height: 5),

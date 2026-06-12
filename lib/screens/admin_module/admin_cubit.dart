@@ -44,7 +44,7 @@ class AdminCubit extends Cubit<AdminState> {
         emit(state.copyWith(
           isLoading: false,
           isSuccess: true,
-          message: "Deleted successfully!",
+          message: 'deleted_successfully',
         ));
         fetchItems(fetchEndpoint); // Refresh list
       } else {
@@ -63,30 +63,38 @@ class AdminCubit extends Cubit<AdminState> {
 
   Future<void> createNote({
     required String title,
+    required String titleMr,
     required String description,
+    required String descriptionMr,
     required String category,
     required String subject,
     required String pdfUrl,
     required String content,
+    required String contentMr,
   }) async {
     _createGeneric('/notes', {
       "title": title,
+      "title_mr": titleMr.isEmpty ? null : titleMr,
       "description": description,
+      "description_mr": descriptionMr.isEmpty ? null : descriptionMr,
       "category": category.isEmpty ? "General" : category,
       "subject": subject.isEmpty ? "General" : subject,
       "pdfUrl": pdfUrl.isEmpty ? null : pdfUrl,
       "content": content.isEmpty ? null : content,
+      "content_mr": contentMr.isEmpty ? null : contentMr,
     }, '/notes');
   }
 
   Future<void> createPYQ({
     required String title,
+    required String titleMr,
     required int year,
     required String category,
     required String pdfUrl,
   }) async {
     _createGeneric('/pyqs', {
       "title": title,
+      "title_mr": titleMr.isEmpty ? null : titleMr,
       "year": year,
       "category": category,
       "pdfUrl": pdfUrl.isEmpty ? null : pdfUrl,
@@ -95,19 +103,25 @@ class AdminCubit extends Cubit<AdminState> {
 
   Future<void> createNotification({
     required String title,
+    required String titleMr,
     required String body,
+    required String bodyMr,
     required String imageUrl,
   }) async {
     _createGeneric('/notifications', {
       "title": title,
+      "title_mr": titleMr.isEmpty ? null : titleMr,
       "body": body,
+      "body_mr": bodyMr.isEmpty ? null : bodyMr,
       "imageUrl": imageUrl.isEmpty ? null : imageUrl,
     }, '/notifications');
   }
 
   Future<void> createQuiz({
     required String title,
+    required String titleMr,
     required String description,
+    required String descriptionMr,
     required String category,
     required String type,
     required String jsonQuestions,
@@ -121,7 +135,9 @@ class AdminCubit extends Cubit<AdminState> {
       
       final body = {
         "title": title,
+        "title_mr": titleMr.isEmpty ? null : titleMr,
         "description": description,
+        "description_mr": descriptionMr.isEmpty ? null : descriptionMr,
         "category": category,
         "type": type,
         "questions": questionsList
@@ -132,7 +148,7 @@ class AdminCubit extends Cubit<AdminState> {
         emit(state.copyWith(
           isLoading: false,
           isSuccess: true,
-          message: "Quiz created successfully!",
+          message: 'quiz_created_successfully',
         ));
         fetchItems('/quiz');
       } else {
@@ -155,7 +171,7 @@ class AdminCubit extends Cubit<AdminState> {
         emit(state.copyWith(
           isLoading: false,
           isSuccess: true,
-          message: "Created successfully!",
+          message: 'created_successfully',
         ));
         fetchItems(fetchEndpoint);
       } else {

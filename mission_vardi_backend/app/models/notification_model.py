@@ -9,7 +9,9 @@ class NotificationFilter(BaseModel):
 
 class NotificationCreate(BaseModel):
     title: str
+    title_mr: Optional[str] = None
     body: str
+    body_mr: Optional[str] = None
     imageUrl: Optional[str] = None
     targetUserId: Optional[str] = None
     targetToken: Optional[str] = None

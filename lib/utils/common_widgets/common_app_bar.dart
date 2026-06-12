@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
+import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
 
 import 'package:mission_vardi/utils/constants.dart';
 // ─── Design tokens (navy blue theme) ─────────────────────────────────────────
@@ -65,7 +67,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               if (isOffline)
                 Text(
-                  'Offline Mode ⚠️',
+                  'offline_mode'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 10,
                     color: Colors.amber.shade300,
@@ -145,6 +147,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           : appBarTitle,
 
       actions: [
+        IconButton(
+          icon: const Icon(Icons.language_rounded, color: Colors.white, size: 22),
+          onPressed: () {
+            ChangeLanguageBottomSheet.show(context);
+          },
+        ),
         ...(actions ?? []),
         const SizedBox(width: 4),
       ],

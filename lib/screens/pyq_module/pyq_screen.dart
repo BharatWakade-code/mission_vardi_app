@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
 
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
@@ -13,6 +16,7 @@ import 'package:mission_vardi/utils/network_services/api_services.dart';
 class _PYQPaper {
   final String year;
   final String title;
+  final String titleMr;
   final String subject;
   final String quizId;
   final String pdfUrl;
@@ -20,6 +24,7 @@ class _PYQPaper {
   const _PYQPaper({
     required this.year,
     required this.title,
+    required this.titleMr,
     required this.subject,
     required this.quizId,
     required this.pdfUrl,
@@ -29,10 +34,16 @@ class _PYQPaper {
     return _PYQPaper(
       year: json['year']?.toString() ?? '',
       title: json['title'] ?? 'Untitled Paper',
+      titleMr: json['title_mr'] ?? '',
       subject: json['category'] ?? json['subject'] ?? 'General',
       quizId: json['quizId'] ?? json['id'] ?? '',
       pdfUrl: json['pdfUrl'] ?? '',
     );
+  }
+  String getLocalizedTitle(BuildContext context) {
+    final langCode = context.watch<LocaleCubit>().state.languageCode;
+    if (langCode == 'mr' && titleMr.isNotEmpty) return titleMr;
+    return title;
   }
 }
 
@@ -123,12 +134,21 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
         backgroundColor: Constants.primaryBlueColour,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
-          'Previous Year Papers',
+          'previous_year_papers'.tr(),
           style: commonTextStyle.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language_rounded, color: Colors.white, size: 24),
+            onPressed: () {
+              ChangeLanguageBottomSheet.show(context);
+            },
+          ),
+          const SizedBox(width: 4),
+        ],
         bottom: !_isLoading && _errorMessage.isEmpty && _years.length > 1
             ? TabBar(
                 controller: _tabController,
@@ -159,7 +179,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
             Icon(Icons.error_outline, size: 60, color: Colors.red.shade300),
             const SizedBox(height: 16),
             Text(
-              "Could not load papers",
+              'could_not_load_papers'.tr(),
               style: commonTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -167,7 +187,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => context.pop(),
-              child: const Text("Go Back"),
+              child: Text('go_back'.tr()),
             ),
           ],
         ),
@@ -177,7 +197,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
     if (_filteredPapers.isEmpty) {
       return Center(
         child: Text(
-          "No papers available for this year.",
+          'no_papers_available_for_this_year'.tr(),
           style: commonTextStyle.copyWith(fontSize: 16, color: Colors.grey),
         ),
       );
@@ -216,6 +236,7 @@ class _PYQScreenState extends State<PYQScreen> with TickerProviderStateMixin {
         RoutesNames.pdfViewerScreen,
         extra: {
           'title': paper.title,
+          'titleMr': paper.titleMr,
           'pdfUrl': paper.pdfUrl,
           'description': '${paper.year} - ${paper.subject}',
         },
@@ -270,7 +291,7 @@ class _PaperCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      paper.title,
+                      paper.getLocalizedTitle(context),
                       style: commonTextStyle.copyWith(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

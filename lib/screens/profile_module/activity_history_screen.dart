@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -43,7 +44,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: CustomAppBar(
-        titleText: "Activity History",
+        titleText: 'activity_history'.tr(),
         titleIcon: Icons.history,
       ),
       body: BlocBuilder<ActivityHistoryCubit, ActivityHistoryState>(
@@ -57,7 +58,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
           if (state.sessions.isEmpty) {
             return Center(
               child: Text(
-                "No history found",
+                'no_history_found'.tr(),
                 style: commonTextStyle.copyWith(color: Colors.grey),
               ),
             );
@@ -124,9 +125,9 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                         SnackBar(
                             content: Text(
-                                'Detailed history not available for this session.')),
+                                'detailed_history_not_available_for_this_session'.tr())),
                       );
                     }
                   },
@@ -190,7 +191,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                                   _buildStatChip("Attempted",
                                       "$attempted/$total", Colors.blue),
                                   _buildStatChip(
-                                      "Correct", "$score", Colors.green),
+                                      'correct'.tr(), "$score", Colors.green),
                                   _buildStatChip("Wrong", "$wrong", Colors.red),
                                 ],
                               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/screens/profile_module/history_details_cubit.dart';
@@ -55,7 +56,7 @@ class HistoryDetailsBottomSheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Quiz Review",
+                      'quiz_review'.tr(),
                       style: commonTextStyle.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -115,7 +116,7 @@ class HistoryDetailsBottomSheet extends StatelessWidget {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                "Your Answer: ${selectedOption.isEmpty ? 'Skipped' : selectedOption}",
+                                "Your Answer: ${selectedOption.isEmpty ? 'skipped'.tr() : selectedOption}",
                                 style: commonTextStyle.copyWith(
                                     color: selectedOption.isEmpty
                                         ? Colors.grey

@@ -6,6 +6,8 @@ import 'package:mission_vardi/screens/physical_prep_module/physical_prep_state.d
 import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 
 class PhysicalPrepScreen extends StatefulWidget {
   const PhysicalPrepScreen({super.key});
@@ -48,6 +50,8 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<LocaleCubit>();
+
     // Watch LanguageCubit to trigger an instant rebuild when language changes
    
     return BlocBuilder<PhysicalPrepCubit, PhysicalPrepState>(
@@ -59,7 +63,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
           child: Scaffold(
             backgroundColor: Constants.scaffoldBackgroundColour,
             appBar: CustomAppBar(
-              titleText: "Physical Test Tracker",
+              titleText: 'physical_test_tracker'.tr(),
               titleIcon: Icons.fitness_center,    
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(66),
@@ -95,7 +99,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           children: [
                             const Icon(Icons.fitness_center, size: 14),
                             const SizedBox(width: 4),
-                            const Text("Workout"),
+                            Text('workout'.tr()),
                           ],
                         ),
                       ),
@@ -105,7 +109,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           children: [
                             const Icon(Icons.timer_outlined, size: 14),
                             const SizedBox(width: 4),
-                            const Text("Timer"),
+                            Text('timer'.tr()),
                           ],
                         ),
                       ),
@@ -115,7 +119,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           children: [
                             const Icon(Icons.calculate_rounded, size: 14),
                             const SizedBox(width: 4),
-                            const Text("Calculator"),
+                            Text('calculator'.tr()),
                           ],
                         ),
                       ),
@@ -145,12 +149,12 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Today's Workout Target!",
+                                    'workout_target_title'.tr(),
                                     style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
                                   ),
                                   const SizedBox(height: 3),
                                   Text(
-                                    "Train daily to score 100% in ground test.",
+                                    'workout_target_desc'.tr(),
                                     style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey.shade600),
                                   ),
                                 ],
@@ -162,7 +166,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 20),
 
                       _trackerCard(
-                        title: "Push-ups Counter",
+                        title: 'pushups_counter'.tr(),
                         count: state.pushupCount,
                         goal: state.pushupGoal,
                         onAdd: cubit.incrementPushups,
@@ -171,7 +175,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 15),
 
                       _trackerCard(
-                        title: "Sit-ups Counter",
+                        title: 'situps_counter'.tr(),
                         count: state.situpCount,
                         goal: state.situpGoal,
                         onAdd: cubit.incrementSitups,
@@ -180,23 +184,23 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 20),
 
                       Text(
-                        "Police Physical Standards",
+                        'police_physical_standards'.tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       const SizedBox(height: 10),
                       _standardItem(
-                        title: "1600 Meters Run (Male)",
-                        desc: "Excellent target: 5 mins 10 secs (30 Marks)",
+                        title: 'run_1600m_male'.tr(),
+                        desc: 'excellent_target_5_mins_10_secs_30_marks'.tr(),
                         score: "30 M",
                       ),
                       _standardItem(
-                        title: "100 Meters Sprint",
-                        desc: "Excellent target: 11.50 secs (15 Marks)",
+                        title: 'sprint_100m'.tr(),
+                        desc: 'excellent_target_11_50_secs_15_marks'.tr(),
                         score: "15 M",
                       ),
                       _standardItem(
-                        title: "Shot Put Throw",
-                        desc: "Excellent throw: 8.50 meters (15 Marks)",
+                        title: 'shot_put_throw'.tr(),
+                        desc: 'excellent_throw_8_50_meters_15_marks'.tr(),
                         score: "15 M",
                       ),
                     ],
@@ -226,7 +230,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         child: Column(
                           children: [
                             Text(
-                              "Running Event Stopwatch",
+                              'running_stopwatch'.tr(),
                               style: commonTextStyle.copyWith(color: Colors.grey, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 15),
@@ -270,7 +274,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Recorded Splits (Laps)",
+                            'recorded_splits'.tr(),
                             style: commonTextStyle.copyWith(fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -285,7 +289,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         child: state.lapTimes.isEmpty
                             ? Center(
                                 child: Text(
-                                  "Start timer & record split lap markers.",
+                                  'start_timer_desc'.tr(),
                                   style: commonTextStyle.copyWith(color: Colors.grey, fontSize: 13),
                                 ),
                               )
@@ -343,7 +347,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Important Note:",
+                                    'important_note'.tr(),
                                     style: commonTextStyle.copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12.5,
@@ -352,7 +356,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    "1. Initially all values are set to '0'.\n2. Enter your actual timings/distances to see your marks.\n3. A minimum of 25 out of 50 marks is required to qualify.",
+                                    '1_initially_all_values_are_set_to_0n2_enter_your_actual_timingsdistances_to_see_your_marksn3_a_minimum_of_25_out_of_50_marks_is_required_to_qualify'.tr(),
                                     style: commonTextStyle.copyWith(
                                       fontSize: 11,
                                       color: const Color(0xFF1E3A8A),
@@ -400,7 +404,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         child: Column(
                           children: [
                             Text(
-                              "Total Physical Marks",
+                              'total_physical_marks'.tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.bold,
@@ -444,7 +448,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 24),
 
                       Text(
-                        "Select Gender",
+                        'select_gender'.tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 10),
@@ -452,7 +456,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         children: [
                           Expanded(
                             child: _genderButton(
-                              label: "Male",
+                              label: 'male'.tr(),
                               icon: Icons.male_rounded,
                               isSelected: state.gender == 'male',
                               onTap: () => cubit.changeGender('male'),
@@ -461,7 +465,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: _genderButton(
-                              label: "Female",
+                              label: 'female'.tr(),
                               icon: Icons.female_rounded,
                               isSelected: state.gender == 'female',
                               onTap: () => cubit.changeGender('female'),
@@ -472,7 +476,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 24),
 
                       Text(
-                        "Enter Physical Event Timings",
+                        'enter_physical_timings'.tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 12),
@@ -491,7 +495,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 14),
 
                       _calculatorInputRow(
-                        title: "100 Meters Sprint",
+                        title: 'sprint_100m'.tr(),
                         subTitle: "Target: <= 11.50 secs",
                         score: "${state.sprintMarks} / 15",
                         controller: sprintController,
@@ -500,7 +504,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       const SizedBox(height: 14),
 
                       _calculatorInputRow(
-                        title: "Shot Put Throw",
+                        title: 'shot_put_throw'.tr(),
                         subTitle: "Target: >= 8.50 meters",
                         score: "${state.shotPutMarks} / 15",
                         controller: shotPutController,
@@ -568,7 +572,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                         );
                       }).toList(),
 
-                      // "Add Custom Event" Button
+                      // 'add_custom_event'.tr() Button
                       SizedBox(
                         width: double.infinity,
                         height: 48,
@@ -576,7 +580,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           onPressed: () => _showAddEventBottomSheet(context, cubit),
                           icon: const Icon(Icons.add, size: 20),
                           label: Text(
-                            "Add Custom Event",
+                            'add_custom_event'.tr(),
                             style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13.5),
                           ),
                           style: OutlinedButton.styleFrom(
@@ -588,20 +592,20 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      // "Save Fitness Log" Button
+                      // 'save_fitness_log'.tr() Button
                       SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Saving fitness log...')),
+                               SnackBar(content: Text('saving_fitness_log'.tr())),
                             );
                             await cubit.saveFitnessLog();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Fitness log saved successfully!'),
+                                 SnackBar(
+                                  content: Text('fitness_log_saved_successfully'.tr()),
                                   backgroundColor: Colors.green,
                                 ),
                               );
@@ -609,7 +613,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           },
                           icon: const Icon(Icons.save_rounded, size: 20, color: Colors.white),
                           label: Text(
-                            "Save Fitness Log",
+                            'save_fitness_log'.tr(),
                             style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13.5, color: Colors.white),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -706,7 +710,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "Click '+' button to count reps.",
+                      'click_button_to_count_reps'.tr(),
                       style: commonTextStyle.copyWith(fontSize: 11, color: Colors.grey),
                     ),
                   ],
@@ -975,7 +979,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Add Custom Event",
+                          'add_custom_event'.tr(),
                           style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         IconButton(
@@ -988,32 +992,32 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     
                     // Event Name
                     Text(
-                      "Event Name (e.g. Long Jump, Pull-Ups)",
+                      'event_name_e_g_long_jump_pull_ups'.tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
                     CommonTextFormField(
                       controller: nameController,
-                      hintText: "e.g. Long Jump / Pull-Ups",
+                      hintText: 'e_g_long_jump_pull_ups'.tr(),
                     ),
                     const SizedBox(height: 16),
 
                     // Max Marks
                     Text(
-                      "Maximum Total Marks",
+                      'maximum_total_marks'.tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
                     CommonTextFormField(
                       controller: maxMarksController,
                       keyboardType: TextInputType.number,
-                      hintText: "15",
+                      hintText: '15'.tr().tr(),
                     ),
                     const SizedBox(height: 18),
 
                     // Scoring Rule Selector Dropdown/Segment
                     Text(
-                      "Select Scoring Rule Type",
+                      'select_scoring_rule_type'.tr(),
                       style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
@@ -1033,21 +1037,21 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                             DropdownMenuItem(
                               value: 'direct',
                               child: Text(
-                                "Direct Score Input",
+                                'direct_score_input'.tr(),
                                 style: commonTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'multiplier',
                               child: Text(
-                                "Per Rep/Count Multiplier",
+                                'per_rep_count_multiplier'.tr(),
                                 style: commonTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'threshold',
                               child: Text(
-                                "Target Pass/Fail Threshold",
+                                'target_pass_fail_threshold'.tr(),
                                 style: commonTextStyle.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
@@ -1067,14 +1071,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                     // DYNAMIC FIELDS BASED ON RULE TYPE
                     if (selectedRuleType == 'direct') ...[
                       Text(
-                        "Your Achieved Marks",
+                        'your_achieved_marks'.tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       const SizedBox(height: 8),
                       CommonTextFormField(
                         controller: achievedController,
                         keyboardType: TextInputType.number,
-                        hintText: "12",
+                        hintText: '12'.tr().tr(),
                       ),
                     ] else if (selectedRuleType == 'multiplier') ...[
                       Row(
@@ -1084,14 +1088,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Marks per Rep",
+                                  'marks_per_rep'.tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
                                 CommonTextFormField(
                                   controller: ruleValueController,
                                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  hintText: "4.0",
+                                  hintText: '4_0'.tr(),
                                 ),
                               ],
                             ),
@@ -1102,14 +1106,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Your Reps Count",
+                                  'your_reps_count'.tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
                                 CommonTextFormField(
                                   controller: repsController,
                                   keyboardType: TextInputType.number,
-                                  hintText: "10",
+                                  hintText: '10'.tr().tr(),
                                 ),
                               ],
                             ),
@@ -1124,7 +1128,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Comparison",
+                                  'comparison'.tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
@@ -1144,14 +1148,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                                         DropdownMenuItem(
                                           value: '>=',
                                           child: Text(
-                                            "At least (>=)",
+                                            'at_least'.tr(),
                                             style: commonTextStyle.copyWith(fontSize: 12.5),
                                           ),
                                         ),
                                         DropdownMenuItem(
                                           value: '<=',
                                           child: Text(
-                                            "At most (<=)",
+                                            'at_most'.tr(),
                                             style: commonTextStyle.copyWith(fontSize: 12.5),
                                           ),
                                         ),
@@ -1175,14 +1179,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Target Value",
+                                  'target_value'.tr(),
                                   style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12.5),
                                 ),
                                 const SizedBox(height: 8),
                                 CommonTextFormField(
                                   controller: targetValueController,
                                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  hintText: "14.0",
+                                  hintText: '14_0'.tr(),
                                 ),
                               ],
                             ),
@@ -1191,14 +1195,14 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Your Actual Result Value",
+                        'your_actual_result_value'.tr(),
                         style: commonTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       const SizedBox(height: 8),
                       CommonTextFormField(
                         controller: rawInputController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        hintText: "14.5",
+                        hintText: '14_5'.tr(),
                       ),
                     ],
 
@@ -1248,7 +1252,7 @@ class _PhysicalPrepScreenState extends State<PhysicalPrepScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: Text(
-                          "Save Event",
+                          'save_event'.tr(),
                           style: commonTextStyle.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,

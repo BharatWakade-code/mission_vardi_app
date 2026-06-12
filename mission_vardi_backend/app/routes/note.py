@@ -18,11 +18,14 @@ async def create_note(note: NoteCreate):
     note_data = {
         "id": note_id,
         "title": note.title,
+        "title_mr": note.title_mr,
         "description": note.description,
+        "description_mr": note.description_mr,
         "pdfUrl": note.pdfUrl,
         "category": note.category,
         "subject": note.subject,
         "content": note.content,
+        "content_mr": note.content_mr,
         "createdAt": str(datetime.now())
     }
     

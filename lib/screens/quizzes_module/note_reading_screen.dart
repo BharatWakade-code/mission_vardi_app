@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -11,10 +14,21 @@ class NoteReadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = noteData['title'] ?? 'Note';
+    final langCode = context.watch<LocaleCubit>().state.languageCode;
+
+    final rawTitle = noteData['title'] ?? 'Note';
+    final titleMr = noteData['title_mr'] ?? '';
+    final title = (langCode == 'mr' && titleMr.toString().isNotEmpty) ? titleMr.toString() : rawTitle.toString();
+
     final category = noteData['category'] ?? '';
-    final description = noteData['description'] ?? '';
-    final content = noteData['content'];
+
+    final rawDesc = noteData['description'] ?? '';
+    final descMr = noteData['description_mr'] ?? '';
+    final description = (langCode == 'mr' && descMr.toString().isNotEmpty) ? descMr.toString() : rawDesc.toString();
+
+    final rawContent = noteData['content'];
+    final contentMr = noteData['content_mr'];
+    final content = (langCode == 'mr' && contentMr != null && contentMr.toString().isNotEmpty) ? contentMr.toString() : rawContent;
     final pdfUrl = noteData['pdfUrl'];
 
     return Scaffold(
@@ -99,8 +113,8 @@ class NoteReadingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
               ] else if (pdfUrl == null || pdfUrl.toString().isEmpty) ...[
-                const Text(
-                  "No content available for this note.",
+                 Text(
+                  'no_content_available_for_this_note'.tr(),
                   style: TextStyle(
                     fontFamily: 'Outfit',
                     fontSize: 15,
@@ -134,8 +148,8 @@ class NoteReadingScreen extends StatelessWidget {
                       );
                     },
                     icon: const Icon(Icons.picture_as_pdf_rounded),
-                    label: const Text(
-                      "View PDF Note",
+                    label:  Text(
+                      'view_pdf_note'.tr(),
                       style: TextStyle(
                         fontFamily: 'Outfit',
                         fontWeight: FontWeight.bold,

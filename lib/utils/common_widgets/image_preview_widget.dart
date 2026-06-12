@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -13,7 +14,7 @@ class ImagePreviewWidget extends StatelessWidget {
       backgroundColor: Constants.bgColour,
       appBar: CustomAppBar(
         title: Text(
-          'Image View',
+          'image_view'.tr(),
           style: commonTextStyle.copyWith(
             fontSize: 17,
             color: Constants.whiteColour,

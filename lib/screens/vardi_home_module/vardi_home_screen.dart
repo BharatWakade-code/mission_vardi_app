@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,8 @@ import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cub
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
 import 'package:mission_vardi/utils/download_service.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
 
 // ─── Design Tokens (Blue Theme) ────────────────────────────────────────────
 const _surface = Color(0xFFFFFFFF);
@@ -94,6 +97,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
   // ─── BUILD ──────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
+    context.watch<LocaleCubit>();
     return Scaffold(
       backgroundColor: Constants.scaffoldBackgroundColour,
       appBar: _buildAppBar(),
@@ -176,7 +180,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Mission Vardi',
+                'title'.tr(),
                 style: commonTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -185,7 +189,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                 ),
               ),
               Text(
-                'Maharashtra Police Bharti',
+                'maharashtra_police_bharti'.tr(),
                 style: commonTextStyle.copyWith(
                   fontSize: 10,
                   color: Colors.white60,
@@ -197,6 +201,12 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
         ],
       ),
       actions: [
+        IconButton(
+          onPressed: () {
+            ChangeLanguageBottomSheet.show(context);
+          },
+          icon: const Icon(Icons.language_rounded, color: Colors.white, size: 24),
+        ),
         IconButton(
           onPressed: () {},
           icon: Stack(
@@ -294,7 +304,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'EXAM COUNTDOWN',
+                      'exam_countdown'.tr(),
                       style: commonTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
@@ -306,7 +316,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Welcome, Future Officer! 🇮🇳',
+                  'welcome_future_officer'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -315,7 +325,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                   ),
                 ),
                 Text(
-                  'Your dream uniform awaits. Keep going.',
+                  'your_dream_uniform_awaits_keep_going'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 12,
                     color: Colors.white54,
@@ -398,8 +408,8 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
   Widget _buildQuickActionsGrid() {
     final actions = [
       _ActionItem(
-        title: 'Mock Quizzes',
-        subtitle: 'Test your skills',
+        title: 'mock_quizzes'.tr(),
+        subtitle: 'test_your_skills'.tr(),
         icon: Icons.timer_rounded,
         color: const Color(0xFF6366F1),
         lightColor: const Color(0xFFEEF2FF),
@@ -407,41 +417,41 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
             context.push(RoutesNames.categoryItemsScreen, extra: 'Timed'),
       ),
       _ActionItem(
-        title: 'PYQ Papers',
-        subtitle: 'Previous year papers',
+        title: 'pyq_papers'.tr(),
+        subtitle: 'previous_year_papers'.tr(),
         icon: Icons.history_edu_rounded,
         color: const Color(0xFF059669),
         lightColor: const Color(0xFFECFDF5),
         onTap: () => context.push(RoutesNames.pyqScreen),
       ),
       _ActionItem(
-        title: 'Subject Notes',
-        subtitle: 'Read & study',
+        title: 'subject_notes'.tr(),
+        subtitle: 'read_study'.tr(),
         icon: Icons.library_books_rounded,
         color: const Color(0xFFD97706),
         lightColor: const Color(0xFFFFFBEB),
         onTap: () =>
-            context.push(RoutesNames.categoryItemsScreen, extra: 'Notes'),
+            context.push(RoutesNames.categoryItemsScreen, extra: 'notes'.tr()),
       ),
       _ActionItem(
-        title: 'Leaderboard',
-        subtitle: 'Your rank & score',
+        title: 'leaderboard'.tr(),
+        subtitle: 'your_rank_score'.tr(),
         icon: Icons.emoji_events_rounded,
         color: const Color(0xFFDB2777),
         lightColor: const Color(0xFFFDF2F8),
         onTap: () => context.push(RoutesNames.leaderboardScreen),
       ),
       _ActionItem(
-        title: 'Physical Test',
-        subtitle: 'Track your run',
+        title: 'physical_test'.tr(),
+        subtitle: 'track_your_run'.tr(),
         icon: Icons.directions_run_rounded,
         color: const Color(0xFF0891B2),
         lightColor: const Color(0xFFECFEFF),
         onTap: () => context.read<VardiDashboardCubit>().onChangeIndex(2),
       ),
       _ActionItem(
-        title: 'My Profile',
-        subtitle: 'View your progress',
+        title: 'my_profile'.tr(),
+        subtitle: 'view_your_progress'.tr(),
         icon: Icons.person_rounded,
         color: const Color(0xFF7C3AED),
         lightColor: const Color(0xFFF5F3FF),
@@ -452,7 +462,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader('Quick Actions', 'What do you want to do today?'),
+        _sectionHeader('quick_actions'.tr(), 'what_do_you_want_to_do_today'.tr()),
         const SizedBox(height: 14),
         GridView.builder(
           shrinkWrap: true,
@@ -572,7 +582,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'Daily Motivation',
+                  'daily_motivation'.tr(),
                   style: commonTextStyle.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -611,7 +621,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                   const Icon(Icons.refresh_rounded, size: 14, color: _accent),
                   const SizedBox(width: 4),
                   Text(
-                    'Next Quote',
+                    'next_quote'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -667,7 +677,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Police Bharti Complete Guide',
+                      'police_bharti_complete_guide'.tr(),
                       style: commonTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -676,7 +686,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      'Syllabus · Age limit · Salary & more',
+                      'syllabus_age_limit_salary_more'.tr(),
                       style: commonTextStyle.copyWith(
                         fontSize: 11,
                         color: Colors.white70,
@@ -710,7 +720,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
 
     return Column(
       children: [
-        _sectionHeader('🏆 Global Leaderboard', 'Top performers this week'),
+        _sectionHeader('global_leaderboard'.tr(), 'top_performers_this_week'.tr()),
         const SizedBox(height: 14),
         Container(
           decoration: BoxDecoration(

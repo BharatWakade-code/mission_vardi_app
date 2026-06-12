@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
@@ -74,7 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "Please accept the Terms & Conditions",
+            'please_accept_the_terms_conditions'.tr(),
             style: commonTextStyle.copyWith(color: Colors.white, fontSize: 13),
           ),
           backgroundColor: Colors.redAccent,
@@ -196,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                       const SizedBox(height: 16),
 
                       Text(
-                        "Create Account",
+                        'create_account'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.white,
                           fontSize: 26,
@@ -206,7 +207,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        "Join 10,000+ aspirants on Mission Vardi",
+                        'join_10_000_aspirants_on_mission_vardi'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.white60,
                           fontSize: 13,
@@ -244,7 +245,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                                   Expanded(
                                     child: _buildInputField(
                                       controller: _firstNameController,
-                                      label: "First Name",
+                                      label: 'first_name'.tr(),
                                       hint: "First name",
                                       icon: Icons.person_outline_rounded,
                                       validator: (val) =>
@@ -257,7 +258,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                                   Expanded(
                                     child: _buildInputField(
                                       controller: _lastNameController,
-                                      label: "Last Name",
+                                      label: 'last_name'.tr(),
                                       hint: "Last name",
                                       icon: Icons.person_outline_rounded,
                                       validator: (val) =>
@@ -272,7 +273,7 @@ class _SignUpScreenState extends State<SignUpScreen>
 
                               _buildInputField(
                                 controller: _emailController,
-                                label: "Email Address",
+                                label: 'email_address'.tr(),
                                 hint: "Enter your email",
                                 icon: Icons.email_outlined,
                                 keyboardType: TextInputType.emailAddress,
@@ -291,7 +292,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                               /// Phone — optional
                               _buildInputField(
                                 controller: _phoneController,
-                                label: "Phone Number (Optional)",
+                                label: 'phone_number_optional'.tr(),
                                 hint: "Enter your 10-digit mobile number",
                                 icon: Icons.phone_outlined,
                                 keyboardType: TextInputType.phone,
@@ -309,7 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen>
 
                               _buildInputField(
                                 controller: _passwordController,
-                                label: "Password",
+                                label: 'password'.tr(),
                                 hint: "Create a strong password",
                                 icon: Icons.lock_outline_rounded,
                                 obscure: _obscurePassword,
@@ -332,7 +333,7 @@ class _SignUpScreenState extends State<SignUpScreen>
 
                               _buildInputField(
                                 controller: _confirmPasswordController,
-                                label: "Confirm Password",
+                                label: 'confirm_password'.tr(),
                                 hint: "Re-enter your password",
                                 icon: Icons.lock_outline_rounded,
                                 obscure: _obscureConfirm,
@@ -445,7 +446,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                                               color: Colors.amber),
                                         )
                                       : _buildPrimaryButton(
-                                          label: "Create Account",
+                                          label: 'create_account'.tr(),
                                           onTap: _signUp,
                                         );
                                 },
@@ -469,7 +470,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
-                              "OR",
+                              'or'.tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.white38,
                                 fontSize: 12,
@@ -532,7 +533,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                                             size: 26, color: Colors.red),
                                         const SizedBox(width: 10),
                                         Text(
-                                          "Continue with Google",
+                                          'continue_with_google'.tr(),
                                           style: commonTextStyle.copyWith(
                                             color: Colors.black87,
                                             fontSize: 15,
@@ -553,7 +554,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Already have an account? ",
+                            'already_have_an_account'.tr(),
                             style: commonTextStyle.copyWith(
                               color: Colors.white60,
                               fontSize: 14,
@@ -562,7 +563,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                           GestureDetector(
                             onTap: () => context.go(RoutesNames.signInScreen),
                             child: Text(
-                              "Sign In",
+                              'sign_in'.tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.amber,
                                 fontSize: 14,

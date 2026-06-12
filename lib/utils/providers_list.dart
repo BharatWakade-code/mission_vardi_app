@@ -10,6 +10,7 @@ import 'package:mission_vardi/screens/admin_module/admin_cubit.dart';
 
 import 'package:mission_vardi/screens/physical_prep_module/physical_prep_cubit.dart';
 import 'package:mission_vardi/utils/depenedency_injection/get_it_setup.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 
 providerList() {
   return [
@@ -36,6 +37,9 @@ providerList() {
     ),
     BlocProvider(
       create: (_) => PdfViewerCubit(),
+    ),
+    BlocProvider(
+      create: (_) => LocaleCubit(),
     ),
   ];
 }

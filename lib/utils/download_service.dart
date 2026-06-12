@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,8 @@ class DownloadService {
   }) async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Downloading PDF..."),
+         SnackBar(
+          content: Text('downloading_pdf'.tr()),
         ),
       );
 
@@ -90,7 +91,7 @@ class DownloadService {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "Download failed",
+            'download_failed'.tr(),
           ),
         ),
       );

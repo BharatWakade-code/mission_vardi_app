@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mission_vardi/utils/common_widgets/common_button.dart';
 import 'package:mission_vardi/utils/constants.dart';
@@ -57,7 +58,7 @@ class WelcomeScreen extends StatelessWidget {
 
                     /// Header Title
                     Text(
-                      "MISSION VARDI",
+                      'mission_vardi'.tr(),
                       textAlign: TextAlign.center,
                       style: commonTextStyle.copyWith(
                         color: Colors.white,
@@ -81,7 +82,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        "Maharashtra's #1 Police Bharti App 👮‍♂️",
+                        'maharashtras_1_police_bharti_app'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.amber.shade200,
                           fontSize: 13,
@@ -94,7 +95,7 @@ class WelcomeScreen extends StatelessWidget {
 
                     /// Slogan Text
                     Text(
-                      "Your Dream Uniform is Within Reach",
+                      'your_dream_uniform_is_within_reach'.tr(),
                       textAlign: TextAlign.center,
                       style: commonTextStyle.copyWith(
                         color: Colors.white,
@@ -108,7 +109,7 @@ class WelcomeScreen extends StatelessWidget {
 
                     /// Description text
                     Text(
-                      "Prepare with daily MCQ tests, real-time mock timers, physical test trackers, and global rank analysis. Track sit-ups, pushups, and 1600m sprints.",
+                      'prepare_with_daily_mcq_tests_real_time_mock_timers_physical_test_trackers_and_global_rank_analysis_track_sit_ups_pushups_and_1600m_sprints'.tr(),
                       textAlign: TextAlign.center,
                       style: commonTextStyle.copyWith(
                         color: Colors.white.withOpacity(0.85),
@@ -141,7 +142,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            "Get Started with Phone OTP",
+                            'get_started_with_phone_otp'.tr(),
                             style: commonTextStyle.copyWith(
                               color: const Color(0xFF0A2540),
                               fontSize: 16,
@@ -176,7 +177,7 @@ class WelcomeScreen extends StatelessWidget {
                             const Icon(Icons.g_mobiledata, size: 24, color: Colors.red),
                             const SizedBox(width: 8),
                             Text(
-                              "Sign in with Google",
+                              'sign_in_with_google'.tr(),
                               style: commonTextStyle.copyWith(
                                 color: Colors.black87,
                                 fontSize: 15,
@@ -199,7 +200,7 @@ class WelcomeScreen extends StatelessWidget {
                         context.go(RoutesNames.dashboardScreen);
                       },
                       child: Text(
-                        "Continue as Guest Mode",
+                        'continue_as_guest_mode'.tr(),
                         style: commonTextStyle.copyWith(
                           color: Colors.white70,
                           fontSize: 14,

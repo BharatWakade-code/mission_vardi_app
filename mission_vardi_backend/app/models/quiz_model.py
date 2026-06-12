@@ -9,12 +9,16 @@ class AnswerItem(BaseModel):
 class Question(BaseModel):
     id: str
     text: str
+    text_mr: Optional[str] = None
     options: List[str]
+    options_mr: Optional[List[str]] = None
     correctAnswer: str
 
 class QuizCreate(BaseModel):
     title: str
+    title_mr: Optional[str] = None
     description: str
+    description_mr: Optional[str] = None
     category: Optional[str] = None
     type: Optional[str] = None
     questions: List[Question]

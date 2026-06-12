@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
 import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
@@ -16,7 +18,7 @@ const _textSecondary = Color(0xFF4B5563);
 const _divider = Color(0xFFDBEAFE);
 
 class CategoryItemsScreen extends StatefulWidget {
-  final String categoryMode; // "Timed", "Practice", "Notes"
+  final String categoryMode; // "Timed", "Practice", 'notes'.tr()
   const CategoryItemsScreen({super.key, required this.categoryMode});
 
   @override
@@ -30,7 +32,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.categoryMode != "Notes") {
+    if (widget.categoryMode != 'notes'.tr()) {
       context.read<QuizzesCubit>().changePracticeMode(widget.categoryMode);
       context.read<QuizzesCubit>().getQuizzesList();
     } else {
@@ -40,10 +42,10 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isNotes = widget.categoryMode == "Notes";
+    final isNotes = widget.categoryMode == 'notes'.tr();
     final title = isNotes
-        ? "Subject Wise Notes"
-        : (widget.categoryMode == "Timed" ? "Mock Tests" : "Practice Tests");
+        ? 'subject_wise_notes'.tr()
+        : (widget.categoryMode == "Timed" ? 'mock_tests'.tr() : 'practice_tests'.tr());
     final titleIcon =
         isNotes ? Icons.library_books_rounded : Icons.quiz_rounded;
 
@@ -69,7 +71,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
         if (state.data.isEmpty) {
           return _emptyState(
             icon: Icons.quiz_rounded,
-            message: 'No quizzes available\nfor this category.',
+            message: 'no_quizzes_availablenfor_this_category'.tr(),
           );
         }
         return ListView.separated(
@@ -78,8 +80,11 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final item = state.data[index];
+            final langCode = context.watch<LocaleCubit>().state.languageCode;
+            final titleMr = item.titleMr ?? '';
+            final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty) ? titleMr : (item.title ?? 'Untitled');
             return _QuizCard(
-              title: item.title ?? 'Untitled',
+              title: localizedTitle,
               subtitle: item.category ?? 'General',
               index: index,
               onTap: () =>
@@ -109,7 +114,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
         if (state.notesList.isEmpty) {
           return _emptyState(
               icon: Icons.library_books_rounded,
-              message: 'No notes available yet.');
+              message: 'no_notes_available_yet'.tr());
         }
 
         // ── Group: category → subject → [notes] ──────────────────────────
@@ -384,14 +389,17 @@ class _SubjectSection extends StatelessWidget {
               ],
             ),
           ),
-          // Notes for this subject
           ...notes.asMap().entries.map((e) {
             final note = e.value;
-            final title = (note['title'] ?? 'Untitled Note').toString();
+            final langCode = context.watch<LocaleCubit>().state.languageCode;
+            final titleMr = note['title_mr']?.toString() ?? '';
+            final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty) 
+                ? titleMr 
+                : (note['title'] ?? 'Untitled Note').toString();
             return Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: _NoteRow(
-                title: title,
+                title: localizedTitle,
                 color: catColor,
                 onTap: () => onNoteTap(note),
               ),

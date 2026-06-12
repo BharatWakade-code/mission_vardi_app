@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 
 class PoliceBhartiInfoScreen extends StatefulWidget {
   const PoliceBhartiInfoScreen({super.key});
@@ -511,7 +512,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    "📅 वयोमर्यादा (Age Limit)",
+                    'age_limit'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -553,7 +554,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    "💰 वेतन श्रेणी व भत्ते (Salary & Perks)",
+                    'salary_perks'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

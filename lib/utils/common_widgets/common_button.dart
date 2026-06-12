@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
 
@@ -148,7 +149,7 @@ class CommonFloatingButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            title ?? 'Next',
+            title ?? 'next'.tr(),
             style: commonTextStyle.copyWith(
               fontSize: 14,
               fontWeight: FontWeight.w700,

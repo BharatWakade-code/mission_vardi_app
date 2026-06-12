@@ -14,9 +14,15 @@ import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
 import 'package:mission_vardi/utils/shared_pref_data.dart';
 import 'firebase_options.dart';
 import 'package:mission_vardi/utils/push_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
 
@@ -30,7 +36,10 @@ Future<void> main() async {
 
   if (!kIsWeb) {
     try {
-      await AdManager.instance.initialize();
+      // Do not await AdManager initialization as it can block the UI for up to 1 min waiting for network
+      AdManager.instance.initialize().catchError((e) {
+        debugPrint('AdManager init error: $e');
+      });
     } catch (e) {
       debugPrint('AdManager init error: $e');
     }
@@ -50,8 +59,11 @@ Future<void> main() async {
   }
 
   // Initialize push notifications (FCM + local)
+  // Do not await this as it makes network requests (getToken, subscribeToTopic) that can block the UI
   try {
-    await PushNotificationService.instance.initialize();
+    PushNotificationService.instance.initialize().catchError((e) {
+      debugPrint('Push notifications init error: $e');
+    });
   } catch (e) {
     debugPrint('Push notifications init error: $e');
   }
@@ -62,6 +74,9 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
+
+  // Remove the native splash screen after the app is initialized
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatefulWidget {
@@ -80,16 +95,31 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
-      title: 'MissionVardi',
-      scrollBehavior: MyCustomScrollBehavior(),
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        canvasColor: Colors.white,
-        scaffoldBackgroundColor: Constants.scaffoldBackgroundColour,
-      ),
+    return BlocBuilder<LocaleCubit, Locale>(
+      builder: (context, locale) {
+        return MaterialApp.router(
+          routerConfig: router,
+          debugShowCheckedModeBanner: false,
+          title: 'missionvardi'.tr(),
+          scrollBehavior: MyCustomScrollBehavior(),
+          locale: locale,
+          supportedLocales: const [
+            Locale('en', ''),
+            Locale('mr', ''),
+          ],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            canvasColor: Colors.white,
+            scaffoldBackgroundColor: Constants.scaffoldBackgroundColour,
+          ),
+        );
+      },
     );
   }
 }

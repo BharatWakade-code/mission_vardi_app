@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:mission_vardi/utils/common_widgets/common_button.dart';
 import 'package:mission_vardi/utils/constants.dart';
 
@@ -36,7 +37,7 @@ class BasicServiceApprovalDialog extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Service Request Received',
+                    'service_request_received'.tr(),
                     style: commonTextStyle.copyWith(
                       color: Constants.blackDarkColour,
                       fontSize: 16,
@@ -85,7 +86,7 @@ class BasicServiceApprovalDialog extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      'Equipment',
+                      'equipment'.tr(),
                       style: commonTextStyle.copyWith(
                         color: Constants.blackDarkColour,
                         fontSize: 14,
@@ -93,7 +94,7 @@ class BasicServiceApprovalDialog extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      'Tractor · Tractor with Rotavator',
+                      'tractor_tractor_with_rotavator'.tr(),
                       style: commonTextStyle.copyWith(
                         color: Constants.blackDarkColour.withOpacity(0.7),
                         fontSize: 13,
@@ -123,14 +124,14 @@ class BasicServiceApprovalDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Service Amount',
+                    'service_amount'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 13,
                       color: Constants.blackDarkColour.withOpacity(0.7),
                     ),
                   ),
                   Text(
-                    '₹1,200',
+                    '1_200'.tr(),
                     style: commonTextStyle.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -148,7 +149,7 @@ class BasicServiceApprovalDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: CommonButton(
-                    title: 'Deny',
+                    title: 'deny'.tr(),
                     color: Constants.whiteColour,
                     border: Border.all(color: Constants.redColour),
                     style: commonTextStyle.copyWith(
@@ -164,7 +165,7 @@ class BasicServiceApprovalDialog extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: CommonButton(
-                    title: 'Approve',
+                    title: 'approve'.tr(),
                     color: Constants.greenColour,
                     style: commonTextStyle.copyWith(
                       fontSize: 13,

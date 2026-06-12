@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'pdf_viewer_cubit.dart';
 import 'pdf_viewer_state.dart';
+import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final String pdfUrl;
@@ -55,6 +56,12 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               style: commonTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             actions: [
+              IconButton(
+                icon: const Icon(Icons.language_rounded, color: Colors.white, size: 24),
+                onPressed: () {
+                  ChangeLanguageBottomSheet.show(context);
+                },
+              ),
               state.isDownloading
                   ? const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:mission_vardi/screens/profile_module/profile_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'package:mission_vardi/utils/constants.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 
 class VardiDashboardScreen extends StatefulWidget {
   const VardiDashboardScreen({super.key});
@@ -23,7 +25,7 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    context.watch<LocaleCubit>();
     final dashboardCubit = context.watch<VardiDashboardCubit>();
 
     List<Widget> screens = [
@@ -65,20 +67,20 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_filled),
-          label: "Home",
+          label: 'home'.tr(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.quiz_rounded),
-          label: "Quiz",
+          label: 'quiz'.tr(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.directions_run_rounded),
-          label: "Physical",
+          label: 'physical'.tr(),
         ),
 
         BottomNavigationBarItem(
           icon: const Icon(Icons.person_rounded),
-          label: "Profile",
+          label: 'profile'.tr(),
         ),
       ],
     );
