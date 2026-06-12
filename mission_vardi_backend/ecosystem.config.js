@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "mission-vardi-backend",
-      script: ".venv/bin/uvicorn",
+      script: ".venv/Scripts/uvicorn.exe",
       args: "app.main:app --host 0.0.0.0 --port 8000",
       interpreter: "none",
       instances: 1,

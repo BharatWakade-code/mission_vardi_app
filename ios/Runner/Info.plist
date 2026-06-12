@@ -57,6 +57,11 @@
 		<false/>
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-3940256099942544~1458002511</string>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
 		<key>GIDClientID</key>
 		<string>274263956432-0ocoiu8k5bffcq594fk3k9skfapusuaf.apps.googleusercontent.com</string>
 		<key>CFBundleURLTypes</key>
