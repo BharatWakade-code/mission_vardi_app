@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:mission_vardi/utils/constants.dart';
-import 'pdf_viewer_cubit.dart';
-import 'pdf_viewer_state.dart';
+
 import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
 
 class PdfViewerScreen extends StatefulWidget {
@@ -28,22 +27,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PdfViewerCubit, PdfViewerState>(
-      listener: (context, state) {
-        if (state.errorMessage != null && state.errorMessage!.contains("successfully")) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!), backgroundColor: Colors.green),
-          );
-          context.read<PdfViewerCubit>().clearError();
-        } else if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!), backgroundColor: Colors.red),
-          );
-          context.read<PdfViewerCubit>().clearError();
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
+    return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
             elevation: 0,
@@ -62,24 +46,6 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   ChangeLanguageBottomSheet.show(context);
                 },
               ),
-              state.isDownloading
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                      ),
-                    )
-                  : IconButton(
-                      icon: const Icon(Icons.download_rounded),
-                      onPressed: () {
-                        context.read<PdfViewerCubit>().downloadPdfToDevice(
-                          widget.pdfUrl,
-                          widget.title,
-                        );
-                      },
-                    ),
             ],
           ),
           body: Column(
@@ -105,7 +71,5 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
             ],
           ),
         );
-      },
-    );
   }
 }

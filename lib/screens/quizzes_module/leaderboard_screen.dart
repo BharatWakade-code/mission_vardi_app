@@ -5,6 +5,7 @@ import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
 import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
+import 'package:mission_vardi/utils/network_services/api_services.dart';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const _surface = Color(0xFFFFFFFF);
@@ -23,21 +24,27 @@ class LeaderboardScreen extends StatefulWidget {
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  final List<String> _districts = const [
-    'All Maharashtra',
-    'Ahmednagar', 'Akola', 'Amravati',
-    'Chhatrapati Sambhajinagar (Aurangabad)', 'Beed', 'Bhandara', 'Buldhana',
-    'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli', 'Jalgaon',
-    'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai Suburban', 'Nagpur',
-    'Nanded', 'Nandurbar', 'Nashik', 'Dharashiv (Osmanabad)', 'Palghar',
-    'Parbhani', 'Pune', 'Raigad', 'Ratnagiri', 'Sangli', 'Satara',
-    'Sindhudurg', 'Solapur', 'Thane', 'Wardha', 'Washim', 'Yavatmal',
-  ];
+  List<String> _districts = ['All Maharashtra'];
 
   @override
   void initState() {
     super.initState();
+    _fetchDistricts();
     context.read<QuizzesCubit>().getLeaderboardList();
+  }
+
+  Future<void> _fetchDistricts() async {
+    try {
+      final response = await NetworkServices().getApi('/home/districts');
+      if (response.data != null && response.data['status'] == true) {
+        final List<String> fetched = List<String>.from(response.data['data']);
+        setState(() {
+          _districts = ['All Maharashtra', ...fetched];
+        });
+      }
+    } catch (e) {
+      debugPrint("Failed to fetch districts: $e");
+    }
   }
 
   @override

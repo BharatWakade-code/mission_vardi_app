@@ -11,12 +11,27 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   ProfileCubit(this._repository) : super(ProfileState());
   String get userID => CommonHiveData.getString('userId');
+  Future<void> getDistricts() async {
+    final either = await _repository.getDistricts();
+    either.fold(
+      (error) => null, // Just fail silently for dropdowns, or log
+      (districts) {
+        emit(state.copyWith(districts: districts));
+      },
+    );
+  }
+
   Future<void> getProfile() async {
     emit(state.copyWith(
       isLoading: true,
       errorMsg: '',
       successMsg: '',
     ));
+
+    // Fetch districts alongside profile
+    if (state.districts.isEmpty) {
+      await getDistricts();
+    }
 
     final either = await _repository.getProfile(userID:userID);
 

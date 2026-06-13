@@ -79,14 +79,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (profileState.isLoading && user == null) {
       return Scaffold(
         backgroundColor: Constants.scaffoldBackgroundColour,
-      appBar: CustomAppBar(
+        appBar: CustomAppBar(
           titleText: 'profile'.tr(),
           titleIcon: Icons.person,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.language, color: Colors.blue),
-              onPressed: () => ChangeLanguageBottomSheet.show(context),
-            ),
             _buildLogoutButton(context),
           ],
         ),
@@ -102,471 +98,552 @@ class _ProfileScreenState extends State<ProfileScreen> {
         titleText: 'profile'.tr(),
         titleIcon: Icons.person,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.blue),
-            onPressed: () => ChangeLanguageBottomSheet.show(context),
-          ),
           _buildLogoutButton(context),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        physics: const BouncingScrollPhysics(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // User Rank Profile Card
+            // Top Section (Profile Card)
             Container(
-              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF0D47A1), Color(0xFF1E88E5)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                color: Constants.primaryBlueColour,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
-                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    color: Constants.primaryBlueColour.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
                 ],
-              ),
-              child: Row(
-                children: [
-                  // Police badge avatar with upload gesture
-                  GestureDetector(
-                    onTap: () => _pickAndUploadImage(context),
-                    child: Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.amber,
-                            shape: BoxShape.circle,
-                          ),
-                          child: CircleAvatar(
-                            radius: 35,
-                            backgroundColor: Colors.white,
-                            backgroundImage: user?.avatarUrl != null &&
-                                    user!.avatarUrl!.isNotEmpty
-                                ? NetworkImage(user.avatarUrl!)
-                                : null,
-                            child: user?.avatarUrl == null ||
-                                    user!.avatarUrl!.isEmpty
-                                ? const Icon(Icons.person,
-                                    size: 40, color: Colors.grey)
-                                : null,
-                          ),
-                        ),
-                        if (profileState.isLoading)
-                          Positioned.fill(
-                            child: Container(
-                              margin: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                color: Colors.black45,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.amber),
-                                ),
-                              ),
-                            ),
-                          ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.amber.shade700,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              size: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user?.name ?? "User",
-                          style: commonTextStyle.copyWith(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.amber,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Email : ${user?.email ?? "test@gmail.com"}',
-                                    style: commonTextStyle.copyWith(
-                                      color: const Color(0xFF0A2540),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                  if (user?.isVerified == true) ...[
-                                    const SizedBox(width: 4),
-                                    const Icon(Icons.verified,
-                                        size: 14, color: Colors.green),
-                                  ]
-                                ],
-                              ),
-                            ),
-                            if (user?.isVerified != true) ...[
-                              const SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: () async {
-                                  try {
-                                    final auth = FirebaseAuth.instance;
-                                    await auth.currentUser
-                                        ?.sendEmailVerification();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text('verification_link_sent'.tr())),
-                                    );
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("Error: $e")),
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.shade400,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    'verify'.tr(),
-                                    style: commonTextStyle.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on, size: 12, color: Colors.amber),
-                            const SizedBox(width: 4),
-                            Text(
-                              user?.district ?? "Global Student",
-                              style: commonTextStyle.copyWith(
-                                color: Colors.white70,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: () {
-                      if (user != null) {
-                        _showEditProfileBottomSheet(context, user);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Statistics Header
-            Text(
-              'study_progress_accuracy'.tr(),
-              style: commonTextStyle.copyWith(
-                  fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-
-            // Accuracy % and Weekly Progress metrics
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.grey.shade200),
               ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Stack(
+                    alignment: Alignment.bottomRight,
                     children: [
-                      Text(
-                        'overall_mcq_accuracy'.tr(),
-                        style: commonTextStyle.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 13),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white24, width: 2),
+                        ),
+                        child: CircleAvatar(
+                          radius: 35,
+                          backgroundColor: Colors.white,
+                          backgroundImage: user?.avatarUrl != null &&
+                                  user!.avatarUrl!.isNotEmpty
+                              ? NetworkImage(user.avatarUrl!)
+                              : null,
+                          child: user?.avatarUrl == null ||
+                                  user!.avatarUrl!.isEmpty
+                              ? Icon(Icons.person,
+                                  size: 35, color: Colors.grey.shade400)
+                              : null,
+                        ),
                       ),
-                      Text(
-                        "${accuracy.toStringAsFixed(0)}%",
-                        style: commonTextStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Constants.primaryBlueColour,
+                      if (profileState.isLoading)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                color: Colors.black45, shape: BoxShape.circle),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white)),
+                            ),
+                          ),
+                        ),
+                      GestureDetector(
+                        onTap: () => _pickAndUploadImage(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2))
+                            ],
+                          ),
+                          child: const Icon(Icons.camera_alt,
+                              size: 16, color: Constants.primaryBlueColour),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: LinearProgressIndicator(
-                      value: accuracy / 100.0,
-                      minHeight: 10,
-                      backgroundColor: Colors.grey.shade100,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Constants.primaryBlueColour),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Weekly hours charts
+                  const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'weekly_study_hours'.tr(),
-                        style: commonTextStyle.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 13),
+                      Flexible(
+                        child: Text(
+                          user?.name ?? "User",
+                          style: commonTextStyle.copyWith(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      Text(
-                        "$hoursStr hrs",
-                        style: commonTextStyle.copyWith(
-                            color: Colors.grey, fontSize: 12),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          if (user != null)
+                            _showEditProfileBottomSheet(context, user);
+                        },
+                        child: const Icon(Icons.edit_square,
+                            color: Colors.white70, size: 18),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  // Weekly study hours chart
+                  const SizedBox(height: 4),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: weeklyHoursData.isEmpty
-                        ? List.generate(7, (index) => _barItem("-", 0.0, "0h"))
-                        : weeklyHoursData
-                            .map((w) {
-                              String dayStr = w['day'] ?? "";
-                              double m = (w['minutes'] as num?)?.toDouble() ??
-                                  ((w['hours'] as num?)?.toDouble() ?? 0.0) *
-                                      60;
-                              double fill =
-                                  maxWeeklyHours > 0 ? m / maxWeeklyHours : 0.0;
-
-                              String valueStr =
-                                  m > 0 ? "${m.toStringAsFixed(1)}m" : "0m";
-                              if (valueStr.endsWith(".0m")) {
-                                valueStr = "${m.toInt()}m";
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.location_on,
+                          size: 14, color: Colors.amber),
+                      const SizedBox(width: 4),
+                      Text(
+                        user?.district ?? "Global Student",
+                        style: commonTextStyle.copyWith(
+                            color: Colors.white70,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white24),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          user?.email ?? "test@gmail.com",
+                          style: commonTextStyle.copyWith(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        if (user?.isVerified == true) ...[
+                          const SizedBox(width: 6),
+                          const Icon(Icons.verified,
+                              size: 16, color: Colors.greenAccent),
+                        ],
+                        if (user?.isVerified != true) ...[
+                          const SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: () async {
+                              try {
+                                final auth = FirebaseAuth.instance;
+                                await auth.currentUser?.sendEmailVerification();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            'verification_link_sent'.tr())));
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("Error: $e")));
                               }
-
-                              return _barItem(dayStr, fill, valueStr);
-                            })
-                            .toList()
-                            .cast<Widget>(),
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.redAccent,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.redAccent.withOpacity(0.4),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2))
+                                ],
+                              ),
+                              child: Text(
+                                'verify'.tr(),
+                                style: commonTextStyle.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
 
-            // Achievement Badges
-            Text(
-              'achievement_badges'.tr(),
-              style: commonTextStyle.copyWith(
-                  fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-            earnedBadges.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Center(
-                      child: Text(
-                        'no_badges_earned_yet'.tr(),
-                        style: commonTextStyle.copyWith(color: Colors.grey),
-                      ),
-                    ),
-                  )
-                : Wrap(
-                    spacing: 20,
-                    runSpacing: 20,
-                    alignment: WrapAlignment.center,
-                    children: earnedBadges.map((badge) {
-                      final badgeId = badge['id'] ?? '';
-                      IconData icon;
-                      Color color;
-
-                      if (badgeId.startsWith('streak')) {
-                        icon = Icons.local_fire_department;
-                        color = Colors.orange;
-                      } else if (badgeId.startsWith('quiz')) {
-                        icon = Icons.military_tech;
-                        color = Colors.amber;
-                      } else if (badgeId == 'merit') {
-                        icon = Icons.workspace_premium;
-                        color = Colors.purple;
-                      } else if (badgeId == 'first_quiz') {
-                        icon = Icons.star_rounded;
-                        color = Colors.blue;
-                      } else {
-                        icon = Icons.emoji_events;
-                        color = Colors.teal;
-                      }
-
-                      return SizedBox(
-                        width: 90,
-                        child: _badgeItem(
-                          icon: icon,
-                          color: color,
-                          title: badge['title'] ?? '',
-                          desc: badge['desc'] ?? '',
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Two-column Stats
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          title: 'overall_mcq_accuracy'.tr(),
+                          value: "${accuracy.toStringAsFixed(0)}%",
+                          icon: Icons.check_circle_outline,
+                          iconColor: Colors.green.shade600,
+                          progress: accuracy / 100.0,
                         ),
-                      );
-                    }).toList(),
-                  ),
-            const SizedBox(height: 25),
-
-            // Activity History Tab
-            GestureDetector(
-              onTap: () {
-                context.push(RoutesNames.activityHistoryScreen);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Constants.primaryBlueColour.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(Icons.history,
-                          color: Constants.primaryBlueColour, size: 28),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'activity_history'.tr(),
-                            style: commonTextStyle.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'view_your_past_quizzes_and_detailed_answers'.tr(),
-                            style: commonTextStyle.copyWith(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildStatCard(
+                          title: 'weekly_study_hours'.tr(),
+                          value: "$hoursStr hrs",
+                          icon: Icons.access_time_filled,
+                          iconColor: Colors.orange.shade600,
+                        ),
                       ),
-                    ),
-                    Icon(Icons.arrow_forward_ios,
-                        color: Colors.grey.shade400, size: 16),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            // Admin CMS Portal (Only visible to admin)
-            if (user?.email == 'bharatwakade012@gmail.com' ||
-                user?.email == 'admin@missionvardi.com') ...[
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: Colors.indigo,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                    ],
                   ),
-                  icon: const Icon(Icons.admin_panel_settings,
-                      color: Colors.white),
-                  label: Text(
-                    'admin_cms_portal'.tr(),
+                  const SizedBox(height: 28),
+
+                  // Weekly Progress Chart
+                  Text(
+                    'weekly_progress'.tr(),
                     style: commonTextStyle.copyWith(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  onPressed: () {
-                    context.push(RoutesNames.adminDashboardScreen);
-                  },
-                ),
-              ),
-              const SizedBox(height: 15),
-            ],
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4))
+                      ],
+                      border: Border.all(color: Colors.grey.shade100),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: weeklyHoursData.isEmpty
+                          ? List.generate(
+                              7, (index) => _barItem("-", 0.0, "0h"))
+                          : weeklyHoursData
+                              .map((w) {
+                                String dayStr = w['day'] ?? "";
+                                double m = (w['minutes'] as num?)?.toDouble() ??
+                                    ((w['hours'] as num?)?.toDouble() ?? 0.0) *
+                                        60;
+                                double fill = maxWeeklyHours > 0
+                                    ? m / maxWeeklyHours
+                                    : 0.0;
+                                String valueStr =
+                                    m > 0 ? "${m.toStringAsFixed(1)}m" : "0m";
+                                if (valueStr.endsWith(".0m"))
+                                  valueStr = "${m.toInt()}m";
+                                return _barItem(dayStr, fill, valueStr);
+                              })
+                              .toList()
+                              .cast<Widget>(),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
 
-            // Logout Bypass button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: const BorderSide(color: Colors.red),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                icon: const Icon(Icons.logout, color: Colors.red),
-                label: Text(
-                  'logout_account'.tr(),
-                  style: commonTextStyle.copyWith(
-                      color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () async {
-                  context.read<ProfileCubit>().clearProfile();
-                  await context.read<AuthCubit>().signOut();
-                  if (context.mounted) {
-                    context.go(RoutesNames.signInScreen);
-                  }
-                },
+                  // Achievement Badges
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'achievement_badges'.tr(),
+                        style: commonTextStyle.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Icon(Icons.workspace_premium,
+                          color: Colors.amber.shade600, size: 24),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  earnedBadges.isEmpty
+                      ? Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: Colors.grey.shade200,
+                                style: BorderStyle.solid),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(Icons.military_tech_outlined,
+                                  size: 40, color: Colors.grey.shade400),
+                              const SizedBox(height: 8),
+                              Text(
+                                'no_badges_earned_yet'.tr(),
+                                style: commonTextStyle.copyWith(
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        )
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.85,
+                          ),
+                          itemCount: earnedBadges.length,
+                          itemBuilder: (context, index) {
+                            final badge = earnedBadges[index];
+                            final badgeId = badge['id'] ?? '';
+                            IconData icon;
+                            Color color;
+                            if (badgeId.startsWith('streak')) {
+                              icon = Icons.local_fire_department;
+                              color = Colors.orange;
+                            } else if (badgeId.startsWith('quiz')) {
+                              icon = Icons.military_tech;
+                              color = Colors.amber;
+                            } else if (badgeId == 'merit') {
+                              icon = Icons.workspace_premium;
+                              color = Colors.purple;
+                            } else if (badgeId == 'first_quiz') {
+                              icon = Icons.star_rounded;
+                              color = Colors.blue;
+                            } else {
+                              icon = Icons.emoji_events;
+                              color = Colors.teal;
+                            }
+                            return _badgeItem(
+                                icon: icon,
+                                color: color,
+                                title: badge['title'] ?? '',
+                                desc: badge['desc'] ?? '');
+                          },
+                        ),
+                  const SizedBox(height: 28),
+
+                  // Activity History Tab
+                  _buildActionTile(
+                    title: 'activity_history'.tr(),
+                    subtitle:
+                        'view_your_past_quizzes_and_detailed_answers'.tr(),
+                    icon: Icons.history_rounded,
+                    iconColor: Constants.primaryBlueColour,
+                    onTap: () =>
+                        context.push(RoutesNames.activityHistoryScreen),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Admin CMS Portal
+                  if (user?.email == 'bharatwakade012@gmail.com' ||
+                      user?.email == 'admin@missionvardi.com') ...[
+                    _buildActionTile(
+                      title: 'admin_cms_portal'.tr(),
+                      subtitle: 'Manage app content and users',
+                      icon: Icons.admin_panel_settings_rounded,
+                      iconColor: Colors.indigo,
+                      onTap: () =>
+                          context.push(RoutesNames.adminDashboardScreen),
+                      isPrimary: true,
+                    ),
+                    const SizedBox(height: 28),
+                  ],
+
+                  // Settings / Others
+                  Text(
+                    'account_settings'.tr(),
+                    style: commonTextStyle.copyWith(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.02),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2))
+                      ],
+                      border: Border.all(color: Colors.grey.shade100),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildSettingsTile(
+                          title: 'about_app'.tr(),
+                          icon: Icons.info_outline_rounded,
+                          color: Constants.primaryBlueColour,
+                          onTap: () => _showAboutAppDialog(context),
+                        ),
+                        Divider(
+                            height: 1, color: Colors.grey.shade100, indent: 56),
+                        _buildSettingsTile(
+                          title: 'logout_account'.tr(),
+                          icon: Icons.logout_rounded,
+                          color: Colors.orange.shade700,
+                          onTap: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF0B1437),
+                                        Color(0xFF1A3572)
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                        color: Colors.white.withOpacity(0.1)),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red.withOpacity(0.1),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(Icons.logout_rounded,
+                                            color: Colors.redAccent, size: 40),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text(
+                                        'logout_account'.tr(),
+                                        style: commonTextStyle.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'are_you_sure_you_want_to_logout'.tr(),
+                                        textAlign: TextAlign.center,
+                                        style: commonTextStyle.copyWith(
+                                          color: Colors.white70,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(ctx).pop(false),
+                                              style: TextButton.styleFrom(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 14),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12)),
+                                              ),
+                                              child: Text(
+                                                'cancel'.tr(),
+                                                style: commonTextStyle.copyWith(
+                                                    color: Colors.white70,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(ctx).pop(true),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.redAccent,
+                                                foregroundColor: Colors.white,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 14),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12)),
+                                                elevation: 0,
+                                              ),
+                                              child: Text(
+                                                'logout'.tr(),
+                                                style: commonTextStyle.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                            if (confirmed == true && context.mounted) {
+                              context.read<ProfileCubit>().clearProfile();
+                              await context.read<AuthCubit>().signOut();
+                              if (context.mounted) {
+                                context.go(RoutesNames.signInScreen);
+                              }
+                            }
+                          },
+                        ),
+                        Divider(
+                            height: 1, color: Colors.grey.shade100, indent: 56),
+                        _buildSettingsTile(
+                          title: 'delete_account'.tr(),
+                          icon: Icons.delete_forever_rounded,
+                          color: Colors.red.shade700,
+                          onTap: () => _showDeleteAccountDialog(context),
+                          isDanger: true,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -604,109 +681,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: Colors.white.withOpacity(0.1)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.4),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Icon
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.15),
+                      color: Colors.red.withOpacity(0.1),
                       shape: BoxShape.circle,
-                      border: Border.all(
-                          color: Colors.red.withOpacity(0.3)),
                     ),
                     child: const Icon(Icons.logout_rounded,
-                        color: Colors.redAccent, size: 28),
+                        color: Colors.redAccent, size: 40),
                   ),
-                  const SizedBox(height: 16),
-                  // Title
+                  const SizedBox(height: 20),
                   Text(
-                    'logout'.tr(),
+                    'logout_account'.tr(),
                     style: commonTextStyle.copyWith(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  // Message
+                  const SizedBox(height: 12),
                   Text(
                     'are_you_sure_you_want_to_logout'.tr(),
                     textAlign: TextAlign.center,
                     style: commonTextStyle.copyWith(
-                      color: Colors.white60,
-                      fontSize: 13,
+                      color: Colors.white70,
+                      fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  // Buttons
+                  const SizedBox(height: 30),
                   Row(
                     children: [
-                      // Cancel
                       Expanded(
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(ctx, false),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color:
-                                      Colors.white.withOpacity(0.15)),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'cancel'.tr(),
-                                style: commonTextStyle.copyWith(
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
+                        child: TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Text(
+                            'cancel'.tr(),
+                            style: commonTextStyle.copyWith(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      // Logout
                       Expanded(
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(ctx, true),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.redAccent,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.red.withOpacity(0.4),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                'logout'.tr(),
-                                style: commonTextStyle.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'logout'.tr(),
+                            style: commonTextStyle.copyWith(
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -728,34 +769,182 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _barItem(String label, double fill, String value) {
+  void _showAboutAppDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              const Icon(Icons.info, color: Constants.primaryBlueColour),
+              const SizedBox(width: 8),
+              Text('about_app'.tr(),
+                  style: commonTextStyle.copyWith(fontWeight: FontWeight.bold)),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Mission Vardi',
+                  style: commonTextStyle.copyWith(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text('Version 1.0.0',
+                  style: commonTextStyle.copyWith(color: Colors.grey)),
+              const SizedBox(height: 16),
+              Text(
+                'This app is dedicated to helping aspirants prepare for the Maharashtra Police Bharti exams. We provide daily quizzes, detailed notes, study tracking, and fitness logs.',
+                style: commonTextStyle.copyWith(fontSize: 14, height: 1.4),
+              ),
+              const SizedBox(height: 16),
+              Text('Developer:',
+                  style: commonTextStyle.copyWith(fontWeight: FontWeight.bold)),
+              Text('Bharat Wakade',
+                  style: commonTextStyle.copyWith(color: Colors.grey.shade700)),
+              Text('bharatwakade012@gmail.com',
+                  style: commonTextStyle.copyWith(
+                      color: Constants.primaryBlueColour)),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('close'.tr(),
+                  style: commonTextStyle.copyWith(
+                      color: Constants.primaryBlueColour,
+                      fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  void _showDeleteAccountDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.1), shape: BoxShape.circle),
+                child: const Icon(Icons.delete_forever,
+                    color: Colors.redAccent, size: 40),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'delete_account'.tr(),
+                style: commonTextStyle.copyWith(
+                    color: Colors.red,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'This action cannot be undone. All your progress, fitness logs, and profile data will be permanently deleted.',
+                textAlign: TextAlign.center,
+                style: commonTextStyle.copyWith(
+                    color: Colors.black87, fontSize: 14, height: 1.4),
+              ),
+              const SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text('cancel'.tr(),
+                          style: commonTextStyle.copyWith(
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(ctx).pop();
+                        // Delete logic handled by AuthCubit (e.g. deactivate user)
+                        context.read<ProfileCubit>().clearProfile();
+                        await context.read<AuthCubit>().signOut();
+                        if (context.mounted) {
+                          context.go(RoutesNames.signInScreen);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        elevation: 0,
+                      ),
+                      child: Text('delete'.tr(),
+                          style: commonTextStyle.copyWith(
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _barItem(String label, double fill, String value) {
     return Column(
       children: [
         Text(value,
             style: commonTextStyle.copyWith(
-                fontSize: 9, color: Colors.grey, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 4),
+                fontSize: 10,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w600)),
+        const SizedBox(height: 6),
         Container(
-          height: 60,
-          width: 12,
+          height: 100,
+          width: 16,
           decoration: BoxDecoration(
             color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(8),
           ),
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: 60 * fill,
+            height: 100 * fill,
             decoration: BoxDecoration(
-              color: Constants.primaryBlueColour,
-              borderRadius: BorderRadius.circular(6),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1E88E5), Color(0xFF0D47A1)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         Text(label,
             style: commonTextStyle.copyWith(
-                fontSize: 10, color: Colors.grey.shade600)),
+                fontSize: 11,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -765,50 +954,210 @@ class _ProfileScreenState extends State<ProfileScreen> {
       required Color color,
       required String title,
       required String desc}) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            shape: BoxShape.circle,
-            border: Border.all(color: color.withOpacity(0.3), width: 2),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 2))
+        ],
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
           ),
-          child: Icon(icon, color: color, size: 28),
-        ),
-        const SizedBox(height: 6),
-        Text(title,
-            style: commonTextStyle.copyWith(
-                fontWeight: FontWeight.bold, fontSize: 12)),
-        Text(desc,
-            style: commonTextStyle.copyWith(fontSize: 10, color: Colors.grey)),
-      ],
+          const SizedBox(height: 8),
+          Text(title,
+              style: commonTextStyle.copyWith(
+                  fontWeight: FontWeight.bold, fontSize: 11),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(desc,
+              style: commonTextStyle.copyWith(
+                  fontSize: 9, color: Colors.grey.shade600),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
+        ],
+      ),
     );
   }
 
-  Widget _buildStatChip(String label, String value, Color color) {
+  Widget _buildStatCard(
+      {required String title,
+      required String value,
+      required IconData icon,
+      required Color iconColor,
+      double? progress}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "$label: ",
-            style: commonTextStyle.copyWith(
-                fontSize: 10, color: color.withOpacity(0.9)),
-          ),
-          Text(
-            value,
-            style: commonTextStyle.copyWith(
-                fontSize: 10, fontWeight: FontWeight.bold, color: color),
-          ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 4))
         ],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10)),
+                child: Icon(icon, color: iconColor, size: 18),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                  child: Text(title,
+                      style: commonTextStyle.copyWith(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(value,
+              style: commonTextStyle.copyWith(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87)),
+          if (progress != null) ...[
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 6,
+                backgroundColor: Colors.grey.shade100,
+                valueColor: AlwaysStoppedAnimation<Color>(iconColor),
+              ),
+            ),
+          ]
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionTile(
+      {required String title,
+      required String subtitle,
+      required IconData icon,
+      required Color iconColor,
+      required VoidCallback onTap,
+      bool isPrimary = false}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isPrimary ? iconColor : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: isPrimary ? null : Border.all(color: Colors.grey.shade100),
+          boxShadow: isPrimary
+              ? [
+                  BoxShadow(
+                      color: iconColor.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4))
+                ]
+              : [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4))
+                ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isPrimary
+                    ? Colors.white.withOpacity(0.2)
+                    : iconColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon,
+                  color: isPrimary ? Colors.white : iconColor, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: commonTextStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: isPrimary ? Colors.white : Colors.black87)),
+                  const SizedBox(height: 4),
+                  Text(subtitle,
+                      style: commonTextStyle.copyWith(
+                          fontSize: 12,
+                          color: isPrimary
+                              ? Colors.white70
+                              : Colors.grey.shade600)),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios_rounded,
+                color: isPrimary ? Colors.white70 : Colors.grey.shade400,
+                size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsTile(
+      {required String title,
+      required IconData icon,
+      required Color color,
+      required VoidCallback onTap,
+      bool isDanger = false}) {
+    return ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: color, size: 20),
+      ),
+      title: Text(title,
+          style: commonTextStyle.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+              color: isDanger ? Colors.redAccent : Colors.black87)),
+      trailing: Icon(Icons.arrow_forward_ios_rounded,
+          size: 14, color: Colors.grey.shade400),
     );
   }
 
@@ -930,15 +1279,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final TextEditingController mobileController =
         TextEditingController(text: user.mobile);
 
-    final List<String> districts = [
-      'Ahmednagar', 'Akola', 'Amravati', 'Chhatrapati Sambhajinagar (Aurangabad)', 
-      'Beed', 'Bhandara', 'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 
-      'Hingoli', 'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 
-      'Mumbai Suburban', 'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 
-      'Dharashiv (Osmanabad)', 'Palghar', 'Parbhani', 'Pune', 'Raigad', 
-      'Ratnagiri', 'Sangli', 'Satara', 'Sindhudurg', 'Solapur', 'Thane', 
-      'Wardha', 'Washim', 'Yavatmal',
-    ];
+    final List<String> districts = context.read<ProfileCubit>().state.districts;
 
     String? initialDistrict = user.district;
     if (initialDistrict != null && !districts.contains(initialDistrict)) {
@@ -951,128 +1292,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
     CommonBottomSheet.show(
       context: context,
       title: 'update_profile'.tr(),
-      child: BlocBuilder<ProfileCubit, ProfileState>(
-        builder: (context, state) {
-          final selectedDistrict = state.editDistrict;
+      child: BlocBuilder<ProfileCubit, ProfileState>(builder: (context, state) {
+        final selectedDistrict = state.editDistrict;
 
-          return Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CommonAuthInputField(
-                  controller: nameController,
-                  label: 'full_name'.tr(),
-                  hint: 'enter_your_full_name'.tr(),
-                  icon: Icons.person_outline,
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CommonAuthInputField(
+                controller: nameController,
+                label: 'full_name'.tr(),
+                hint: 'enter_your_full_name'.tr(),
+                icon: Icons.person_outline,
+              ),
+              const SizedBox(height: 16),
+              CommonAuthInputField(
+                controller: mobileController,
+                label: 'mobile_number'.tr(),
+                hint: 'enter_10_digit_mobile_number'.tr(),
+                icon: Icons.phone_outlined,
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return null; // optional field
+                  final digits = value.replaceAll(RegExp(r'\D'), '');
+                  if (digits.length != 10) {
+                    return 'please_enter_a_valid_10_digit_mobile_number'.tr();
+                  }
+                  if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+                    return 'mobile_number_must_start_with_6_7_8_or_9'.tr();
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Text(
+                  'district_optional'.tr(),
+                  style: commonTextStyle.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1E293B),
+                  ),
                 ),
-                const SizedBox(height: 16),
-                CommonAuthInputField(
-                  controller: mobileController,
-                  label: 'mobile_number'.tr(),
-                  hint: 'enter_10_digit_mobile_number'.tr(),
-                  icon: Icons.phone_outlined,
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return null; // optional field
-                    final digits = value.replaceAll(RegExp(r'\D'), '');
-                    if (digits.length != 10) {
-                      return 'please_enter_a_valid_10_digit_mobile_number'.tr();
-                    }
-                    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
-                      return 'mobile_number_must_start_with_6_7_8_or_9'.tr();
-                    }
-                    return null;
-                  },
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: Text(
-                    'district_optional'.tr(),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedDistrict,
+                    isExpanded: true,
+                    hint: Text(
+                      'select_your_district_global_if_none'.tr(),
+                      style: commonTextStyle.copyWith(color: Colors.grey),
+                    ),
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded,
+                        color: Colors.grey),
                     style: commonTextStyle.copyWith(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1E293B),
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
                     ),
+                    onChanged: (String? newValue) {
+                      context.read<ProfileCubit>().changeEditDistrict(newValue);
+                    },
+                    items: districts
+                        .map((v) => DropdownMenuItem<String>(
+                              value: v,
+                              child: Text(v),
+                            ))
+                        .toList(),
                   ),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedDistrict,
-                      isExpanded: true,
-                      hint: Text(
-                        'select_your_district_global_if_none'.tr(),
-                        style: commonTextStyle.copyWith(color: Colors.grey),
-                      ),
-                      icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.info_outline_rounded,
+                      size: 14, color: Colors.blueGrey),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      'add_your_district_to_participate_in_local_district_leaderboard_competitions_otherwise_youll_only_compete_globally'
+                          .tr(),
                       style: commonTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
+                        fontSize: 11,
+                        color: Colors.blueGrey,
+                        height: 1.3,
                       ),
-                      onChanged: (String? newValue) {
-                        context.read<ProfileCubit>().changeEditDistrict(newValue);
-                      },
-                      items: districts
-                          .map((v) => DropdownMenuItem<String>(
-                                value: v,
-                                child: Text(v),
-                              ))
-                          .toList(),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.info_outline_rounded, size: 14, color: Colors.blueGrey),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        'add_your_district_to_participate_in_local_district_leaderboard_competitions_otherwise_youll_only_compete_globally'.tr(),
-                        style: commonTextStyle.copyWith(
-                          fontSize: 11,
-                          color: Colors.blueGrey,
-                          height: 1.3,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                CommonAuthButton(
-                  label: 'save_changes'.tr(),
-                  onTap: () {
-                    if (!_formKey.currentState!.validate()) return;
+                ],
+              ),
+              const SizedBox(height: 24),
+              CommonAuthButton(
+                label: 'save_changes'.tr(),
+                onTap: () {
+                  if (!_formKey.currentState!.validate()) return;
 
-                    final Map<String, dynamic> body = {};
-                    if (nameController.text.isNotEmpty)
-                      body["name"] = nameController.text;
-                    if (mobileController.text.isNotEmpty)
-                      body["mobile"] = mobileController.text.replaceAll(RegExp(r'\D'), '');
-                    if (selectedDistrict != null) {
-                      body["district"] = selectedDistrict;
-                    }
+                  final Map<String, dynamic> body = {};
+                  if (nameController.text.isNotEmpty)
+                    body["name"] = nameController.text;
+                  if (mobileController.text.isNotEmpty)
+                    body["mobile"] =
+                        mobileController.text.replaceAll(RegExp(r'\D'), '');
+                  if (selectedDistrict != null) {
+                    body["district"] = selectedDistrict;
+                  }
 
-                    context.read<ProfileCubit>().updateProfile(body: body);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          );
-        }
-      ),
+                  context.read<ProfileCubit>().updateProfile(body: body);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

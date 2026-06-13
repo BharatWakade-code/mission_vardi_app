@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
 import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
 import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
@@ -147,14 +149,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           : appBarTitle,
 
       actions: [
-        IconButton(
-          icon: const Icon(Icons.language_rounded, color: Colors.white, size: 22),
-          onPressed: () {
-            ChangeLanguageBottomSheet.show(context);
-          },
+        GestureDetector(
+          onTap: () => ChangeLanguageBottomSheet.show(context),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.language_rounded, color: Colors.white, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  context.watch<LocaleCubit>().state.languageCode == 'mr' ? 'मराठी' : 'English',
+                  style: commonTextStyle.copyWith(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
         ),
         ...(actions ?? []),
-        const SizedBox(width: 4),
       ],
 
       iconTheme: const IconThemeData(color: Colors.white),

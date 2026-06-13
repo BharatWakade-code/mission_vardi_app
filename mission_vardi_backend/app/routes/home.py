@@ -96,3 +96,15 @@ async def get_home_dashboard():
             "countdown": countdown
         }
     }
+
+@router.get("/districts")
+async def get_districts():
+    vidarbha_districts = [
+        "Amravati", "Akola", "Bhandara", "Buldhana", "Chandrapur",
+        "Gadchiroli", "Gondia", "Nagpur", "Wardha", "Washim", "Yavatmal"
+    ]
+    return {
+        "status": True,
+        "message": "Districts fetched successfully",
+        "data": vidarbha_districts
+    }

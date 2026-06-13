@@ -8,6 +8,7 @@ class ProfileState {
   final bool isSuccess;
 
   final String? editDistrict;
+  final List<String> districts;
 
   ProfileState({
     this.profileData,
@@ -16,6 +17,7 @@ class ProfileState {
     this.successMsg = '',
     this.isSuccess = false,
     this.editDistrict,
+    this.districts = const [],
   });
 
   ProfileState copyWith({
@@ -25,6 +27,7 @@ class ProfileState {
     String? successMsg,
     bool? isSuccess,
     String? editDistrict,
+    List<String>? districts,
   }) {
     return ProfileState(
       profileData: profileData ?? this.profileData,
@@ -33,6 +36,7 @@ class ProfileState {
       successMsg: successMsg ?? this.successMsg,
       isSuccess: isSuccess ?? this.isSuccess,
       editDistrict: editDistrict != null ? (editDistrict == "null" ? null : editDistrict) : this.editDistrict,
+      districts: districts ?? this.districts,
     );
   }
 }

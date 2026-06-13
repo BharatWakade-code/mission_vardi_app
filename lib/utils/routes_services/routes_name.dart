@@ -15,6 +15,8 @@ import 'package:mission_vardi/screens/admin_module/admin_dashboard_screen.dart';
 import 'package:mission_vardi/screens/profile_module/activity_history_screen.dart';
 import 'package:mission_vardi/screens/profile_module/activity_history_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 
 class RoutesNames {
   /// Auth Module
@@ -43,75 +45,102 @@ List<RouteBase> routesList() {
   return [
     GoRoute(
       path: RoutesNames.signInScreen,
-      builder: (context, state) => const SignInScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const SignInScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.signUpScreen,
-      builder: (context, state) => const SignUpScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const SignUpScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.welcomeScreen,
-      builder: (context, state) => const WelcomeScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const WelcomeScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.dashboardScreen,
-      builder: (context, state) => const VardiDashboardScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const VardiDashboardScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.quizPlayScreen,
-      builder: (context, state) =>
-          QuizPlayScreen(quizId: state.extra as String),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: QuizPlayScreen(quizId: state.extra as String)),
+      ),
     ),
     GoRoute(
       path: RoutesNames.quizResultScreen,
-      builder: (context, state) => const QuizResultScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const QuizResultScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.pdfViewerScreen,
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
-        return PdfViewerScreen(
-          pdfUrl: extra['pdfUrl'] as String,
-          title: extra['title'] as String,
-          description: extra['description'] as String,
+        return BlocBuilder<LocaleCubit, Locale>(
+          builder: (context, locale) => KeyedSubtree(
+            key: ValueKey(locale),
+            child: PdfViewerScreen(
+              pdfUrl: extra['pdfUrl'] as String,
+              title: extra['title'] as String,
+              description: extra['description'] as String,
+            ),
+          ),
         );
       },
     ),
     GoRoute(
       path: RoutesNames.policeBhartiInfoScreen,
-      builder: (context, state) => const PoliceBhartiInfoScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const PoliceBhartiInfoScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.pyqScreen,
-      builder: (context, state) => const PYQScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const PYQScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.categoryItemsScreen,
-      builder: (context, state) {
-        // We need to import the screen at the top later, or I'll just use dynamic imports if I use absolute paths, but better to import at the top. Wait, I will use `multi_replace` to add imports at the top.
-        // Actually, let me just add the import below.
-        return CategoryItemsScreen(categoryMode: state.extra as String);
-      },
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: CategoryItemsScreen(categoryMode: state.extra as String)),
+      ),
     ),
     GoRoute(
       path: RoutesNames.noteReadingScreen,
-      builder: (context, state) {
-        return NoteReadingScreen(noteData: state.extra as Map<String, dynamic>);
-      },
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: NoteReadingScreen(noteData: state.extra as Map<String, dynamic>)),
+      ),
     ),
     GoRoute(
       path: RoutesNames.leaderboardScreen,
-      builder: (context, state) => const LeaderboardScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const LeaderboardScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.adminDashboardScreen,
-      builder: (context, state) => const AdminDashboardScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(key: ValueKey(locale), child: const AdminDashboardScreen()),
+      ),
     ),
     GoRoute(
       path: RoutesNames.activityHistoryScreen,
-      builder: (context, state) => BlocProvider(
-        create: (context) => ActivityHistoryCubit(),
-        child: const ActivityHistoryScreen(),
+      builder: (context, state) => BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) => KeyedSubtree(
+          key: ValueKey(locale),
+          child: BlocProvider(
+            create: (context) => ActivityHistoryCubit(),
+            child: const ActivityHistoryScreen(),
+          ),
+        ),
       ),
     ),
   ];

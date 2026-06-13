@@ -239,5 +239,14 @@
   "enter_your_full_name": "तुमचे पूर्ण नाव प्रविष्ट करा",
   "enter_10_digit_mobile_number": "10 अंकी मोबाईल नंबर प्रविष्ट करा",
   "please_enter_a_valid_10_digit_mobile_number": "कृपया वैध 10-अंकी मोबाइल नंबर प्रविष्ट करा",
-  "mobile_number_must_start_with_6_7_8_or_9": "मोबाईल नंबर 6, 7, 8, किंवा 9 ने सुरू झाला पाहिजे"
+  "mobile_number_must_start_with_6_7_8_or_9": "मोबाईल नंबर 6, 7, 8, किंवा 9 ने सुरू झाला पाहिजे",
+  "running_tab": "धावणे",
+  "ground_tab": "मैदान",
+  "history": "इतिहास",
+  "ground_history_tab": "इतिहास",
+  "delete_log": "लॉग हटवा",
+  "delete_log_confirmation": "तुम्हाला खात्री आहे की तुम्हाला हा फिटनेस लॉग हटवायचा आहे?",
+  "player_name_optional": "खेळाडूचे नाव (पर्यायी)",
+  "about_app": "अ‍ॅपबद्दल (About App)",
+  "delete_account": "खाते हटवा (Delete Account)"
 }

@@ -67,11 +67,15 @@ class PhysicalPrepState {
   final int calculatedScore;
   final int totalMaxMarks;
   final List<CustomPhysicalEvent> customEvents;
+  final List<Map<String, dynamic>> fitnessHistory;
+  final bool isLoadingHistory;
+  final String playerName;
+  final List<String> savedPlayers;
 
-  PhysicalPrepState({
-    this.pushupCount = 18,
+  const PhysicalPrepState({
+    this.pushupCount = 0,
     this.pushupGoal = 40,
-    this.situpCount = 22,
+    this.situpCount = 0,
     this.situpGoal = 45,
     this.isStopwatchRunning = false,
     this.stopwatchMilliseconds = 0,
@@ -86,6 +90,10 @@ class PhysicalPrepState {
     this.calculatedScore = 0,
     this.totalMaxMarks = 50,
     this.customEvents = const [],
+    this.fitnessHistory = const [],
+    this.isLoadingHistory = false,
+    this.playerName = 'Player 1',
+    this.savedPlayers = const ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5', 'Player 6', 'Player 7', 'Player 8'],
   });
 
   PhysicalPrepState copyWith({
@@ -106,6 +114,10 @@ class PhysicalPrepState {
     int? calculatedScore,
     int? totalMaxMarks,
     List<CustomPhysicalEvent>? customEvents,
+    List<Map<String, dynamic>>? fitnessHistory,
+    bool? isLoadingHistory,
+    String? playerName,
+    List<String>? savedPlayers,
   }) {
     return PhysicalPrepState(
       pushupCount: pushupCount ?? this.pushupCount,
@@ -125,6 +137,10 @@ class PhysicalPrepState {
       calculatedScore: calculatedScore ?? this.calculatedScore,
       totalMaxMarks: totalMaxMarks ?? this.totalMaxMarks,
       customEvents: customEvents ?? this.customEvents,
+      fitnessHistory: fitnessHistory ?? this.fitnessHistory,
+      isLoadingHistory: isLoadingHistory ?? this.isLoadingHistory,
+      playerName: playerName ?? this.playerName,
+      savedPlayers: savedPlayers ?? this.savedPlayers,
     );
   }
 }

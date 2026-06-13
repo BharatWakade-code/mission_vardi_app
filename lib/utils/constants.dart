@@ -53,6 +53,7 @@ class ApiUrls {
    static String getGlobalLeaderboard = "/leaderboard/global";
    static String getHomeDashboard = "/home/dashboard";
    static String fitnessLogs = "/fitness";
+   static String getDistricts = "/home/districts";
 }
 
 class AppUtils {

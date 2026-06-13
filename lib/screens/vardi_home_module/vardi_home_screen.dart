@@ -8,7 +8,7 @@ import 'package:mission_vardi/screens/vardi_home_module/vardi_home_cubit.dart';
 import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
 import 'package:mission_vardi/utils/constants.dart';
 import 'package:mission_vardi/utils/routes_services/routes_name.dart';
-import 'package:mission_vardi/utils/download_service.dart';
+
 import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
 import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
 
@@ -201,34 +201,29 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
         ],
       ),
       actions: [
-        IconButton(
-          onPressed: () {
-            ChangeLanguageBottomSheet.show(context);
-          },
-          icon: const Icon(Icons.language_rounded, color: Colors.white, size: 24),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: Stack(
-            children: [
-              const Icon(Icons.notifications_outlined,
-                  color: Colors.white, size: 24),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFBBF24),
-                    shape: BoxShape.circle,
-                  ),
+        GestureDetector(
+          onTap: () => ChangeLanguageBottomSheet.show(context),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.language_rounded, color: Colors.white, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  context.watch<LocaleCubit>().state.languageCode == 'mr' ? 'मराठी' : 'English',
+                  style: commonTextStyle.copyWith(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        const SizedBox(width: 4),
       ],
     );
   }

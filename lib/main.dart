@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,6 +100,12 @@ class _MyAppState extends State<MyApp> {
       builder: (context, locale) {
         return MaterialApp.router(
           routerConfig: router,
+          builder: (context, child) => UpgradeAlert(
+            upgrader: Upgrader(
+              durationUntilAlertAgain: const Duration(hours: 3),
+            ),
+            child: child ?? const SizedBox.shrink(),
+          ),
           debugShowCheckedModeBanner: false,
           title: 'missionvardi'.tr(),
           scrollBehavior: MyCustomScrollBehavior(),

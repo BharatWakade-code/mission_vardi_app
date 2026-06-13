@@ -57,4 +57,17 @@ class ProfileRepository implements ProfileRepositoryImpl {
       return Left(Exception(e.toString()));
     }
   }
+
+  Future<Either<Exception, List<String>>> getDistricts() async {
+    try {
+      final response = await NetworkServices().getApi(ApiUrls.getDistricts);
+      if (response.data != null && response.data['status'] == true) {
+        return Right(List<String>.from(response.data['data']));
+      } else {
+        return Left(Exception(response.data['message'] ?? 'Failed to fetch districts'));
+      }
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
 }
