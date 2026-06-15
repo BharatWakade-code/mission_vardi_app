@@ -106,192 +106,354 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             // Top Section (Profile Card)
+            // =======================
+// Modern Profile Header
+// =======================
+
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               decoration: BoxDecoration(
-                color: Constants.primaryBlueColour,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+                borderRadius: BorderRadius.circular(32),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF2563EB),
+                    Color(0xFF1D4ED8),
+                    Color(0xFF1E40AF),
+                  ],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Constants.primaryBlueColour.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
+                    color: const Color(0xFF2563EB).withOpacity(0.25),
+                    blurRadius: 25,
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
-              child: Column(
+              child: Stack(
                 children: [
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white24, width: 2),
-                        ),
-                        child: CircleAvatar(
-                          radius: 35,
-                          backgroundColor: Colors.white,
-                          backgroundImage: user?.avatarUrl != null &&
-                                  user!.avatarUrl!.isNotEmpty
-                              ? NetworkImage(user.avatarUrl!)
-                              : null,
-                          child: user?.avatarUrl == null ||
-                                  user!.avatarUrl!.isEmpty
-                              ? Icon(Icons.person,
-                                  size: 35, color: Colors.grey.shade400)
-                              : null,
-                        ),
+                  // Background Circle Effects
+                  Positioned(
+                    top: -40,
+                    right: -30,
+                    child: Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.06),
                       ),
-                      if (profileState.isLoading)
-                        Positioned.fill(
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.black45, shape: BoxShape.circle),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white)),
-                            ),
-                          ),
-                        ),
-                      GestureDetector(
-                        onTap: () => _pickAndUploadImage(context),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2))
-                            ],
-                          ),
-                          child: const Icon(Icons.camera_alt,
-                              size: 16, color: Constants.primaryBlueColour),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          user?.name ?? "User",
-                          style: commonTextStyle.copyWith(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () {
-                          if (user != null)
-                            _showEditProfileBottomSheet(context, user);
-                        },
-                        child: const Icon(Icons.edit_square,
-                            color: Colors.white70, size: 18),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.location_on,
-                          size: 14, color: Colors.amber),
-                      const SizedBox(width: 4),
-                      Text(
-                        user?.district ?? "Global Student",
-                        style: commonTextStyle.copyWith(
-                            color: Colors.white70,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white24),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  ),
+
+                  Positioned(
+                    bottom: -50,
+                    left: -40,
+                    child: Container(
+                      width: 160,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.04),
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(22),
+                    child: Column(
                       children: [
-                        Text(
-                          user?.email ?? "test@gmail.com",
-                          style: commonTextStyle.copyWith(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        if (user?.isVerified == true) ...[
-                          const SizedBox(width: 6),
-                          const Icon(Icons.verified,
-                              size: 16, color: Colors.greenAccent),
-                        ],
-                        if (user?.isVerified != true) ...[
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () async {
-                              try {
-                                final auth = FirebaseAuth.instance;
-                                await auth.currentUser?.sendEmailVerification();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            'verification_link_sent'.tr())));
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Error: $e")));
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.redAccent,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.redAccent.withOpacity(0.4),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2))
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ===================
+                            // Profile Image
+                            // ===================
+
+                            Stack(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.25),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 42,
+                                    backgroundColor: Colors.white,
+                                    backgroundImage: user?.avatarUrl != null &&
+                                            user!.avatarUrl!.isNotEmpty
+                                        ? NetworkImage(user.avatarUrl!)
+                                        : null,
+                                    child: user?.avatarUrl == null ||
+                                            user!.avatarUrl!.isEmpty
+                                        ? Icon(
+                                            Icons.person,
+                                            size: 40,
+                                            color: Colors.grey.shade400,
+                                          )
+                                        : null,
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 2,
+                                  right: 2,
+                                  child: InkWell(
+                                    onTap: () => _pickAndUploadImage(context),
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.15),
+                                            blurRadius: 8,
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(
+                                        Icons.camera_alt_rounded,
+                                        size: 16,
+                                        color: Color(0xFF2563EB),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(width: 18),
+
+                            // ===================
+                            // User Details
+                            // ===================
+
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          user?.name ?? "User Name",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: commonTextStyle.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w700,
+                                            letterSpacing: 0.2,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          if (user != null) {
+                                            _showEditProfileBottomSheet(
+                                                context, user);
+                                          }
+                                        },
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Colors.white.withOpacity(0.12),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: Colors.white
+                                                  .withOpacity(0.08),
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.edit_rounded,
+                                            size: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.12),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on_rounded,
+                                          size: 14,
+                                          color: Colors.amber,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Flexible(
+                                          child: Text(
+                                            user?.district ?? "Global Student",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: commonTextStyle.copyWith(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 14),
+
+                                  // ===================
+                                  // Email Container
+                                  // ===================
+
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.10),
+                                      borderRadius: BorderRadius.circular(18),
+                                      border: Border.all(
+                                        color: Colors.white.withOpacity(0.08),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.email_rounded,
+                                          color: Colors.white70,
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            user?.email ?? "example@gmail.com",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: commonTextStyle.copyWith(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        if (user?.isVerified == true)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 5,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green
+                                                  .withOpacity(0.18),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.verified_rounded,
+                                                  color: Colors.greenAccent,
+                                                  size: 14,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  "Verified",
+                                                  style:
+                                                      commonTextStyle.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        else
+                                          GestureDetector(
+                                            onTap: () async {
+                                              try {
+                                                final auth =
+                                                    FirebaseAuth.instance;
+
+                                                await auth.currentUser
+                                                    ?.sendEmailVerification();
+
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'verification_link_sent'
+                                                          .tr(),
+                                                    ),
+                                                  ),
+                                                );
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text("Error: $e"),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                                vertical: 6,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.orange,
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                              ),
+                                              child: Text(
+                                                "Verify",
+                                                style: commonTextStyle.copyWith(
+                                                  color: Colors.white,
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
-                              child: Text(
-                                'verify'.tr(),
-                                style: commonTextStyle.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold),
-                              ),
                             ),
-                          ),
-                        ]
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -1140,24 +1302,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       required Color color,
       required VoidCallback onTap,
       bool isDanger = false}) {
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(10),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: color, size: 20),
         ),
-        child: Icon(icon, color: color, size: 20),
+        title: Text(title,
+            style: commonTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+                color: isDanger ? Colors.redAccent : Colors.black87)),
+        trailing: Icon(Icons.arrow_forward_ios_rounded,
+            size: 14, color: Colors.grey.shade400),
       ),
-      title: Text(title,
-          style: commonTextStyle.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
-              color: isDanger ? Colors.redAccent : Colors.black87)),
-      trailing: Icon(Icons.arrow_forward_ios_rounded,
-          size: 14, color: Colors.grey.shade400),
     );
   }
 

@@ -248,5 +248,7 @@
   "delete_log_confirmation": "Are you sure you want to delete this fitness log?",
   "player_name_optional": "Player Name (Optional)",
   "about_app": "About App",
-  "delete_account": "Delete Account"
+  "delete_account": "Delete Account",
+  "weekly_progress": "Weekly Progress",
+  "account_settings": "Account Settings"
 }

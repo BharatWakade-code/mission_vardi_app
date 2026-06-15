@@ -248,5 +248,7 @@
   "delete_log_confirmation": "तुम्हाला खात्री आहे की तुम्हाला हा फिटनेस लॉग हटवायचा आहे?",
   "player_name_optional": "खेळाडूचे नाव (पर्यायी)",
   "about_app": "अ‍ॅपबद्दल (About App)",
-  "delete_account": "खाते हटवा (Delete Account)"
+  "delete_account": "खाते हटवा (Delete Account)",
+  "weekly_progress": "साप्ताहिक प्रगती",
+  "account_settings": "खाते सेटिंग्ज"
 }
