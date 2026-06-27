@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mission_vardi/utils/ad_services/ad_manager.dart';
@@ -16,7 +17,9 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   @override
   void initState() {
     super.initState();
-    _loadAd();
+    if (!kIsWeb) {
+      _loadAd();
+    }
   }
 
   void _loadAd() {
@@ -36,13 +39,15 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
+    if (!kIsWeb) {
+      _bannerAd?.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_bannerAd == null || !_isAdLoaded) {
+    if (kIsWeb || _bannerAd == null || !_isAdLoaded) {
       return const SizedBox.shrink();
     }
     return Container(

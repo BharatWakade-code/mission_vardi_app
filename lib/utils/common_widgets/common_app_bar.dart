@@ -22,6 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   // Legacy fields kept for API compatibility
   final Gradient? gradient;
   final Color? backgroundColor;
+  final bool? showBackButton;
 
   const CustomAppBar({
     super.key,
@@ -34,6 +35,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.shape,
     this.gradient,
     this.backgroundColor,
+    this.showBackButton,
   });
 
   @override
@@ -45,7 +47,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canPop = Navigator.of(context).canPop();
+    final canPop = showBackButton ?? Navigator.of(context).canPop();
 
     Widget appBarTitle = title ?? const SizedBox.shrink();
     if (titleText != null) {

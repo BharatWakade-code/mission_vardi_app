@@ -52,6 +52,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
   late Timer _countdownTimer;
   late AnimationController _pulseController;
   int daysLeft = 132, hoursLeft = 4, minutesLeft = 35, secondsLeft = 19;
+  String? countdownTitle;
 
   @override
   void initState() {
@@ -110,6 +111,7 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
               hoursLeft = state.countdown!['hoursLeft'] ?? 0;
               minutesLeft = state.countdown!['minutesLeft'] ?? 0;
               secondsLeft = state.countdown!['secondsLeft'] ?? 0;
+              countdownTitle = state.countdown!['title'] as String?;
             });
           }
         },
@@ -319,6 +321,16 @@ class _FarmerHomeScreenState extends State<FarmerHomeScreen>
                     letterSpacing: -0.3,
                   ),
                 ),
+                const SizedBox(height: 2),
+                Text(
+                  countdownTitle ?? 'maharashtra_police_bharti'.tr(),
+                  style: commonTextStyle.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amberAccent,
+                  ),
+                ),
+                const SizedBox(height: 4),
                 Text(
                   'your_dream_uniform_awaits_keep_going'.tr(),
                   style: commonTextStyle.copyWith(

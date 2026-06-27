@@ -466,9 +466,31 @@ class PhysicalPrepCubit extends Cubit<PhysicalPrepState> {
         "notes": jsonEncode(notesJson),
       };
 
-      final response =
-          await NetworkServices().postApi(ApiUrls.fitnessLogs, data);
-      print("Fitness log saved: $response");
+      String? existingLogId;
+      for (var log in state.fitnessHistory) {
+        try {
+          if (log['notes'] != null) {
+            String notesStr = log['notes'].toString();
+            final notesMap = jsonDecode(notesStr);
+            if (notesMap['player_name'] == finalPlayerName) {
+              existingLogId = log['id']?.toString();
+              break;
+            }
+          }
+        } catch (e) {
+          // Ignore parsing errors
+        }
+      }
+
+      if (existingLogId != null) {
+        final response = await NetworkServices()
+            .putApi("${ApiUrls.fitnessLogs}/$existingLogId", request: data);
+        print("Fitness log updated: $response");
+      } else {
+        final response =
+            await NetworkServices().postApi(ApiUrls.fitnessLogs, data);
+        print("Fitness log saved: $response");
+      }
       
       // Refresh the history
       await getFitnessLogs();

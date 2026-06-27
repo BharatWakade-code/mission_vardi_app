@@ -184,19 +184,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   child: CircleAvatar(
                                     radius: 42,
-                                    backgroundColor: Colors.white,
-                                    backgroundImage: user?.avatarUrl != null &&
-                                            user!.avatarUrl!.isNotEmpty
-                                        ? NetworkImage(user.avatarUrl!)
-                                        : null,
-                                    child: user?.avatarUrl == null ||
-                                            user!.avatarUrl!.isEmpty
-                                        ? Icon(
-                                            Icons.person,
-                                            size: 40,
-                                            color: Colors.grey.shade400,
-                                          )
-                                        : null,
+                                    backgroundColor: Colors.white24,
+                                    backgroundImage: (user?.avatarUrl != null &&
+                                            user!.avatarUrl!.isNotEmpty)
+                                        ? NetworkImage(user!.avatarUrl!)
+                                        : NetworkImage(
+                                            'https://ui-avatars.com/api/?name=${user?.name ?? 'User'}&background=random&color=fff'),
                                   ),
                                 ),
                                 Positioned(
@@ -286,38 +279,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                   const SizedBox(height: 8),
 
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.12),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.location_on_rounded,
-                                          size: 14,
-                                          color: Colors.amber,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Flexible(
-                                          child: Text(
-                                            user?.district ?? "Global Student",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: commonTextStyle.copyWith(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
+                                  if (user?.district != null && user!.district!.isNotEmpty)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on_rounded,
+                                            size: 14,
+                                            color: Colors.amber,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Flexible(
+                                            child: Text(
+                                              user!.district!,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: commonTextStyle.copyWith(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
 
                                   const SizedBox(height: 14),
 

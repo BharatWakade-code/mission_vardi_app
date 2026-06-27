@@ -6,35 +6,7 @@ router = APIRouter(
     tags=["Leaderboard"]
 )
 
-@router.get("/{quiz_id}")
-def get_leaderboard(quiz_id: str, limit: int = 10):
-    # Fetch top results for this quiz sorted by score descending directly in MongoDB
-    results = list(
-        results_collection.find({"quiz_id": quiz_id}, {"_id": 0})
-        .sort("score", -1)
-        .limit(limit)
-    )
-    
-    leaderboard = []
-    for r in results:
-        user_id = r.get("user_id")
-        user_doc = users_collection.find_one({"id": user_id}, {"_id": 0})
-        
-        user_name = user_doc.get("name", "Unknown User") if user_doc else "Unknown User"
-        
-        leaderboard.append({
-            "user_id": user_id,
-            "name": user_name,
-            "score": r.get("score"),
-            "total": r.get("total"),
-            "submittedAt": r.get("submittedAt")
-        })
-        
-    return {
-        "status": True,
-        "message": "Data fetched successfully",
-        "data": leaderboard
-    }
+
 
 def _get_computed_global_leaderboard(user_stats_collection, users_collection):
     stats = list(user_stats_collection.find({}, {"_id": 0}))
@@ -50,6 +22,7 @@ def _get_computed_global_leaderboard(user_stats_collection, users_collection):
         u_id = st["user_id"]
         u_name = user_map.get(u_id, {}).get("name", "Unknown User")
         u_district = user_map.get(u_id, {}).get("district", "Unknown")
+        u_avatar = user_map.get(u_id, {}).get("avatar_url", "")
         score = st.get("average_score_percent", 0.0)
         quizzes = st.get("total_quizzes", 0)
         
@@ -59,6 +32,7 @@ def _get_computed_global_leaderboard(user_stats_collection, users_collection):
             "user_id": u_id,
             "name": u_name,
             "district": u_district,
+            "avatar_url": u_avatar,
             "points": points,
             "score_str": f"{points} Points",
         })
@@ -127,4 +101,36 @@ def get_district_leaderboard(district_name: str, limit: int = 10, user_id: str =
         "message": f"Leaderboard for {district_name} fetched",
         "data": district_leaderboard[:limit],
         "user_rank": user_rank_data
+    }
+
+@router.get("/{quiz_id}")
+def get_leaderboard(quiz_id: str, limit: int = 10):
+    # Fetch top results for this quiz sorted by score descending directly in MongoDB
+    results = list(
+        results_collection.find({"quiz_id": quiz_id}, {"_id": 0})
+        .sort("score", -1)
+        .limit(limit)
+    )
+    
+    leaderboard = []
+    for r in results:
+        user_id = r.get("user_id")
+        user_doc = users_collection.find_one({"id": user_id}, {"_id": 0})
+        
+        user_name = user_doc.get("name", "Unknown User") if user_doc else "Unknown User"
+        u_avatar = user_doc.get("avatar_url", "") if user_doc else ""
+        
+        leaderboard.append({
+            "user_id": user_id,
+            "name": user_name,
+            "avatar_url": u_avatar,
+            "score": r.get("score"),
+            "total": r.get("total"),
+            "submittedAt": r.get("submittedAt")
+        })
+        
+    return {
+        "status": True,
+        "message": "Data fetched successfully",
+        "data": leaderboard
     }

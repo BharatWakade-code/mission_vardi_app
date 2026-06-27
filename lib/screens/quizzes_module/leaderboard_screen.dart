@@ -30,7 +30,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   void initState() {
     super.initState();
     _fetchDistricts();
-    context.read<QuizzesCubit>().getLeaderboardList();
+    
+    // Reset district value when visiting screen to prevent dropdown crash
+    final cubit = context.read<QuizzesCubit>();
+    if (cubit.state.selectedDistrict != 'All Maharashtra') {
+      cubit.changeSelectedDistrict('All Maharashtra');
+    } else {
+      cubit.getLeaderboardList();
+    }
   }
 
   Future<void> _fetchDistricts() async {
@@ -252,8 +259,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             final item = state.leaderboardData[index];
             return _LeaderboardCard(
               index: index,
-              name: item['name'] ?? 'Unknown User',
-              district: item['district'],
+              name: (item['name'] as String?) ?? 'Unknown User',
+              district: item['district'] as String?,
+              avatarUrl: item['avatar_url'] as String?,
               points: item['points'] ?? 0,
             );
           },
@@ -304,92 +312,59 @@ class _LeaderboardCard extends StatelessWidget {
   final int index;
   final String name;
   final String? district;
+  final String? avatarUrl;
   final dynamic points;
 
   const _LeaderboardCard({
     required this.index,
     required this.name,
     required this.district,
+    this.avatarUrl,
     required this.points,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Medal colors for top 3
-    final isTop3 = index < 3;
     final rankEmojis = ['🥇', '🥈', '🥉'];
-    final rankColors = [
-      const Color(0xFFFBBF24), // Gold
-      const Color(0xFF94A3B8), // Silver
-      const Color(0xFFF97316), // Bronze
-    ];
-    final rankColor = isTop3 ? rankColors[index] : _textSecondary;
-
-    // Top 3 get a highlighted card
-    final isGold = index == 0;
+    final isTop3 = index < 3;
 
     return Container(
       decoration: BoxDecoration(
-        color: isGold ? _navyDark : _surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: isTop3
-              ? rankColor.withValues(alpha: 0.4)
-              : _divider,
-          width: isGold ? 0 : 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: isGold
-                ? _navyDark.withValues(alpha: 0.25)
-                : _accent.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: _surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _divider, width: 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            // Rank badge
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: isTop3
-                    ? rankColor.withValues(alpha: isGold ? 0.25 : 0.12)
-                    : _accentLight,
-                borderRadius: BorderRadius.circular(11),
-              ),
-              child: Center(
-                child: isTop3
-                    ? Text(rankEmojis[index],
-                        style: const TextStyle(fontSize: 18))
-                    : Text(
-                        '#${index + 1}',
-                        style: commonTextStyle.copyWith(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: _textSecondary,
-                        ),
-                      ),
+            // Rank
+            SizedBox(
+              width: 30,
+              child: Text(
+                isTop3 ? rankEmojis[index] : '#${index + 1}',
+                style: commonTextStyle.copyWith(
+                  fontSize: isTop3 ? 18 : 14,
+                  fontWeight: FontWeight.w600,
+                  color: _textSecondary,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(width: 12),
+            
             // Avatar
             CircleAvatar(
-              radius: 20,
-              backgroundColor:
-                  rankColor.withValues(alpha: isGold ? 0.25 : 0.12),
-              child: Icon(
-                Icons.person_rounded,
-                color: isGold ? Colors.amber : rankColor,
-                size: 20,
-              ),
+              radius: 18,
+              backgroundColor: _accentLight,
+              backgroundImage: (avatarUrl != null && avatarUrl!.isNotEmpty)
+                  ? NetworkImage(avatarUrl!)
+                  : NetworkImage(
+                      'https://ui-avatars.com/api/?name=${Uri.encodeComponent(name)}&background=random&color=fff'),
             ),
             const SizedBox(width: 12),
-            // Name & district
+            
+            // Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,46 +372,37 @@ class _LeaderboardCard extends StatelessWidget {
                   Text(
                     name,
                     style: commonTextStyle.copyWith(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: isGold ? Colors.white : _textPrimary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: _textPrimary,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  if (district != null) ...[
+                  if (district != null && district!.isNotEmpty) ...[
                     const SizedBox(height: 2),
                     Text(
                       district!,
                       style: commonTextStyle.copyWith(
-                        fontSize: 10,
-                        color: isGold ? Colors.white54 : _textSecondary,
+                        fontSize: 12,
+                        color: _textSecondary,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ],
               ),
             ),
-            // Points chip
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: isGold
-                    ? Colors.white.withValues(alpha: 0.15)
-                    : _accentLight,
-                borderRadius: BorderRadius.circular(20),
-                border: isGold
-                    ? Border.all(
-                        color: Colors.white.withValues(alpha: 0.2))
-                    : Border.all(
-                        color: _accent.withValues(alpha: 0.2)),
-              ),
-              child: Text(
-                '$points pts',
-                style: commonTextStyle.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                  color: isGold ? Colors.white : _accent,
-                ),
+            
+            // Points
+            const SizedBox(width: 8),
+            Text(
+              '$points pts',
+              style: commonTextStyle.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: _accent,
               ),
             ),
           ],

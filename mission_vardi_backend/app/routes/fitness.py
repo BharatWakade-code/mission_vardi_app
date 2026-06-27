@@ -50,6 +50,35 @@ def get_fitness_logs(user_id: str):
         "data": logs
     }
 
+@router.put("/{log_id}")
+def update_fitness_log(log_id: str, log: FitnessLogCreate):
+    log_data = {
+        "user_id": log.user_id,
+        "run_1600m_seconds": log.run_1600m_seconds,
+        "run_100m_seconds": log.run_100m_seconds,
+        "shot_put_meters": log.shot_put_meters,
+        "notes": log.notes
+    }
+    
+    if log.date:
+        log_data["date"] = log.date
+
+    result = fitness_logs_collection.update_one(
+        {"id": log_id},
+        {"$set": log_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Log not found")
+        
+    updated_log = fitness_logs_collection.find_one({"id": log_id}, {"_id": 0})
+        
+    return {
+        "status": True,
+        "message": "Fitness log updated successfully",
+        "data": updated_log
+    }
+
 @router.delete("/{log_id}")
 def delete_fitness_log(log_id: str):
     result = fitness_logs_collection.delete_one({"id": log_id})

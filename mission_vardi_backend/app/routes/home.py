@@ -1,18 +1,23 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
+from typing import Optional
 from app.services.mongodb_service import db, notes_collection, quotes_collection, config_collection
 from datetime import datetime
+import uuid
 
 router = APIRouter(prefix="/home", tags=["Home"])
 alerts_collection = db["alerts"]
 
+class QuoteCreate(BaseModel):
+    en: str
+    mr: str
+
+class CountdownConfigUpdate(BaseModel):
+    title: str
+    target_date: str # ISO format string e.g., "2026-10-10T10:00:00Z"
+
 @router.get("/dashboard")
 async def get_home_dashboard():
-    # Fetch Notes
-    notes = list(notes_collection.find({}, {"_id": 0}).sort("createdAt", -1))
-    
-    # Fetch Alerts
-    alerts = list(alerts_collection.find({}, {"_id": 0}).sort("timestamp", -1))
-    
     # Fetch Quotes from DB
     quotes = list(quotes_collection.find({}, {"_id": 0}))
     if not quotes:
@@ -30,16 +35,13 @@ async def get_home_dashboard():
                 "mr": "“यश मिळत नाही, ते मिळवावे लागते. धावपट्टीवर आणि पुस्तकांमध्ये.”"
             }
         ]
-        # Optionally auto-seed DB if empty
-        try:
-            quotes_collection.insert_many(quotes)
-        except Exception:
-            pass
+
 
     # Fetch Countdown details from config collection
     countdown_config = config_collection.find_one({"type": "exam_date"})
     
     countdown = {
+        "title": countdown_config.get("title", "Exam Countdown") if countdown_config else "Exam Countdown",
         "daysLeft": 0,
         "hoursLeft": 0,
         "minutesLeft": 0,
@@ -63,6 +65,7 @@ async def get_home_dashboard():
                 minutes, seconds = divmod(remainder, 60)
                 
                 countdown = {
+                    "title": countdown_config.get("title", "Exam Countdown"),
                     "daysLeft": days,
                     "hoursLeft": hours,
                     "minutesLeft": minutes,
@@ -73,28 +76,54 @@ async def get_home_dashboard():
     else:
         # Fallback config if not in DB yet
         countdown = {
+            "title": "Maharashtra Police Bharti",
             "daysLeft": 132,
             "hoursLeft": 4,
             "minutesLeft": 35,
             "secondsLeft": 19
         }
-        try:
-            config_collection.insert_one({
-                "type": "exam_date",
-                "target_date": datetime.utcnow().replace(year=datetime.utcnow().year + 1).isoformat()
-            })
-        except Exception:
-            pass
 
     return {
         "status": True,
         "message": "Dashboard data fetched successfully",
         "data": {
-            "notes": notes,
-            "alerts": alerts,
             "daily_quotes": quotes,
             "countdown": countdown
         }
+    }
+
+@router.post("/quotes")
+async def add_quote(quote: QuoteCreate):
+    quote_dict = quote.dict()
+    quote_dict["id"] = str(uuid.uuid4())
+    quotes_collection.insert_one(quote_dict)
+    del quote_dict["_id"]
+    return {
+        "status": True,
+        "message": "Quote added successfully",
+        "data": quote_dict
+    }
+
+@router.delete("/quotes/{quote_id}")
+async def delete_quote(quote_id: str):
+    result = quotes_collection.delete_one({"id": quote_id})
+    if result.deleted_count > 0:
+        return {"status": True, "message": "Quote deleted successfully"}
+    return {"status": False, "message": "Quote not found"}
+
+@router.post("/config/exam")
+async def update_exam_config(config: CountdownConfigUpdate):
+    config_dict = config.dict()
+    config_dict["type"] = "exam_date"
+    config_collection.update_one(
+        {"type": "exam_date"},
+        {"$set": config_dict},
+        upsert=True
+    )
+    return {
+        "status": True,
+        "message": "Exam configuration updated successfully",
+        "data": config_dict
     }
 
 @router.get("/districts")
