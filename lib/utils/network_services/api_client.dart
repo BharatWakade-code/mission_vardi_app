@@ -6,7 +6,11 @@ class ApiClient {
   late final Dio dio;
 
   ApiClient() {
-    final baseUrl = dotenv.env['BASE_URL'] ?? '';
+    //final baseUrl = dotenv.env['BASE_URL'] ?? '';
+    const baseUrl = String.fromEnvironment(
+  'BASE_URL',
+  defaultValue: 'https://api.example.com',
+);
     dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
