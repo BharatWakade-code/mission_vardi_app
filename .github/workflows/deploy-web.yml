@@ -29,7 +29,7 @@ jobs:
           cache: true # Caches the Flutter SDK to speed up builds
 
       - name: Setup Environment Variables
-        run: echo "BASE_URL=http://13.207.44.5:8000" > .env
+        run: echo "BASE_URL=https://mission-vardi-api.bharatwakade012.workers.dev" > .env
 
       - name: Install Dependencies
         run: flutter pub get
