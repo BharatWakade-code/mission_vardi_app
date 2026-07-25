@@ -3,7 +3,7 @@ name: Deploy Frontend to Cloudflare Pages
 on:
   push:
     branches:
-      - main
+      - cloudflare_deploy
     paths:
       - 'lib/**'
       - 'web/**'
@@ -27,6 +27,9 @@ jobs:
         with:
           channel: 'stable'
           cache: true # Caches the Flutter SDK to speed up builds
+
+      - name: Setup Environment Variables
+        run: echo "BASE_URL=http://13.207.44.5:8000" > .env
 
       - name: Install Dependencies
         run: flutter pub get
