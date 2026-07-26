@@ -45,7 +45,9 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
     final isNotes = widget.categoryMode == 'notes'.tr();
     final title = isNotes
         ? 'subject_wise_notes'.tr()
-        : (widget.categoryMode == "Timed" ? 'mock_tests'.tr() : 'practice_tests'.tr());
+        : (widget.categoryMode == "Timed"
+            ? 'mock_tests'.tr()
+            : 'practice_tests'.tr());
     final titleIcon =
         isNotes ? Icons.library_books_rounded : Icons.quiz_rounded;
 
@@ -82,7 +84,9 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
             final item = state.data[index];
             final langCode = context.watch<LocaleCubit>().state.languageCode;
             final titleMr = item.titleMr ?? '';
-            final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty) ? titleMr : (item.title ?? 'Untitled');
+            final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty)
+                ? titleMr
+                : (item.title ?? 'Untitled');
             return _QuizCard(
               title: localizedTitle,
               subtitle: item.category ?? 'General',
@@ -136,8 +140,8 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
           itemBuilder: (context, catIdx) {
             final category = categories[catIdx];
             final subjects = grouped[category]!;
-            final totalNotes = subjects.values
-                .fold<int>(0, (sum, list) => sum + list.length);
+            final totalNotes =
+                subjects.values.fold<int>(0, (sum, list) => sum + list.length);
             final isExpanded = _expandedCategory == category;
 
             return _CategoryAccordion(
@@ -159,9 +163,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
 
   // ─── Empty State ───────────────────────────────────────────────────────────
   Widget _emptyState(
-      {required IconData icon,
-      required String message,
-      bool isError = false}) {
+      {required IconData icon, required String message, bool isError = false}) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -261,8 +263,7 @@ class _CategoryAccordion extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: color.withOpacity(0.25)),
                     ),
-                    child:
-                        Icon(Icons.folder_rounded, color: color, size: 24),
+                    child: Icon(Icons.folder_rounded, color: color, size: 24),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -393,8 +394,8 @@ class _SubjectSection extends StatelessWidget {
             final note = e.value;
             final langCode = context.watch<LocaleCubit>().state.languageCode;
             final titleMr = note['title_mr']?.toString() ?? '';
-            final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty) 
-                ? titleMr 
+            final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty)
+                ? titleMr
                 : (note['title'] ?? 'Untitled Note').toString();
             return Padding(
               padding: const EdgeInsets.only(bottom: 6),

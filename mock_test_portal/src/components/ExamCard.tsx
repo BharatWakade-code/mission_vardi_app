@@ -1,0 +1,145 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { MockTest, getCategoryBySlug } from "@/data/mockTests";
+
+interface ExamCardProps {
+  test: MockTest;
+}
+
+export default function ExamCard({ test }: ExamCardProps) {
+  const category = getCategoryBySlug(test.categorySlug);
+  const icon = category?.icon || "📝";
+  const themeColor = category?.colorTheme || "#3b82f6";
+
+  return (
+    <div className="glass-card animate-fade" style={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      height: "100%",
+      position: "relative",
+      overflow: "hidden",
+      borderTop: `4px solid ${themeColor}`
+    }}>
+      {/* Subtle Background Glow */}
+      <div style={{
+        position: "absolute",
+        top: "-50px",
+        right: "-50px",
+        width: "120px",
+        height: "120px",
+        borderRadius: "50%",
+        background: themeColor,
+        opacity: 0.12,
+        filter: "blur(30px)",
+        pointerEvents: "none"
+      }} />
+
+      <div>
+        {/* Top Badges */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px", flexWrap: "wrap", gap: "8px" }}>
+          <span className="badge" style={{
+            background: "rgba(255, 255, 255, 0.08)",
+            color: "#e2e8f0",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            fontSize: "0.75rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}>
+            <span>{icon}</span>
+            <span>{test.categoryName}</span>
+          </span>
+
+          {test.badge && (
+            <span className="badge badge-orange animate-pulse">
+              {test.badge}
+            </span>
+          )}
+        </div>
+
+        {/* Test Title (Marathi & English) */}
+        <h3 style={{
+          fontSize: "1.2rem",
+          fontWeight: 700,
+          color: "#ffffff",
+          marginBottom: "8px",
+          lineHeight: "1.4"
+        }}>
+          {test.title}
+        </h3>
+        <div style={{
+          fontSize: "0.85rem",
+          color: "#94a3b8",
+          marginBottom: "20px",
+          fontWeight: 500
+        }}>
+          {test.titleEn}
+        </div>
+
+        {/* Test Specs Grid (Questions, Marks, Time, Rating) */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "10px",
+          background: "rgba(15, 23, 42, 0.6)",
+          padding: "14px",
+          borderRadius: "10px",
+          border: "1px solid rgba(255, 255, 255, 0.05)",
+          marginBottom: "20px"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "1.1rem" }}>❓</span>
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>एकूण प्रश्न</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalQuestions} प्रश्न</div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "1.1rem" }}>🎯</span>
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>एकूण गुण</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalMarks} गुण</div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "1.1rem" }}>⏱️</span>
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>वेळ (Duration)</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.durationMinutes} मिनिटे</div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "1.1rem" }}>⭐</span>
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>विद्यार्थी रेटिंग</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#fbbf24" }}>{test.rating} ({test.reviewsCount})</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "auto" }}>
+        <Link
+          href={`/mock-test/${test.categorySlug}/${test.testSlug}`}
+          className="btn btn-primary"
+          style={{
+            flex: 1,
+            padding: "12px 16px",
+            fontSize: "0.95rem",
+            fontWeight: 700,
+            textDecoration: "none"
+          }}
+        >
+          ⚡ टेस्ट सोडवा (Start Test Now)
+        </Link>
+      </div>
+    </div>
+  );
+}
