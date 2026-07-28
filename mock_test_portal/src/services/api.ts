@@ -1,7 +1,7 @@
 import { MockTest, Question, ExamCategory, EXAM_CATEGORIES, MOCK_TESTS } from "@/data/mockTests";
 
-// Base URL matching the live EC2 backend from mission_vardi_app .env
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://13.207.44.5:8000";
+// Base URL matching the live Render backend
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Interface matching Backend FastAPI Response
 interface ApiResponse<T> {
@@ -44,14 +44,14 @@ export function categoryToSlug(category: string): string {
 // Helper to convert backend question format to Frontend Question format
 function mapBackendQuestion(q: BackendQuestion, idx: number): Question {
   const options = q.options_mr && q.options_mr.length > 0 ? q.options_mr : q.options || ["A", "B", "C", "D"];
-  
+
   // Find correct option index from correctAnswer string
   let correctIdx = 0;
   if (q.correctAnswer) {
     // Try finding exact text match in options_mr or options
     const mrIndex = q.options_mr ? q.options_mr.indexOf(q.correctAnswer) : -1;
     const enIndex = q.options ? q.options.indexOf(q.correctAnswer) : -1;
-    
+
     if (mrIndex !== -1) {
       correctIdx = mrIndex;
     } else if (enIndex !== -1) {
@@ -80,7 +80,7 @@ function mapBackendQuestion(q: BackendQuestion, idx: number): Question {
 function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
   const slug = categoryToSlug(bq.category);
   const questions = (bq.questions || []).map((q, idx) => mapBackendQuestion(q, idx));
-  
+
   // Estimate difficulty based on type/category
   let diff: "Easy" | "Medium" | "Hard" | "MPSC Level" = "Medium";
   if (bq.type === "challenge") diff = "Hard";
@@ -122,11 +122,11 @@ export async function fetchLiveQuizzes(): Promise<MockTest[]> {
     const res = await fetch(`${API_BASE_URL}/quiz`, {
       next: { revalidate: 60 }, // Cache and revalidate every 60 seconds for SEO & speed
     });
-    
+
     if (!res.ok) {
       throw new Error(`API returned status ${res.status}`);
     }
-    
+
     const json: ApiResponse<BackendQuiz[]> = await res.json();
     if (json.status && Array.isArray(json.data)) {
       return json.data.map(mapBackendQuizToMockTest);
@@ -182,7 +182,7 @@ export async function fetchLiveCategories(): Promise<ExamCategory[]> {
   for (const test of tests) {
     if (!existingSlugs.has(test.categorySlug)) {
       existingSlugs.add(test.categorySlug);
-      
+
       let icon = "📝";
       let colorTheme = "#0369a1"; // Default sky blue
       if (test.categorySlug === "srpf") {

@@ -2,7 +2,29 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { MOCK_TESTS, EXAM_CATEGORIES, generateFAQSchema, MockTest, ExamCategory } from "@/data/mockTests";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Home, 
+  BookOpen, 
+  Trophy, 
+  FileText, 
+  Award, 
+  Activity,
+  ArrowRight,
+  ShieldCheck,
+  Landmark,
+  Building2,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  ChevronRight,
+  UserCircle,
+  Loader2,
+  CheckCircle2, 
+  ShieldAlert 
+} from "lucide-react";
+import { generateFAQSchema, MockTest, ExamCategory } from "@/data/mockTests";
 import { 
   fetchLiveQuizzes, 
   fetchLiveCategories, 
@@ -32,9 +54,10 @@ import SchemaScript from "@/components/SchemaScript";
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [tests, setTests] = useState<MockTest[]>(MOCK_TESTS);
-  const [categories, setCategories] = useState<ExamCategory[]>(EXAM_CATEGORIES);
+  const [tests, setTests] = useState<MockTest[]>([]);
+  const [categories, setCategories] = useState<ExamCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [appLoading, setAppLoading] = useState<boolean>(true);
 
   // New features state (Dashboard, Notes, PYQs, Leaderboard, Physical Fitness, Alerts, Profile)
   const [activeTab, setActiveTab] = useState<"mock-tests" | "study-notes" | "pyqs" | "leaderboard" | "physical-test" | "profile">("mock-tests");
@@ -82,22 +105,19 @@ export default function HomePage() {
       }
     }
 
-    // Dynamically fetch live tests and categories from backend API
-    fetchLiveQuizzes().then((data) => {
-      if (data) setTests(data);
+    // Fetch all backend APIs in parallel
+    Promise.all([
+      fetchLiveQuizzes().then((data) => { if (data) setTests(data); }),
+      fetchLiveCategories().then((cats) => { if (cats && cats.length > 0) setCategories(cats); }),
+      fetchDashboardData().then(setDashboardData),
+      fetchGlobalAlerts().then(setAlerts),
+      fetchGlobalLeaderboard().then(setLeaderboard),
+      fetchNotes().then(setNotes),
+      fetchPYQs().then(setPyqs)
+    ]).finally(() => {
       setLoading(false);
-    }).catch(() => setLoading(false));
-    
-    fetchLiveCategories().then((cats) => {
-      if (cats && cats.length > 0) setCategories(cats);
+      setAppLoading(false);
     });
-
-    // Fetch all backend APIs just like the mobile app
-    fetchDashboardData().then(setDashboardData);
-    fetchGlobalAlerts().then(setAlerts);
-    fetchGlobalLeaderboard().then(setLeaderboard);
-    fetchNotes().then(setNotes);
-    fetchPYQs().then(setPyqs);
   }, []);
 
   // Filter tests by category & search query
@@ -259,8 +279,41 @@ export default function HomePage() {
 
   const faqSchema = generateFAQSchema();
 
+  if (appLoading) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#020617" }}>
+        
+        {/* Premium Logo Pulse */}
+        <div style={{ position: "relative", width: "72px", height: "72px", marginBottom: "24px" }} className="animate-pulse">
+          <div style={{ 
+            width: "100%", 
+            height: "100%", 
+            borderRadius: "16px", 
+            overflow: "hidden", 
+            border: "1px solid rgba(255,255,255,0.1)", 
+            background: "rgba(255,255,255,0.05)", 
+            boxShadow: "0 0 30px rgba(249, 115, 22, 0.2)"
+          }}>
+            <img src="/logo.png" alt="Mission Vardi Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+        </div>
+        
+        {/* Professional Typography */}
+        <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#f8fafc", marginBottom: "6px", letterSpacing: "0.5px" }}>
+          माहिती लोड होत आहे...
+        </h2>
+        
+        {/* Subtle Brand Tagline */}
+        <p style={{ color: "#475569", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 }}>
+          Mission Vardi Portal
+        </p>
+        
+      </div>
+    );
+  }
+
   return (
-    <div className="container animate-fade">
+    <div className="container">
       {/* Inject Schema for SEO Ranking */}
       <SchemaScript schema={faqSchema} />
 
@@ -333,7 +386,11 @@ export default function HomePage() {
       )}
 
       {/* Hero Banner Section */}
-      <section style={{
+      <motion.section 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        style={{
         background: "linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%)",
         border: "1px solid rgba(255, 255, 255, 0.1)",
         borderRadius: "24px",
@@ -500,7 +557,7 @@ export default function HomePage() {
             <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>FastAPI व MongoDB कनेक्टेड</div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Top Ad placement */}
       <AdSlot type="leaderboard" title="Google AdSense Top Leaderboard - Premium Education Banner" />
@@ -641,13 +698,17 @@ export default function HomePage() {
             display: "flex",
             gap: "10px",
             overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
             paddingBottom: "12px",
             marginBottom: "20px",
-            scrollbarWidth: "none"
+            scrollbarWidth: "none",
+            width: "100%",
+            maxWidth: "100%"
           }}>
             <button
               onClick={() => setSelectedCategory("all")}
               style={{
+                flexShrink: 0,
                 padding: "10px 20px",
                 borderRadius: "100px",
                 fontWeight: 700,
@@ -671,6 +732,7 @@ export default function HomePage() {
                   key={cat.slug}
                   onClick={() => setSelectedCategory(cat.slug)}
                   style={{
+                    flexShrink: 0,
                     padding: "10px 20px",
                     borderRadius: "100px",
                     fontWeight: 700,
@@ -691,13 +753,7 @@ export default function HomePage() {
           </div>
 
           {/* Exam Cards Grid */}
-          {loading ? (
-            <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center", margin: "30px 0" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "16px" }} className="animate-spin">⏳</div>
-              <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "8px" }}>लाईव्ह सराव परीक्षा लोड होत आहेत...</h3>
-              <p style={{ color: "#94a3b8" }}>कृपया काही क्षण प्रतीक्षा करा. तुमच्यासाठी बॅकएंड सर्व्हरवरून प्रश्न लोड केले जात आहेत.</p>
-            </div>
-          ) : filteredTests.length === 0 ? (
+          {filteredTests.length === 0 ? (
             <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center", margin: "30px 0" }}>
               <div style={{ fontSize: "3rem", marginBottom: "12px" }}>😕</div>
               <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "8px" }}>कोणतीही परीक्षा सापडली नाही!</h3>
