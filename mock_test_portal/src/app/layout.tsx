@@ -62,7 +62,7 @@ export default function RootLayout({
     <html lang="mr" className={outfit.variable}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
         {/* Google AdSense Main Script - Commented out until domain is ready */}
         {/* <script 
           async 

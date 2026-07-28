@@ -1,6 +1,6 @@
 import { MockTest, Question, ExamCategory, EXAM_CATEGORIES, MOCK_TESTS } from "@/data/mockTests";
 
-// Base URL matching the live Render backend
+// Strict Environment Variable for API URL (Standard Practice)
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Interface matching Backend FastAPI Response
