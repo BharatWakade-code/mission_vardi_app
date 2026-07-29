@@ -365,10 +365,7 @@ export default function TestEngine({ test }: TestEngineProps) {
         justifyContent: "space-between",
         flexWrap: "wrap",
         gap: "16px",
-        background: "rgba(15, 23, 42, 0.9)",
-        position: "sticky",
-        top: "85px",
-        zIndex: 50
+        background: "rgba(15, 23, 42, 0.9)"
       }}>
         <div>
           <span className="badge badge-blue" style={{ marginBottom: "4px" }}>

@@ -1,8 +1,17 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { EXAM_CATEGORIES } from "@/data/mockTests";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide Footer when on a specific mock test page
+  const isTestPage = pathname.startsWith("/mock-test/") && pathname.split("/").length >= 4;
+  if (isTestPage) return null;
+
   return (
     <footer style={{
       background: "#070c17",

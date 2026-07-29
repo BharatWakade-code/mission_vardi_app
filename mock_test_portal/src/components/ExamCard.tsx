@@ -2,6 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { MockTest, getCategoryBySlug } from "@/data/mockTests";
 
 interface ExamCardProps {
@@ -12,6 +15,14 @@ export default function ExamCard({ test }: ExamCardProps) {
   const category = getCategoryBySlug(test.categorySlug);
   const icon = category?.icon || "📝";
   const themeColor = category?.colorTheme || "#3b82f6";
+  const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handleStartTest = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    router.push(`/mock-test/${test.categorySlug}/${test.testSlug}`);
+  };
 
   return (
     <div className="glass-card animate-fade" style={{
@@ -126,19 +137,33 @@ export default function ExamCard({ test }: ExamCardProps) {
 
       {/* Action Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "auto" }}>
-        <Link
-          href={`/mock-test/${test.categorySlug}/${test.testSlug}`}
+        <button
+          onClick={handleStartTest}
+          disabled={isNavigating}
           className="btn btn-primary"
           style={{
             flex: 1,
             padding: "12px 16px",
             fontSize: "0.95rem",
             fontWeight: 700,
-            textDecoration: "none"
+            textDecoration: "none",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "8px",
+            opacity: isNavigating ? 0.7 : 1,
+            cursor: isNavigating ? "wait" : "pointer"
           }}
         >
-          ⚡ टेस्ट सोडवा (Start Test Now)
-        </Link>
+          {isNavigating ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              लोड होत आहे...
+            </>
+          ) : (
+            "⚡ टेस्ट सोडवा (Start Test Now)"
+          )}
+        </button>
       </div>
     </div>
   );

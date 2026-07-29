@@ -20,6 +20,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Hide Navbar when on a specific mock test page
+  const isTestPage = pathname.startsWith("/mock-test/") && pathname.split("/").length >= 4;
+  if (isTestPage) return null;
+
   const navLinks = [
     { name: "मुख्य पृष्ठ", href: "/", icon: <Home size={12} /> },
     { name: "पोलीस भरती", href: "/mock-test/police-bharti", icon: <ShieldCheck size={12} /> },
