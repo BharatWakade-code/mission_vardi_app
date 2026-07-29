@@ -131,7 +131,7 @@ export function generateQuizSchema(test: MockTest) {
     "provider": {
       "@type": "Organization",
       "name": "Mission Vardi Mock Test Portal",
-      "sameAs": "https://majhinaukri.in/mock-test/"
+      "sameAs": "https://missionvardiapp.vercel.app"
     },
     "hasPart": test.questions.map((q, idx) => ({
       "@type": "Question",

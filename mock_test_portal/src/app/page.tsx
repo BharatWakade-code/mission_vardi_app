@@ -1838,6 +1838,59 @@ export default function HomePage() {
           }
         }
       `}</style>
+      
+      {/* Advanced SEO Structured Data (JSON-LD) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Mission Vardi Mock Test Portal",
+              "url": "https://missionvardiapp.vercel.app",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://missionvardiapp.vercel.app/mock-test/{search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Mission Vardi",
+              "url": "https://missionvardiapp.vercel.app",
+              "logo": "https://missionvardiapp.vercel.app/logo.png",
+              "sameAs": [
+                "https://www.youtube.com/@missionvardi",
+                "https://t.me/missionvardi"
+              ]
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "मिशन वर्दी (Mission Vardi) पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "मिशन वर्दी मॉक टेस्ट पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "ऑनलाइन टेस्ट सोडवल्यानंतर निकाल व स्पष्टीकरण लगेच मिळते का?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "होय! प्रत्येक टेस्ट सबमिट केल्याबरोबर तुम्हाला तुमचे एकूण प्राप्त गुण (Score), अचूकता (Accuracy percentage), बरोबर व चुकलेले प्रश्न, तसेच प्रत्येक प्रश्नाचे सविस्तर उत्तर व स्पष्टीकरण (Detailed Explanations) स्क्रीनवर लगेच पाहायला मिळते."
+                  }
+                }
+              ]
+            }
+          ])
+        }}
+      />
     </div>
   );
 }

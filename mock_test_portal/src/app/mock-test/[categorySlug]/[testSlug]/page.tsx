@@ -68,9 +68,9 @@ export default async function TestPage({ params }: TestPageProps) {
 
   const quizSchema = generateQuizSchema(test);
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "🏠 मुख्य पृष्ठ", url: "https://majhinaukri.in/mock-test/" },
-    { name: category.name, url: `https://majhinaukri.in/mock-test/${category.slug}` },
-    { name: test.title, url: `https://majhinaukri.in/mock-test/${category.slug}/${test.testSlug}` }
+    { name: "🏠 मुख्य पृष्ठ", url: "https://missionvardiapp.vercel.app" },
+    { name: category.name, url: `https://missionvardiapp.vercel.app/mock-test/${category.slug}` },
+    { name: test.title, url: `https://missionvardiapp.vercel.app/mock-test/${category.slug}/${test.testSlug}` }
   ]);
 
   return (

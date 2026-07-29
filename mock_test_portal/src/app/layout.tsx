@@ -11,18 +11,25 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://missionvardiapp.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
   title: {
-    default: "Mission Vardi | Free Mock Test Portal (Majhi Naukri Alternative)",
+    default: "Mission Vardi | Best Site for Police Bharti & Talathi Mock Test in Marathi",
     template: "%s | Mission Vardi Mock Test Portal"
   },
-  description: "महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा, जिल्हा परिषद (ZP) व आरोग्य विभाग परीक्षेसाठी मराठीतील नंबर १ मोफत ऑनलाइन सराव परीक्षा (Free Mock Tests) व TCS/IBPS पॅटर्न प्रश्नपत्रिका.",
+  description: "महाराष्ट्रातील सर्वोत्तम मोफत ऑनलाइन सराव परीक्षा (Free Mock Tests). Police Bharti, Talathi Bharti, MPSC, ZP Bharti व आरोग्य विभाग परीक्षेसाठी TCS/IBPS पॅटर्ननुसार सराव प्रश्नपत्रिका.",
   keywords: [
-    "majhi naukri mock test",
-    "police bharti mock test online free",
-    "talathi bharti question paper",
-    "mpsc mock test free",
-    "zilla parishad bharti test series",
-    "maharashtra competitive exam practice",
+    "best site for police bharti mock test in marathi",
+    "free talathi bharti online test tcs pattern",
+    "maharashtra zp bharti free mock test",
+    "police bharti question paper 2026",
+    "mpsc mock test free in marathi",
+    "tcs ibps pattern mock test marathi",
+    "police bharti syllabus and test series",
+    "majhi naukri mock test alternative",
+    "mission vardi online test",
     "पोलीस भरती मोफत सराव परीक्षा",
     "तलाठी भरती ऑनलाइन टेस्ट"
   ],
@@ -30,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Mission Vardi - Maharashtra's #1 Free Mock Test Portal",
     description: "पोलीस भरती, तलाठी, MPSC व ZP परीक्षेसाठी मोफत ऑनलाइन सराव टेस्ट सोडवा आणि लगेच निकाल व सविस्तर स्पष्टीकरण पहा.",
-    url: "https://majhinaukri.in/mock-test/", // Target SEO authority link structure
+    url: "https://missionvardiapp.vercel.app", // Target SEO authority link structure
     siteName: "Mission Vardi Mock Test Portal",
     locale: "mr_IN",
     type: "website",
