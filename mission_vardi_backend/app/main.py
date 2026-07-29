@@ -39,7 +39,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:3001",
-        "https://missionvardiapp.vercel.app/"
+        "http://192.168.56.1:3000",
+        "https://missionvardiapp.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
