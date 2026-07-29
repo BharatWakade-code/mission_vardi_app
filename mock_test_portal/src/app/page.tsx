@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Home, 
-  BookOpen, 
-  Trophy, 
-  FileText, 
-  Award, 
+import {
+  Home,
+  BookOpen,
+  Trophy,
+  FileText,
+  Award,
   Activity,
   ArrowRight,
   ShieldCheck,
@@ -21,17 +21,17 @@ import {
   ChevronRight,
   UserCircle,
   Loader2,
-  CheckCircle2, 
-  ShieldAlert 
+  CheckCircle2,
+  ShieldAlert
 } from "lucide-react";
 import { generateFAQSchema, MockTest, ExamCategory } from "@/data/mockTests";
-import { 
-  fetchLiveQuizzes, 
-  fetchLiveCategories, 
-  fetchDashboardData, 
-  fetchGlobalLeaderboard, 
-  fetchNotes, 
-  fetchPYQs, 
+import {
+  fetchLiveQuizzes,
+  fetchLiveCategories,
+  fetchDashboardData,
+  fetchGlobalLeaderboard,
+  fetchNotes,
+  fetchPYQs,
   fetchGlobalAlerts,
   loginUserApi,
   registerUserApi,
@@ -58,6 +58,10 @@ export default function HomePage() {
   const [categories, setCategories] = useState<ExamCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [appLoading, setAppLoading] = useState<boolean>(true);
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftPos = useRef(0);
 
   // New features state (Dashboard, Notes, PYQs, Leaderboard, Physical Fitness, Alerts, Profile)
   const [activeTab, setActiveTab] = useState<"mock-tests" | "study-notes" | "pyqs" | "leaderboard" | "physical-test" | "profile">("mock-tests");
@@ -119,6 +123,20 @@ export default function HomePage() {
       setAppLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    const el = categoryScrollRef.current;
+    if (el) {
+      const handleWheel = (e: WheelEvent) => {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          el.scrollLeft += e.deltaY;
+        }
+      };
+      el.addEventListener("wheel", handleWheel, { passive: false });
+      return () => el.removeEventListener("wheel", handleWheel);
+    }
+  }, [activeTab]);
 
   // Filter tests by category & search query
   const filteredTests = tests.filter((test) => {
@@ -282,32 +300,32 @@ export default function HomePage() {
   if (appLoading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#020617" }}>
-        
+
         {/* Premium Logo Pulse */}
         <div style={{ position: "relative", width: "72px", height: "72px", marginBottom: "24px" }} className="animate-pulse">
-          <div style={{ 
-            width: "100%", 
-            height: "100%", 
-            borderRadius: "16px", 
-            overflow: "hidden", 
-            border: "1px solid rgba(255,255,255,0.1)", 
-            background: "rgba(255,255,255,0.05)", 
+          <div style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "16px",
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.1)",
+            background: "rgba(255,255,255,0.05)",
             boxShadow: "0 0 30px rgba(249, 115, 22, 0.2)"
           }}>
             <img src="/logo.png" alt="Mission Vardi Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         </div>
-        
+
         {/* Professional Typography */}
         <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#f8fafc", marginBottom: "6px", letterSpacing: "0.5px" }}>
           माहिती लोड होत आहे...
         </h2>
-        
+
         {/* Subtle Brand Tagline */}
         <p style={{ color: "#475569", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 }}>
           Mission Vardi Portal
         </p>
-        
+
       </div>
     );
   }
@@ -386,21 +404,21 @@ export default function HomePage() {
       )}
 
       {/* Hero Banner Section */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         style={{
-        background: "linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%)",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        borderRadius: "24px",
-        padding: "50px 30px",
-        textAlign: "center",
-        position: "relative",
-        overflow: "hidden",
-        marginBottom: "30px",
-        boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)"
-      }}>
+          background: "linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          borderRadius: "24px",
+          padding: "50px 30px",
+          textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
+          marginBottom: "30px",
+          boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)"
+        }}>
         <div style={{
           position: "absolute",
           top: "-100px",
@@ -694,17 +712,41 @@ export default function HomePage() {
           </div>
 
           {/* Category Tabs Bar */}
-          <div style={{
-            display: "flex",
-            gap: "10px",
-            overflowX: "auto",
-            WebkitOverflowScrolling: "touch",
-            paddingBottom: "12px",
-            marginBottom: "20px",
-            scrollbarWidth: "none",
-            width: "100%",
-            maxWidth: "100%"
-          }}>
+          <div
+            ref={categoryScrollRef}
+            onMouseDown={(e) => {
+              isDown.current = true;
+              startX.current = e.pageX - e.currentTarget.offsetLeft;
+              scrollLeftPos.current = e.currentTarget.scrollLeft;
+              e.currentTarget.style.cursor = "grabbing";
+            }}
+            onMouseLeave={(e) => {
+              isDown.current = false;
+              e.currentTarget.style.cursor = "grab";
+            }}
+            onMouseUp={(e) => {
+              isDown.current = false;
+              e.currentTarget.style.cursor = "grab";
+            }}
+            onMouseMove={(e) => {
+              if (!isDown.current) return;
+              e.preventDefault();
+              const x = e.pageX - e.currentTarget.offsetLeft;
+              const walk = (x - startX.current) * 2; // Scroll speed multiplier
+              e.currentTarget.scrollLeft = scrollLeftPos.current - walk;
+            }}
+            style={{
+              cursor: "grab",
+              display: "flex",
+              gap: "10px",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+              paddingBottom: "12px",
+              marginBottom: "20px",
+              scrollbarWidth: "none",
+              width: "100%",
+              maxWidth: "100%"
+            }}>
             <button
               onClick={() => setSelectedCategory("all")}
               style={{
@@ -888,8 +930,8 @@ export default function HomePage() {
                 <span>🌟 लीडरबोर्डमध्ये तुमचे नाव पाहायचे आहे का?</span>
               </h3>
               <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-                {currentUser ? 
-                  `स्वागत आहे, ${currentUser.name}! तुमचे प्रोफाईल यशस्वीरित्या जोडले गेले आहे. ऑनलाइन सराव परीक्षा सोडवा आणि जास्त गुण मिळवून लीडरबोर्डच्या टॉपवर या!` : 
+                {currentUser ?
+                  `स्वागत आहे, ${currentUser.name}! तुमचे प्रोफाईल यशस्वीरित्या जोडले गेले आहे. ऑनलाइन सराव परीक्षा सोडवा आणि जास्त गुण मिळवून लीडरबोर्डच्या टॉपवर या!` :
                   "जर तुम्हाला तुमचे नाव या ग्लोबल लीडरबोर्डमध्ये पाहायचे असेल, तर लगेच लॉगिन किंवा मोफत रजिस्ट्रेशन करा आणि तुमचे प्रोफाईल अपडेट करा. सराव परीक्षा सोडवून तुमचे गुण लगेच लीडरबोर्डवर दिसतील!"}
               </p>
             </div>
@@ -1010,7 +1052,7 @@ export default function HomePage() {
               <h3 style={{ fontSize: "1.35rem", color: "#ffffff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <span>🎯 शारीरिक चाचणी गुण गणक (Marks Calculator)</span>
               </h3>
-              
+
               <form onSubmit={handleAddFitnessLog} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div>
                   <label style={{ display: "block", color: "#cbd5e1", fontSize: "0.9rem", marginBottom: "6px", fontWeight: 600 }}>
