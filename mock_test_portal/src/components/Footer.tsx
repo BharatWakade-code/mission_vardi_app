@@ -44,7 +44,7 @@ export default function Footer() {
                 🛡️
               </div>
               <span style={{ fontSize: "1.3rem", fontWeight: 700, color: "#ffffff" }}>
-                Mission<span className="gradient-text">Vardi</span>
+                Bharti<span className="gradient-text">MockTest</span>
               </span>
             </div>
             <p style={{ fontSize: "0.9rem", lineHeight: "1.6", marginBottom: "16px" }}>
@@ -103,7 +103,7 @@ export default function Footer() {
               हे एक स्वतंत्र शैक्षणिक पोर्टल असून याचा कोणत्याही सरकारी संस्थेशी किंवा आयोगाशी अधिकृत संबंध नाही. आम्ही विद्यार्थ्यांना स्पर्धा परीक्षेच्या सरावासाठी मोफत प्रश्नपत्रिका व मार्गदर्शन उपलब्ध करून देतो.
             </p>
             <div style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>
-              📧 सपोर्ट संपर्क: <strong>support@missionvardi.in</strong>
+              📧 सपोर्ट संपर्क: <strong>support@bhartimocktest.in</strong>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function Footer() {
           color: "#64748b"
         }}>
           <div>
-            © {new Date().getFullYear()} <strong>Mission Vardi Mock Test Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.
+            © {new Date().getFullYear()} <strong>Bharti Mock Test Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.
           </div>
           <div style={{ display: "flex", gap: "20px" }}>
             <span>Privacy Policy</span>

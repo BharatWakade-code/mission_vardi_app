@@ -11,13 +11,13 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://missionvardiapp.vercel.app"),
+  metadataBase: new URL("https://bhartimocktest.in"),
   alternates: {
     canonical: "/",
   },
   title: {
-    default: "Mission Vardi | Best Site for Police Bharti & Talathi Mock Test in Marathi",
-    template: "%s | Mission Vardi Mock Test Portal"
+    default: "Bharti Mock Test | Best Site for Police Bharti & Talathi Mock Test in Marathi",
+    template: "%s | Bharti Mock Test Portal"
   },
   description: "महाराष्ट्रातील सर्वोत्तम मोफत ऑनलाइन सराव परीक्षा (Free Mock Tests). Police Bharti, Talathi Bharti, MPSC, ZP Bharti व आरोग्य विभाग परीक्षेसाठी TCS/IBPS पॅटर्ननुसार सराव प्रश्नपत्रिका.",
   keywords: [
@@ -29,22 +29,22 @@ export const metadata: Metadata = {
     "tcs ibps pattern mock test marathi",
     "police bharti syllabus and test series",
     "majhi naukri mock test alternative",
-    "mission vardi online test",
+    "bharti mock test online",
     "पोलीस भरती मोफत सराव परीक्षा",
     "तलाठी भरती ऑनलाइन टेस्ट"
   ],
-  authors: [{ name: "Mission Vardi Portal Team" }],
+  authors: [{ name: "Bharti Mock Test Team" }],
   openGraph: {
-    title: "Mission Vardi - Maharashtra's #1 Free Mock Test Portal",
+    title: "Bharti Mock Test - Maharashtra's #1 Free Mock Test Portal",
     description: "पोलीस भरती, तलाठी, MPSC व ZP परीक्षेसाठी मोफत ऑनलाइन सराव टेस्ट सोडवा आणि लगेच निकाल व सविस्तर स्पष्टीकरण पहा.",
-    url: "https://missionvardiapp.vercel.app", // Target SEO authority link structure
-    siteName: "Mission Vardi Mock Test Portal",
+    url: "https://bhartimocktest.in", // Target SEO authority link structure
+    siteName: "Bharti Mock Test Portal",
     locale: "mr_IN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mission Vardi Free Mock Test Portal",
+    title: "Bharti Mock Test Portal",
     description: "पोलीस भरती व तलाठी भरती मोफत सराव परीक्षा २०२६ - TCS/IBPS Pattern",
   },
   robots: {

@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { fetchLiveQuizzes, fetchLiveCategories } from '@/services/api'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://missionvardiapp.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bhartimocktest.in'
 
   // Fetch all dynamic categories
   const categories = await fetchLiveCategories()

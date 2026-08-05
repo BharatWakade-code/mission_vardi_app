@@ -1,0 +1,28 @@
+{
+  "title": "Police Bharti Mock Test 22",
+  "title_mr": "Police Bharti Mock Test 22",
+  "description": "Police Bharti Mock Test 22",
+  "description_mr": "Police Bharti Mock Test 22",
+  "category": "Police Bharti",
+  "type": "mock_test",
+  "questions": [
+    {
+      "id": "623",
+      "text": "Which punctuation mark is used when a thought or point is broken in the middle while incomplete?",
+      "text_mr": "एखादा मुद्दा अपूर्ण असताना मध्येच तोडायचा असेल तर कोणते विरामचिन्ह वापरतात?",
+      "options": [
+        "अपसरणचिन्ह",
+        "लोपचिन्ह",
+        "संयोगचिन्ह",
+        "स्वल्पविराम"
+      ],
+      "options_mr": [
+        "अपसरणचिन्ह",
+        "लोपचिन्ह",
+        "संयोगचिन्ह",
+        "स्वल्पविराम"
+      ],
+      "correctAnswer": "a"
+    }
+  ]
+}

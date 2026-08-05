@@ -216,6 +216,16 @@ export default function TestEngine({ test }: TestEngineProps) {
                 setIsSubmitted(false);
                 setTimeRemaining(test.durationMinutes * 60);
                 setCurrentIdx(0);
+                
+                const initialStatus: Record<number, QuestionStatus> = {};
+                test.questions.forEach((q) => {
+                  initialStatus[q.id] = "unvisited";
+                });
+                if (test.questions[0]) {
+                  initialStatus[test.questions[0].id] = "unanswered";
+                }
+                setQuestionStatuses(initialStatus);
+
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="btn btn-primary"

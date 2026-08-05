@@ -71,11 +71,11 @@ export default function Navbar() {
               border: "1px solid rgba(255,255,255,0.1)",
               overflow: "hidden"
             }}>
-            <img src="/logo.png" alt="Mission Vardi Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/logo.png" alt="Bharti Mock Test Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </motion.div>
           <div>
             <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#ffffff", letterSpacing: "-0.5px", lineHeight: "1.1" }}>
-              Mission<span style={{ color: "#f97316" }}>Vardi</span>
+              Bharti<span style={{ color: "#f97316" }}>MockTest</span>
             </div>
             <div style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase" }}>
               Premium Mock Portal

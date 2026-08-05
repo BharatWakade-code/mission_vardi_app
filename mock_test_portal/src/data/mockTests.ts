@@ -130,8 +130,8 @@ export function generateQuizSchema(test: MockTest) {
     },
     "provider": {
       "@type": "Organization",
-      "name": "Mission Vardi Mock Test Portal",
-      "sameAs": "https://missionvardiapp.vercel.app"
+      "name": "Bharti Mock Test Portal",
+      "sameAs": "https://bhartimocktest.in"
     },
     "hasPart": test.questions.map((q, idx) => ({
       "@type": "Question",
@@ -176,7 +176,7 @@ export function generateFAQSchema() {
         "name": "पोलीस भरती आणि तलाठी भरतीसाठी मोफत सराव परीक्षा कुठे मिळतील?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "मिशन वर्दी (Mission Vardi) मॉक टेस्ट पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
+          "text": "Bharti Mock Test पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
         }
       },
       {
@@ -184,7 +184,7 @@ export function generateFAQSchema() {
         "name": "Are these mock tests updated according to the latest 2026 Maharashtra government exam pattern?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes! All mock tests on Mission Vardi Mock Test Portal are curated by subject matter experts following the latest TCS, IBPS, and MPSC exam patterns for 2026."
+          "text": "Yes! All mock tests on Bharti Mock Test Portal are curated by subject matter experts following the latest TCS, IBPS, and MPSC exam patterns for 2026."
         }
       },
       {

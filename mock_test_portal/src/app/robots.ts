@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
   // Use the custom domain if available, otherwise fallback
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://missionvardiapp.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bhartimocktest.in'
   
   return {
     rules: {

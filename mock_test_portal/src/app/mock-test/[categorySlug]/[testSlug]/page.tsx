@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: TestPageProps): Promise<Metad
   const test = await fetchLiveQuizById(testSlug);
 
   if (!test) {
-    return { title: "Test Not Found | Mission Vardi" };
+    return { title: "Test Not Found | Bharti Mock Test" };
   }
 
   return {
@@ -68,9 +68,9 @@ export default async function TestPage({ params }: TestPageProps) {
 
   const quizSchema = generateQuizSchema(test);
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "🏠 मुख्य पृष्ठ", url: "https://missionvardiapp.vercel.app" },
-    { name: category.name, url: `https://missionvardiapp.vercel.app/mock-test/${category.slug}` },
-    { name: test.title, url: `https://missionvardiapp.vercel.app/mock-test/${category.slug}/${test.testSlug}` }
+    { name: "🏠 मुख्य पृष्ठ", url: "https://bhartimocktest.in" },
+    { name: category.name, url: `https://bhartimocktest.in/mock-test/${category.slug}` },
+    { name: test.title, url: `https://bhartimocktest.in/mock-test/${category.slug}/${test.testSlug}` }
   ]);
 
   return (
