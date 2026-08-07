@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const category = categories.find((c) => c.slug === categorySlug);
 
   if (!category) {
-    return { title: "Category Not Found | Bharti Mock Test" };
+    return { title: "Category Not Found | MH Mock Test" };
   }
 
   return {
@@ -63,8 +63,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const tests = allTests.filter((t) => t.categorySlug === categorySlug);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "🏠 मुख्य पृष्ठ (Home)", url: "https://bhartimocktest.in" },
-    { name: category.name, url: `https://bhartimocktest.in/mock-test/${category.slug}` }
+    { name: "🏠 मुख्य पृष्ठ (Home)", url: "https://mhmocktest.in" },
+    { name: category.name, url: `https://mhmocktest.in/mock-test/${category.slug}` }
   ]);
 
   return (

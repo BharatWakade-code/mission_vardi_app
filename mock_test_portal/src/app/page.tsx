@@ -312,7 +312,7 @@ export default function HomePage() {
             background: "rgba(255,255,255,0.05)",
             boxShadow: "0 0 30px rgba(249, 115, 22, 0.2)"
           }}>
-            <img src="/logo.png" alt="Bharti Mock Test Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/logo.png" alt="MH Mock Test Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         </div>
 
@@ -323,7 +323,7 @@ export default function HomePage() {
 
         {/* Subtle Brand Tagline */}
         <p style={{ color: "#475569", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 }}>
-          Bharti Mock Test Portal
+          MH Mock Test Portal
         </p>
 
       </div>
@@ -1804,10 +1804,10 @@ export default function HomePage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "24px" }}>
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              १. Bharti Mock Test पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?
+              १. MH Mock Test पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              Bharti Mock Test पोर्टलवर <strong>महाराष्ट्र पोलीस भरती (Police Bharti 2026), तलाठी भरती (Talathi Bharti), MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद</strong> परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत.
+              MH Mock Test पोर्टलवर <strong>महाराष्ट्र पोलीस भरती (Police Bharti 2026), तलाठी भरती (Talathi Bharti), MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद</strong> परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत.
             </p>
           </div>
 
@@ -1822,10 +1822,10 @@ export default function HomePage() {
 
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              ३. Majhi Naukri Mock Test पेक्षा Bharti Mock Test पोर्टल कसे वेगळे व उत्तम आहे?
+              ३. Majhi Naukri Mock Test पेक्षा MH Mock Test पोर्टल कसे वेगळे व उत्तम आहे?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              Bharti Mock Test पोर्टल हे आधुनिक वेब तंत्रज्ञानावर (Next.js SSR) आधारित असून येथे <strong>अतिशय वेगवान स्पीड (Zero Lag), टाइमरसह प्रत्यक्ष परीक्षेचा अनुभव (Exam Engine), स्टडी मटेरियल व नोट्स, मागील वर्षांच्या प्रश्नपत्रिका (PYQ), शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide) आणि ग्लोबल टॉपर लीडरबोर्ड</strong> एकाच मंचावर पूर्णपणे मोफत उपलब्ध आहे.
+              MH Mock Test पोर्टल हे आधुनिक वेब तंत्रज्ञानावर (Next.js SSR) आधारित असून येथे <strong>अतिशय वेगवान स्पीड (Zero Lag), टाइमरसह प्रत्यक्ष परीक्षेचा अनुभव (Exam Engine), स्टडी मटेरियल व नोट्स, मागील वर्षांच्या प्रश्नपत्रिका (PYQ), शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide) आणि ग्लोबल टॉपर लीडरबोर्ड</strong> एकाच मंचावर पूर्णपणे मोफत उपलब्ध आहे.
             </p>
           </div>
         </div>
@@ -1847,20 +1847,20 @@ export default function HomePage() {
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "Bharti Mock Test Portal",
-              "url": "https://bhartimocktest.in",
+              "name": "MH Mock Test Portal",
+              "url": "https://mhmocktest.in",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://bhartimocktest.in/mock-test/{search_term_string}",
+                "target": "https://mhmocktest.in/mock-test/{search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             },
             {
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "Bharti Mock Test",
-              "url": "https://bhartimocktest.in",
-              "logo": "https://bhartimocktest.in/logo.png",
+              "name": "MH Mock Test",
+              "url": "https://mhmocktest.in",
+              "logo": "https://mhmocktest.in/logo.png",
               "sameAs": [
                 "https://www.youtube.com/@missionvardi",
                 "https://t.me/missionvardi"
@@ -1872,10 +1872,10 @@ export default function HomePage() {
               "mainEntity": [
                 {
                   "@type": "Question",
-                  "name": "मिशन वर्दी (Mission Vardi) पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?",
+                  "name": "MH Mock Test पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "मिशन वर्दी मॉक टेस्ट पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
+                    "text": "MH Mock Test पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
                   }
                 },
                 {

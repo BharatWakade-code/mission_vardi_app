@@ -40,7 +40,7 @@ export const EXAM_CATEGORIES: ExamCategory[] = [
   {
     slug: "police-bharti",
     name: "पोलीस भरती सराव परीक्षा",
-    nameEn: "Maharashtra Police Bharti Mock Test",
+    nameEn: "Maharashtra Police MH Mock Test",
     description: "पोलीस शिपाई, चालक व SRFP भरतीसाठी नवीन पॅटर्ननुसार मोफत ऑनलाइन सराव परीक्षा (मराठी व्याकरण, सामान्य ज्ञान, गणित व बुद्धिमत्ता).",
     icon: "🛡️",
     totalTests: 0,
@@ -67,7 +67,7 @@ export const EXAM_CATEGORIES: ExamCategory[] = [
   {
     slug: "zilla-parishad",
     name: "जिल्हा परिषद (ZP) भरती",
-    nameEn: "Zilla Parishad (ZP) Bharti Mock Test",
+    nameEn: "Zilla Parishad (ZP) MH Mock Test",
     description: "जिल्हा परिषद भरती अंतर्गत ग्रामसेवक, आरोग्य सेवक, वरिष्ठ सहाय्यक व कनिष्ठ अभियंता पदांसाठी मोफत मॉक टेस्ट.",
     icon: "🏢",
     totalTests: 0,
@@ -130,8 +130,8 @@ export function generateQuizSchema(test: MockTest) {
     },
     "provider": {
       "@type": "Organization",
-      "name": "Bharti Mock Test Portal",
-      "sameAs": "https://bhartimocktest.in"
+      "name": "MH Mock Test Portal",
+      "sameAs": "https://mhmocktest.in"
     },
     "hasPart": test.questions.map((q, idx) => ({
       "@type": "Question",
@@ -176,7 +176,7 @@ export function generateFAQSchema() {
         "name": "पोलीस भरती आणि तलाठी भरतीसाठी मोफत सराव परीक्षा कुठे मिळतील?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Bharti Mock Test पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
+          "text": "MH Mock Test पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
         }
       },
       {
@@ -184,7 +184,7 @@ export function generateFAQSchema() {
         "name": "Are these mock tests updated according to the latest 2026 Maharashtra government exam pattern?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes! All mock tests on Bharti Mock Test Portal are curated by subject matter experts following the latest TCS, IBPS, and MPSC exam patterns for 2026."
+          "text": "Yes! All mock tests on MH Mock Test Portal are curated by subject matter experts following the latest TCS, IBPS, and MPSC exam patterns for 2026."
         }
       },
       {
