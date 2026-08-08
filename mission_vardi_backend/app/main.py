@@ -40,7 +40,9 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:3001",
         "http://192.168.56.1:3000",
-        "https://missionvardiapp.vercel.app"
+        "https://missionvardiapp.vercel.app",
+        "https://www.mhmocktest.in",
+        "https://mhmocktest.in"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
