@@ -125,6 +125,7 @@ export default function ExamCard({ test }: ExamCardProps) {
             </div>
           </div>
 
+          {/* 
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>⭐</span>
             <div>
@@ -132,6 +133,7 @@ export default function ExamCard({ test }: ExamCardProps) {
               <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#fbbf24" }}>{test.rating} ({test.reviewsCount})</div>
             </div>
           </div>
+          */}
         </div>
       </div>
 
