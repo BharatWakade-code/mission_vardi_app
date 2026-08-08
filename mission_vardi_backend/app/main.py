@@ -28,7 +28,10 @@ from app.routes.pyq import router as pyq_router
 app = FastAPI(
     title="Mission Vardi API",
     version="2.0.0",
-    description="Backend for Mission Vardi — Police Bharti Exam Prep App"
+    description="Backend for Mission Vardi — Police Bharti Exam Prep App",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None
 )
 
 app.state.limiter = limiter

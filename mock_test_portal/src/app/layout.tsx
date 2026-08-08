@@ -45,7 +45,12 @@ export const metadata: Metadata = {
     "तलाठी भरती ऑनलाइन टेस्ट",
     "mpsc rajyaseva mock test free",
     "mh cet mock test",
-    "maharashtra competitive exams mock test"
+    "maharashtra competitive exams mock test",
+    "maharashtra police bharti mock test",
+    "mpsc rajyaseva free test",
+    "mhmocktest.in",
+    "mhmocktest",
+    "free mock test for maharashtra police"
   ],
   authors: [{ name: "MH Mock Test Team", url: "https://mhmocktest.in" }],
   openGraph: {
