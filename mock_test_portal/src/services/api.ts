@@ -25,6 +25,7 @@ interface BackendQuiz {
   description: string;
   category: string;
   type: string;
+  totalQuestions?: number;
   createdAt?: string;
   questions?: BackendQuestion[];
 }
@@ -91,7 +92,7 @@ function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
   const catName = existingCat ? existingCat.name : bq.category || "सराव परीक्षा";
   const catNameEn = existingCat ? existingCat.nameEn : bq.category || "Practice Test";
 
-  const totalQuestions = questions.length > 0 ? questions.length : 25; // default 25 if listed without questions
+  const totalQuestions = bq.totalQuestions || (questions.length > 0 ? questions.length : 25); // default 25 if listed without questions and backend didn't provide totalQuestions
   const totalMarks = totalQuestions * 2;
   const durationMinutes = Math.max(15, Math.ceil(totalQuestions * 1.2));
 
@@ -108,8 +109,8 @@ function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
     totalQuestions: totalQuestions,
     difficulty: diff,
     badge: bq.type === "challenge" ? "⚡ Daily Challenge" : "🔥 Live API",
-    rating: 4.9,
-    reviewsCount: Math.floor(Math.random() * 2000) + 500,
+    rating: 0,
+    reviewsCount: 0,
     questions: questions,
   };
 }

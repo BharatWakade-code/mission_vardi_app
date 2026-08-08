@@ -23,6 +23,7 @@ async def create_quiz(quiz: Union[QuizCreate, List[QuizCreate]]):
                 "description": q.description,
                 "category": q.category,
                 "type": q.type,
+                "totalQuestions": len(q.questions),
                 "questions": [question.dict() for question in q.questions],
                 "createdAt": str(datetime.now())
             }
@@ -47,6 +48,7 @@ async def create_quiz(quiz: Union[QuizCreate, List[QuizCreate]]):
             "description": quiz.description,
             "category": quiz.category,
             "type": quiz.type,
+            "totalQuestions": len(quiz.questions),
             "questions": [q.dict() for q in quiz.questions],
             "createdAt": str(datetime.now())
         }
@@ -104,6 +106,7 @@ async def get_quiz(quiz_id: str):
                     "description": "Test your knowledge with today's 10 random questions!",
                     "category": "Daily Challenge",
                     "type": "challenge",
+                    "totalQuestions": len(selected),
                     "questions": selected,
                     "createdAt": str(datetime.now())
                 }
