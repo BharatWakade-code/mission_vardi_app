@@ -75,7 +75,7 @@ export default function Navbar() {
           </motion.div>
           <div>
             <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#ffffff", letterSpacing: "-0.5px", lineHeight: "1.1" }}>
-              Bharti<span style={{ color: "#f97316" }}>MockTest</span>
+              MH<span style={{ color: "#f97316" }}>MockTest</span>
             </div>
             <div style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase" }}>
               Premium Mock Portal
