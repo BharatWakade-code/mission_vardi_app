@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:edusaas/screens/vardi_dashboard_module/vardi_dashboard_cubit.dart';
 import 'package:edusaas/screens/vardi_dashboard_module/vardi_dashboard_state.dart';
@@ -28,23 +29,25 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
     context.watch<LocaleCubit>();
     final dashboardCubit = context.watch<VardiDashboardCubit>();
 
+    bool enableFitness = dotenv.env['ENABLE_FITNESS_TRACKER'] == 'true';
+
     List<Widget> screens = [
       const FarmerHomeScreen(), // Mapped to the home screen class in vardi_home_screen
       const QuizzesScreen(),
-      const PhysicalPrepScreen(),
+      if (enableFitness) const PhysicalPrepScreen(),
       const ProfileScreen(),
     ];
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Constants.scaffoldBackgroundColour,
-      bottomNavigationBar: mainBottomNavigationBar(dashboardCubit, context),
+      bottomNavigationBar: mainBottomNavigationBar(dashboardCubit, context, enableFitness),
       body: screens[dashboardCubit.state.selectedIndex],
     );
   }
 
   BottomNavigationBar mainBottomNavigationBar(
-      VardiDashboardCubit dashboardCubit, BuildContext context) {
+      VardiDashboardCubit dashboardCubit, BuildContext context, bool enableFitness) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       currentIndex: dashboardCubit.state.selectedIndex,
@@ -73,11 +76,11 @@ class _VardiDashboardScreenState extends State<VardiDashboardScreen> {
           icon: const Icon(Icons.quiz_rounded),
           label: 'quiz'.tr(),
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.directions_run_rounded),
-          label: 'physical'.tr(),
-        ),
-
+        if (enableFitness)
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.directions_run_rounded),
+            label: 'physical'.tr(),
+          ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.person_rounded),
           label: 'profile'.tr(),
