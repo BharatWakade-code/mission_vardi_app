@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.models.auth_model import EmailLogin, EmailRegister, ForgotPasswordRequest, GoogleLoginRequest
+from app.models.auth_model import EmailLogin, EmailRegister, ForgotPasswordRequest, GoogleLoginRequest, AdminLoginRequest
 from app.services.auth_service import (
     create_access_token,
     get_current_user,
@@ -85,6 +85,27 @@ async def login(data: EmailLogin):
             "user": _safe_user(user),
         },
     }
+
+@router.post("/admin-login", summary="Admin Login")
+async def admin_login(data: AdminLoginRequest):
+    import os
+    # Read strictly from environment variables without hardcoded defaults
+    admin_username = os.getenv("ADMIN_USERNAME")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+    
+    if not admin_username or not admin_password:
+        raise HTTPException(status_code=500, detail="Admin credentials not configured on the server")
+        
+    if data.username == admin_username and data.password == admin_password:
+        return {
+            "status": True,
+            "message": "Admin login successful",
+            "data": {
+                "role": "admin"
+            }
+        }
+    
+    raise HTTPException(status_code=401, detail="Invalid admin credentials")
 
 
 # ─── Google / Firebase Social Login ──────────────────────────────────────────

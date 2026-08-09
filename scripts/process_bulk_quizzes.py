@@ -7,7 +7,7 @@ import os
 INPUT_FILE = "raw_questions.json"
 OUTPUT_FILE = "formatted_quizzes.json"
 QUESTIONS_PER_QUIZ = 100
-CATEGORY_NAME = "Police Bharti"  # You can change this
+CATEGORY_NAME = "MPSC Rajyaseva"  # Changed from Police Bharti to MPSC
 
 def get_letter_answer(index):
     """Convert 0,1,2,3 to a,b,c,d"""

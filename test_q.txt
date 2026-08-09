@@ -1,0 +1,92 @@
+[
+  {
+    "id": "24726",
+    "text": "सरासरी काढा. 88, 89, 90, 64, 77 & 90",
+    "text_mr": "सरासरी काढा. 88, 89, 90, 64, 77 & 90",
+    "options": [
+      "85",
+      "84",
+      "83",
+      "82"
+    ],
+    "options_mr": [
+      "85",
+      "84",
+      "83",
+      "82"
+    ],
+    "correctAnswer": "c"
+  },
+  {
+    "id": "24725",
+    "text": "लांबीचे एसआय एकक ____ आहे.",
+    "text_mr": "लांबीचे एसआय एकक ____ आहे.",
+    "options": [
+      "सेंटीमीटर",
+      "मीटर",
+      "कलिोमीटर",
+      "याडर्ड"
+    ],
+    "options_mr": [
+      "सेंटीमीटर",
+      "मीटर",
+      "कलिोमीटर",
+      "याडर्ड"
+    ],
+    "correctAnswer": "b"
+  },
+  {
+    "id": "24750",
+    "text": "",
+    "text_mr": "",
+    "options": [
+      "Y$LS%#",
+      "YL$S%A",
+      "#L$S%A",
+      "H$LS%A"
+    ],
+    "options_mr": [
+      "Y$LS%#",
+      "YL$S%A",
+      "#L$S%A",
+      "H$LS%A"
+    ],
+    "correctAnswer": "a"
+  },
+  {
+    "id": "24481",
+    "text": "खालील वाक्यालतील अधोरेखति शब्दाचे लिंग ओळखा. काल गारा पडल्या.",
+    "text_mr": "खालील वाक्यालतील अधोरेखति शब्दाचे लिंग ओळखा. काल गारा पडल्या.",
+    "options": [
+      "पुल्लिंग",
+      "स्त्ीलिंग",
+      "नपुसकलिंग",
+      "उभयलिंग"
+    ],
+    "options_mr": [
+      "पुल्लिंग",
+      "स्त्ीलिंग",
+      "नपुसकलिंग",
+      "उभयलिंग"
+    ],
+    "correctAnswer": "b"
+  },
+  {
+    "id": "24469",
+    "text": "Choose the appropriate conjunction for the given sentence: ______ he got married to that rich woman, he gave up his job.",
+    "text_mr": "Choose the appropriate conjunction for the given sentence: ______ he got married to that rich woman, he gave up his job.",
+    "options": [
+      "On the other hand",
+      "As soon as",
+      "Though",
+      "Moreover"
+    ],
+    "options_mr": [
+      "On the other hand",
+      "As soon as",
+      "Though",
+      "Moreover"
+    ],
+    "correctAnswer": "b"
+  }
+]

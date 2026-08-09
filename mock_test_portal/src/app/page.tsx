@@ -1689,12 +1689,12 @@ export default function HomePage() {
                   </div>
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     <div style={{ flex: "1 1 160px" }}>
-                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 मोबाईल नंबर:</label>
+                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 मोबाईल नंबर (Optional):</label>
                       <input type="tel" placeholder="9876543210" value={mobile} onChange={(e) => setMobile(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                     </div>
                     <div style={{ flex: "1 1 160px" }}>
-                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 जिल्हा (District):</label>
-                      <input type="text" placeholder="उदा. पुणे" value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
+                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 जिल्हा (District) *:</label>
+                      <input type="text" required placeholder="उदा. पुणे" value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                     </div>
                   </div>
                   <button type="submit" disabled={authLoading} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "14px", marginTop: "8px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px", boxShadow: "0 8px 25px rgba(249, 115, 22, 0.4)" }}>
@@ -1713,12 +1713,12 @@ export default function HomePage() {
                     <input type="text" required value={name} onChange={(e) => setName(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid #f97316", color: "#fff", fontSize: "1rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 मोबाईल नंबर (Mobile):</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 मोबाईल नंबर (Optional):</label>
                     <input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "1rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 तुमचा जिल्हा (District for Leaderboard):</label>
-                    <input type="text" value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid #f97316", color: "#fff", fontSize: "1rem" }} />
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 तुमचा जिल्हा (District for Leaderboard) *:</label>
+                    <input type="text" required value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid #f97316", color: "#fff", fontSize: "1rem" }} />
                   </div>
                   <button type="submit" disabled={authLoading} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "16px", marginTop: "10px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px" }}>
                     {authLoading ? "अपडेट होत आहे..." : "✓ बदल सेव्ह करा (Save Profile)"}
@@ -1838,7 +1838,7 @@ export default function HomePage() {
           }
         }
       `}</style>
-      
+
       {/* Advanced SEO Structured Data (JSON-LD) */}
       <script
         type="application/ld+json"

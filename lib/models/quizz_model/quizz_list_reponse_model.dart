@@ -38,6 +38,7 @@ class QuizzListData {
   List<Questions>? questions;
   String? createdAt;
   int? timeLimit;
+  int? totalQuestions;
 
   QuizzListData(
       {this.id,
@@ -49,7 +50,8 @@ class QuizzListData {
       this.type,
       this.questions,
       this.createdAt,
-      this.timeLimit});
+      this.timeLimit,
+      this.totalQuestions});
 
   String getLocalizedTitle(String langCode) {
     if (langCode == 'mr' && titleMr != null && titleMr!.isNotEmpty) return titleMr!;
@@ -77,6 +79,7 @@ class QuizzListData {
     }
     createdAt = json['createdAt'];
     timeLimit = json['timeLimit'] ?? json['time_limit'] ?? json['duration'];
+    totalQuestions = json['totalQuestions'];
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +96,7 @@ class QuizzListData {
     }
     data['createdAt'] = this.createdAt;
     data['timeLimit'] = this.timeLimit;
+    data['totalQuestions'] = this.totalQuestions;
     return data;
   }
 }

@@ -1,0 +1,128 @@
+Found 127 NEW weird characters:
+Char: '¼' (U+00BC) | Context:  B.1/8  C.¼  D.13/36
+Char: 'ű' (U+0171) | Context: े.  D.मती űʼ होणे.  
+Char: 'ˁ' (U+02C1) | Context: ळखा.  A.कृˁ X कृश  B
+Char: 'ư' (U+01B0) | Context: टाश  D.मॅिưिशयम  Ans
+Char: 'ǂ' (U+01C2) | Context: . मराठी वाǂयातील ǒान
+Char: 'Ȇ' (U+0206) | Context: लेʞा चार पȆांपैकी को
+Char: 'ɰ' (U+0270) | Context: ज  C.कोची ɰु ˙ाईकसŊ 
+Char: '–' (U+2013) | Context: 4) जर 5QQ –Q55 = Q67
+Char: 'Ȗ' (U+0216) | Context: ितशय िकरणोȖारी असते 
+Char: 'Ș' (U+0218) | Context:  आढळणारा मȘ शेतीचा Ů
+Char: '̽' (U+033D) | Context: मूधŊɊ  D.ओ̽ Ǭ  Answe
+Char: 'ˈ' (U+02C8) | Context: ी शाʷत भिवˈ  C.िडिजट
+Char: 'ȇ' (U+0207) | Context: ेवणारी अɄतȇ असतात. ख
+Char: '͕' (U+0355) | Context: İʟंग  B.̾ ͕ ीिलंग  C
+Char: 'Ǽ' (U+01FC) | Context:  D.भाभा आİǼक संशोधन 
+Char: 'ƫ' (U+01AB) | Context: ापमान  C.Ŝƫालयाचे ता
+Char: 'ɲ' (U+0272) | Context:  पįरषदे (डɲूजीसी) ǉा
+Char: '̰' (U+0330) | Context: किलंग  D.उ̰ यिलंग  A
+Char: 'ş' (U+015F) | Context: ʉणजे आमचे şदय आहे  A
+Char: '˛' (U+02DB) | Context: :(2901) िव˛ोटक शोधाव
+Char: '‍' (U+200D) | Context: िरी करणार्‍या पहिल्य
+Char: 'š' (U+0161) | Context: र अ िठकाणाšन ब िठकाण
+Char: 'ů' (U+016F) | Context: ी आहे?  A.ůाɌ  B.रिश
+Char: 'Ǎ' (U+01CD) | Context: लाटेसाठी सǍता, शमन आ
+Char: 'Ɓ' (U+0181) | Context: यन इ̢ ůाːŌƁर इ̢ ʬेːम
+Char: 'ˍ' (U+02CD) | Context: Ůित िकलो İˍडची िवŢी 
+Char: 'ť' (U+0165) | Context: ȯे ऑरŐज ʩाť अभयारǻ İ
+Char: 'ɝ' (U+025D) | Context: क  B.एअरŢाɝ कॅरीयर  
+Char: 'Ț' (U+021A) | Context: ा एका िवȨाȚाŊला वगळल
+Char: 'ë' (U+00EB) | Context: ndra or Zoë who ____
+Char: 'Ƣ' (U+01A2) | Context: 97) ’पंच तƢां’ पैकी 
+Char: 'Ƒ' (U+0191) | Context: हन  B.रेडİƑफ  C.दुरं
+Char: 'Ⱦ' (U+023E) | Context:  ओळखा. रवीȾ नाथांवर 
+Char: '÷' (U+00F7) | Context:  ‘×’ आणि ‘÷’ यांची अ
+Char: 'ʸ' (U+02B8) | Context: ळखा.  A.घनʸाम  B.घनʴ
+Char: '˦' (U+02E6) | Context:  िनवडा. Űा˦ण  A.अज  
+Char: 'ǥ' (U+01E5) | Context:   C.िकनारपǥीवरील गˑी
+Char: '̱' (U+0331) | Context:   A.की  B.̱ हणून  C.
+Char: 'Ω' (U+2126) | Context: 8 $ 7 & 3 Ω 9 # 1 * 
+Char: 'ơ' (U+01A1) | Context: ापुरी  D.सơा  Answer
+Char: 'ƕ' (U+0195) | Context: ंटरनेट कनेƕɌने सुसǍ 
+Char: 'ʮ' (U+02AE) | Context: ाम  C.अिनिʮत सवŊनाम 
+Char: 'Ȍ' (U+020C) | Context:   A.ŝपक, उȌेƗा  B.उप
+Char: 'ɢ' (U+0262) | Context: ID:(3415) ɢोरा' चा अ
+Char: 'ɍ' (U+024D) | Context: न सायɌेस इɍीǨुट) पįर
+Char: '£' (U+00A3) | Context: Ω 9 # 1 * £ 5 > (उजव
+Char: 'ʱ' (U+02B1) | Context: मȯे सईद मुʱाक अली कर
+Char: '˃' (U+02C3) | Context: 18 रोजी पु˃ा भावे, य
+Char: 'Ƙ' (U+0198) | Context: 03) अशोक लƘणराव कुका
+Char: 'Ǭ' (U+01EC) | Context:  ȑांतील मोǬाचं वय धा
+Char: '©' (U+00A9) | Context: V 1 W E 9 © L 5 जर व
+Char: 'Ǯ' (U+01EE) | Context: वरील खोल खǮांना ʉणता
+Char: '̻' (U+033B) | Context: िवराम  C.Ů̻ निच̢ ह  
+Char: 'ǩ' (U+01E9) | Context: ी ठरʞास, िǩटरवरील का
+Char: 'Ƹ' (U+01B8) | Context: णबȅीवर एक Ƹास उपडा ठ
+Char: 'ʎ' (U+028E) | Context: िणका  C.गॉʎी यंũणा  
+Char: 'ȵ' (U+0235) | Context: यजेशन अ◌ॅ ȵ įरअल टाई
+Char: 'ʤ' (U+02A4) | Context: ेड įरिसʬेबʤ िडˋांऊंट
+Char: 'Ŭ' (U+016C) | Context: हेत?  A.आंŬ Ůदेश  B.
+Char: 'ƽ' (U+01BD) | Context: ी आपण वेळ ƽाल : A.2 
+Char: '˒' (U+02D2) | Context: तुŊळाकार र˒ावर चालते
+Char: 'ʨ' (U+02A8) | Context: वकून 20 केʨांची िवŢी
+Char: '˟' (U+02DF) | Context: रोबर सामंज˟ करारावर 
+Char: 'ˌ' (U+02CC) | Context: िसनेमाǉा İˌिनंगǉा आध
+Char: 'ʔ' (U+0294) | Context: बत िटपू सुʔानिवŜ̡ द 
+Char: '˜' (U+02DC) | Context:  ū आिण लेİ˜यन, समिलं
+Char: 'Ȓ' (U+0212) | Context: दुसरा ˢातंȒ (डी जुर 
+Char: 'ȉ' (U+0209) | Context: नािशक  C.रȉािगरी  D.
+Char: '◌' (U+25CC) | Context: ीमायजेशन अ◌ॅ ȵ įरअल 
+Char: 'ƨ' (U+01A8) | Context: :(10228) जƨाचे वय हे
+Char: 'ɷ' (U+0277) | Context: युƅ लʺरी अɷास आहे.  
+Char: '₹' (U+20B9) | Context: ीी किंंमत ₹18,700 अस
+Char: 'ʚ' (U+029A) | Context: ंटːुअटŊ एİʚɍन  B.वेल
+Char: 'Ɉ' (U+0248) | Context: रअल टाईम इɈॉमőशन (SF
+Char: 'Š' (U+0160) | Context: गी अʩय  B.Šडत, शी – 
+Char: 'ɾ' (U+027E) | Context:  मुंबई (बॉɾे) उǄ Ɋाय
+Char: '−' (U+2212) | Context: 0 2. 1 3. −2 4. 2 Qu
+Char: 'ʒ' (U+0292) | Context: ळाडूला वाईʒ काडŊ िमळ
+Char: 'Ȟ' (U+021E) | Context: िमल  D.मुपȞाम  Answe
+Char: 'ˠ' (U+02E0) | Context:  कोणता मुİˠम सण हजǉा
+Char: 'ƛ' (U+019B) | Context: आहे.  A.ऑİƛजनची अनुप
+Char: 'Ŗ' (U+0156) | Context:  भारतीय सवŖǄ Ɋायालया
+Char: '̺' (U+033A) | Context: .Ůथमा  B.İ̺ दतीया  C
+Char: 'ʊ' (U+028A) | Context: ािधत व सहाʊक िŢयापद 
+Char: '̠' (U+0320) | Context: Ŭुपदांगी क̠ थक" यावर
+Char: 'ɬ' (U+026C) | Context: 5746) Ůो कɬǭी लीकमधी
+Char: 'Ǫ' (U+01EA) | Context: त शेवटून अǪेचाळीसावा
+Char: '̪' (U+032A) | Context: े. पिहʞा ट̪ ɗात िवजो
+Char: 'ɩ' (U+0269) | Context: जनची अनुपलɩता  B.Ůǜल
+Char: 'Ǩ' (U+01E8) | Context: ते कायŊ एकǨाने पूणŊ 
+Char: 'œ' (U+0153) | Context: Ŋफुले  C.पœजण  D.आभू
+Char: '،' (U+060C) | Context:  Blue Area، G 7/2 Bl
+Char: '̝' (U+031D) | Context:  िवभƅीǉा Ů̝ ययांचे इ
+Char: 'ƹ' (U+01B9) | Context: ID:(7605) ƹािलयारचा 
+Char: 'Ű' (U+0170) | Context: ी?  A.िद िŰटीश कौİɌल
+Char: 'ț' (U+021B) | Context: .बुध  B.पृțी  C.गुŝ 
+Char: 'ɠ' (U+0260) | Context: हरा  D.मुजɠराबाद  An
+Char: 'ʀ' (U+0280) | Context:  C.ʞूक बॅİʀज  D.रोहन
+Char: 'ǭ' (U+01ED) | Context: 746) Ůो कɬǭी लीकमधील
+Char: 'ǳ' (U+01F3) | Context: ुकर 35% एवǳा सवलतीǉा
+Char: 'ʿ' (U+02BF) | Context: .तृतीया, षʿी  D.षʿी,
+Char: 'ŗ' (U+0157) | Context: ौिकक X दुलŗिकक  C.वै
+Char: 'ʺ' (U+02BA) | Context: ुबȅा  C.िनʺाम X सकाम
+Char: 'ǹ' (U+01F9) | Context: . राजा रामǹा  Answer
+Char: 'ƻ' (U+01BB) | Context: िũम  C.कृतƻ  D.कृतǒ 
+Char: 'Ǧ' (U+01E6) | Context: आिण िकनारपǦांलगत आढळ
+Char: 'ʝ' (U+029D) | Context: ƐूमŐटरी िफʝने ऑˋसŊ ि
+Char: 'ǟ' (U+01DF) | Context: (5728) ‘तुǟा हातून ह
+Char: 'ȴ' (U+0234) | Context: ंिडयन सबकॉȴीनȴ िडिसज
+Char: '↑' (U+2191) | Context: V R 2 1 @ ↑ V 1 W E 
+Char: 'ɘ' (U+0258) | Context: डू  B.फेअरɘे पुरˋार 
+Char: 'ɓ' (U+0253) | Context: दला?  A.ˢिɓल िũपाठी 
+Char: 'ʫ' (U+02AB) | Context: D.घटना (बाʫनावी सुधा
+Char: 'ʢ' (U+02A2) | Context: 018 मȯे रेʢे मंũालया
+Char: 'ɯ' (U+026F) | Context: ुढून 8ʩा डɯात बसली, 
+Char: 'ŷ' (U+0177) | Context: युएसए  D.इŷाइल  Answ
+Char: '˽' (U+02FD) | Context:   सुई – ती˽ण X -----
+Char: '̏' (U+030F) | Context: खा.  A.ई-आ̏ यात  B.ऊ
+Char: 'Ƌ' (U+018B) | Context: ते िवŮो टेƋोलॉजीजचे 
+Char: 'ǜ' (U+01DC) | Context: C.कुंड  D.ǜालामुखी  
+Char: ' ' (U+00A0) | Context:  Section : Marathi L
+Char: 'ƙ' (U+0199) | Context:  करणे  B.लƙ ठरवणे  C
+Char: 'ǿ' (U+01FF) | Context: A.िसजनचे उǿांत होणार
+Char: 'ɗ' (U+0257) | Context:  पिहʞा ट̪ ɗात िवजोड 
+Char: 'ɛ' (U+025B) | Context: इटींग वा̾ ɛ" शीषŊक अ
+Char: 'ʐ' (U+0290) | Context: दगड  C.बसाʐ  D.वाळूच
+Char: '̢' (U+0322) | Context:  A.अवरƅ (इ̢ ůारेड) ि

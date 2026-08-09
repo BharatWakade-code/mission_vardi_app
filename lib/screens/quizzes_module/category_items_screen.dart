@@ -87,9 +87,12 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
             final localizedTitle = (langCode == 'mr' && titleMr.isNotEmpty)
                 ? titleMr
                 : (item.title ?? 'Untitled');
+            final totalQ = item.totalQuestions ?? (item.questions?.length ?? 25);
+            final marks = totalQ * 2;
+            
             return _QuizCard(
               title: localizedTitle,
-              subtitle: item.category ?? 'General',
+              subtitle: '${item.category ?? 'General'} • $totalQ Questions • $marks Marks',
               index: index,
               onTap: () =>
                   context.push(RoutesNames.quizPlayScreen, extra: item.id),

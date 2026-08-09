@@ -16,6 +16,10 @@ class EmailLogin(BaseModel):
     email: str
     password: str
 
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
+
 
 class GoogleLoginRequest(BaseModel):
     """Firebase ID token obtained from flutter firebase_auth Google Sign-In."""
