@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath("a:/Projects/mission_vardi_app/mission_vardi_backend"))
+sys.path.append(os.path.abspath("a:/Projects/edusaas_app/edusaas_backend"))
 
 from app.services.mongodb_service import quizzes_collection
 

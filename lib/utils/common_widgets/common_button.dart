@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/network_services/check_internet_services.dart';
 
 class CommonButton extends StatelessWidget {
   final String? title;

@@ -1,5 +1,5 @@
 import 'package:either_dart/either.dart';
-import 'package:mission_vardi/models/auth_model/auth_response_model.dart';
+import 'package:edusaas/models/auth_model/auth_response_model.dart';
 
 abstract class AuthRepositoryImpl {
   Future<Either<Exception, AuthResponseModel>> signIn({

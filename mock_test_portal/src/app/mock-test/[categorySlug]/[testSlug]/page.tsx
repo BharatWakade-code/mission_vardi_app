@@ -31,19 +31,19 @@ export async function generateMetadata({ params }: TestPageProps): Promise<Metad
   const test = await fetchLiveQuizById(testSlug);
 
   if (!test) {
-    return { title: "Test Not Found | MH Mock Test" };
+    return { title: "Test Not Found | EduSaaS Web" };
   }
 
   return {
     title: `${test.title} | Online Free Practice Mock Test`,
-    description: `${test.titleEn} - सोडवा मोफत ऑनलाइन परीक्षा (${test.totalQuestions} प्रश्न, ${test.totalMarks} गुण). लगेच निकाल व स्पष्टीकरण मिळवा.`,
+    description: `${test.titleEn} - सोडवा मोफत ऑनलाइन Exam (${test.totalQuestions} प्रश्न, ${test.totalMarks} गुण). लगेच निकाल व स्पष्टीकरण मिळवा.`,
     keywords: [
       test.title,
       test.titleEn,
       test.categoryName,
       "free mock test online",
       "maharashtra competitive exam practice test",
-      "पोलीस भरती सराव परीक्षा"
+      "Competitive Exams सराव Exam"
     ],
     openGraph: {
       title: `${test.title} - Free Practice Test`,
@@ -58,7 +58,7 @@ export default async function TestPage({ params }: TestPageProps) {
   const test = await fetchLiveQuizById(testSlug);
   const categories = await fetchLiveCategories();
   const category = categories.find((c) => c.slug === categorySlug) || {
-    name: test?.categoryName || "सराव परीक्षा",
+    name: test?.categoryName || "सराव Exam",
     slug: categorySlug,
   };
 
@@ -68,9 +68,9 @@ export default async function TestPage({ params }: TestPageProps) {
 
   const quizSchema = generateQuizSchema(test);
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "🏠 मुख्य पृष्ठ", url: "https://mhmocktest.in" },
-    { name: category.name, url: `https://mhmocktest.in/mock-test/${category.slug}` },
-    { name: test.title, url: `https://mhmocktest.in/mock-test/${category.slug}/${test.testSlug}` }
+    { name: "🏠 मुख्य पृष्ठ", url: "https://edusaasweb.in" },
+    { name: category.name, url: `https://edusaasweb.in/mock-test/${category.slug}` },
+    { name: test.title, url: `https://edusaasweb.in/mock-test/${category.slug}/${test.testSlug}` }
   ]);
 
   return (

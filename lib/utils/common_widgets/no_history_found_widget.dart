@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/utils/constants.dart';
 
 class NoHistoryFoundWidget extends StatelessWidget {
   final String? title ;

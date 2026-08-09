@@ -26,8 +26,8 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "मुख्य पृष्ठ", href: "/", icon: <Home size={12} /> },
-    { name: "पोलीस भरती", href: "/mock-test/police-bharti", icon: <ShieldCheck size={12} /> },
-    { name: "तलाठी भरती", href: "/mock-test/talathi-bharti", icon: <FileText size={12} /> },
+    { name: "Competitive Exams", href: "/mock-test/police-bharti", icon: <ShieldCheck size={12} /> },
+    { name: "Aptitude Tests भरती", href: "/mock-test/talathi-bharti", icon: <FileText size={12} /> },
     { name: "MPSC राज्यसेवा", href: "/mock-test/mpsc-rajyaseva", icon: <Landmark size={12} /> },
     { name: "ZP भरती", href: "/mock-test/zilla-parishad", icon: <Building2 size={12} /> },
   ];
@@ -71,7 +71,7 @@ export default function Navbar() {
               border: "1px solid rgba(255,255,255,0.1)",
               overflow: "hidden"
             }}>
-            <img src="/logo.png" alt="MH Mock Test Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/logo.png" alt="EduSaaS Web Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </motion.div>
           <div>
             <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#ffffff", letterSpacing: "-0.5px", lineHeight: "1.1" }}>

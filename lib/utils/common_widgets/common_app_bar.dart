@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
-import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
-import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/utils/network_services/check_internet_services.dart';
+import 'package:edusaas/screens/localization_module/change_language_bottom_sheet.dart';
 
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/utils/constants.dart';
 // ─── Design tokens (navy blue theme) ─────────────────────────────────────────
 const _navyDark = Color(0xFF0B1437);
 const _navyMid = Color(0xFF1A3572);

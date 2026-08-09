@@ -26,9 +26,9 @@ from app.routes.fitness import router as fitness_router
 from app.routes.pyq import router as pyq_router
 
 app = FastAPI(
-    title="Mission Vardi API",
+    title="EduSaaS API",
     version="2.0.0",
-    description="Backend for Mission Vardi — Police Bharti Exam Prep App",
+    description="Backend for EduSaaS — Police Bharti Exam Prep App",
     docs_url=None,
     redoc_url=None,
     openapi_url=None
@@ -43,9 +43,9 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:3001",
         "http://192.168.56.1:3000",
-        "https://missionvardiapp.vercel.app",
-        "https://www.mhmocktest.in",
-        "https://mhmocktest.in"
+        "https://edusaasapp.vercel.app",
+        "https://www.edusaasweb.in",
+        "https://edusaasweb.in"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -76,7 +76,7 @@ app.include_router(pyq_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Mission Vardi API v2.0 Running  "}
+    return {"message": "EduSaaS API v2.0 Running  "}
 
 # --- Global Exception Handlers ---
 

@@ -89,7 +89,7 @@ function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
 
   // Match existing category name if present
   const existingCat = EXAM_CATEGORIES.find((c) => c.slug === slug);
-  const catName = existingCat ? existingCat.name : bq.category || "सराव परीक्षा";
+  const catName = existingCat ? existingCat.name : bq.category || "सराव Exam";
   const catNameEn = existingCat ? existingCat.nameEn : bq.category || "Practice Test";
 
   const totalQuestions = bq.totalQuestions || (questions.length > 0 ? questions.length : 25); // default 25 if listed without questions and backend didn't provide totalQuestions
@@ -201,7 +201,7 @@ export async function fetchLiveCategories(): Promise<ExamCategory[]> {
         slug: test.categorySlug,
         name: test.categoryName,
         nameEn: test.categoryNameEn,
-        description: `${test.categoryName} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन सराव परीक्षा.`,
+        description: `${test.categoryName} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन सराव Exam.`,
         icon: icon,
         totalTests: testCounts[test.categorySlug] || 1,
         colorTheme: colorTheme,

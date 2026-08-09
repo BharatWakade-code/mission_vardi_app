@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
   // Use the custom domain if available, otherwise fallback
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mhmocktest.in'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://edusaasweb.in'
   
   return {
     rules: {

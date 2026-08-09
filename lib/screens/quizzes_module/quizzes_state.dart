@@ -1,4 +1,4 @@
-import 'package:mission_vardi/models/quizz_model/quizz_list_reponse_model.dart';
+import 'package:edusaas/models/quizz_model/quizz_list_reponse_model.dart';
 
 class QuizzesState {
   final String selectedPracticeMode;

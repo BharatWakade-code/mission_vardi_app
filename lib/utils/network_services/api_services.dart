@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:mission_vardi/utils/network_services/api_client.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/network_services/api_client.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 
 class NetworkServices {
   final ApiClient _apiClient = ApiClient();

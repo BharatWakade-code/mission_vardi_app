@@ -3,8 +3,8 @@ import random
 import os
 
 # MongoDB Connection String
-MONGODB_URI = "mongodb+srv://missionVardi:FlashSisko@missionvardi.mqa2rmf.mongodb.net/"
-DB_NAME = "missionvardi"
+MONGODB_URI = "mongodb+srv://missionVardi:FlashSisko@edusaas.mqa2rmf.mongodb.net/"
+DB_NAME = "edusaas"
 
 def shuffle_all_quizzes():
     try:

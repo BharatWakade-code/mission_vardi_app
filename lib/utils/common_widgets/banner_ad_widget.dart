@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mission_vardi/utils/ad_services/ad_manager.dart';
+import 'package:edusaas/utils/ad_services/ad_manager.dart';
 
 class BannerAdWidget extends StatefulWidget {
   const BannerAdWidget({super.key});

@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const category = categories.find((c) => c.slug === categorySlug);
 
   if (!category) {
-    return { title: "Category Not Found | MH Mock Test" };
+    return { title: "Category Not Found | EduSaaS Web" };
   }
 
   return {
@@ -63,8 +63,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const tests = allTests.filter((t) => t.categorySlug === categorySlug);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "🏠 मुख्य पृष्ठ (Home)", url: "https://mhmocktest.in" },
-    { name: category.name, url: `https://mhmocktest.in/mock-test/${category.slug}` }
+    { name: "🏠 मुख्य पृष्ठ (Home)", url: "https://edusaasweb.in" },
+    { name: category.name, url: `https://edusaasweb.in/mock-test/${category.slug}` }
   ]);
 
   return (
@@ -134,7 +134,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </p>
 
         <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
-          <span className="badge badge-orange">🔥 एकूण {tests.length} सराव परीक्षा</span>
+          <span className="badge badge-orange">🔥 एकूण {tests.length} सराव Exam</span>
           <span className="badge badge-green">⚡ १००% मोफत व त्वरित निकाल</span>
           <span className="badge badge-blue">🎯 TCS व IBPS पॅटर्ननुसार</span>
         </div>
@@ -154,7 +154,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <div className="glass-card" style={{ padding: "50px", textAlign: "center" }}>
           <h3 style={{ color: "#ffffff", marginBottom: "10px" }}>लवकरच नवीन टेस्ट जोडल्या जातील!</h3>
           <p style={{ color: "#94a3b8", marginBottom: "20px" }}>आमची टीम या परीक्षेसाठी नवीन २०२६ पॅटर्ननुसार प्रश्नपत्रिका तयार करत आहे.</p>
-          <Link href="/" className="btn btn-primary">🏠 इतर परीक्षा पहा</Link>
+          <Link href="/" className="btn btn-primary">🏠 इतर Exam पहा</Link>
         </div>
       ) : (
         <div className="grid-3">

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
-import 'package:mission_vardi/screens/auth_module/auth_state.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
+import 'package:edusaas/screens/auth_module/auth_cubit.dart';
+import 'package:edusaas/screens/auth_module/auth_state.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/routes_services/routes_name.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});

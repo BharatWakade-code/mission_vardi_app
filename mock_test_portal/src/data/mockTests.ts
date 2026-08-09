@@ -39,27 +39,27 @@ export interface ExamCategory {
 export const EXAM_CATEGORIES: ExamCategory[] = [
   {
     slug: "police-bharti",
-    name: "पोलीस भरती सराव परीक्षा",
-    nameEn: "Maharashtra Police MH Mock Test",
-    description: "पोलीस शिपाई, चालक व SRFP भरतीसाठी नवीन पॅटर्ननुसार मोफत ऑनलाइन सराव परीक्षा (मराठी व्याकरण, सामान्य ज्ञान, गणित व बुद्धिमत्ता).",
+    name: "Competitive Exams सराव Exam",
+    nameEn: "Maharashtra Police EduSaaS Web",
+    description: "पोलीस शिपाई, चालक व SRFP भरतीसाठी नवीन पॅटर्ननुसार मोफत ऑनलाइन सराव Exam (मराठी व्याकरण, सामान्य ज्ञान, गणित व बुद्धिमत्ता).",
     icon: "🛡️",
     totalTests: 0,
     colorTheme: "#1e3a8a", // Navy Blue
   },
   {
     slug: "talathi-bharti",
-    name: "तलाठी भरती सराव प्रश्नपत्रिका",
+    name: "Aptitude Tests भरती सराव प्रश्नपत्रिका",
     nameEn: "Talathi Bharti Online Practice Test",
-    description: "महसूल विभाग तलाठी भरती परीक्षा टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत सराव टेस्ट सिरीज.",
+    description: "महसूल विभाग Aptitude Tests भरती Exam टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत सराव टेस्ट सिरीज.",
     icon: "📜",
     totalTests: 0,
     colorTheme: "#047857", // Emerald Green
   },
   {
     slug: "mpsc-rajyaseva",
-    name: "एमपीएससी राज्यसेवा / संयुक्त परीक्षा",
+    name: "एमपीएससी राज्यसेवा / संयुक्त Exam",
     nameEn: "MPSC Rajyaseva & Combine Group B/C",
-    description: "MPSC राज्यसेवा पूर्व व मुख्य परीक्षा तसेच संयुक्त गट ब व गट क (PSI, STI, ASO) परीक्षेसाठी दर्जेदार सराव प्रश्न.",
+    description: "MPSC राज्यसेवा पूर्व व मुख्य Exam तसेच संयुक्त गट ब व गट क (PSI, STI, ASO) परीक्षेसाठी दर्जेदार सराव प्रश्न.",
     icon: "🏛️",
     totalTests: 0,
     colorTheme: "#b45309", // Amber / Saffron
@@ -67,8 +67,8 @@ export const EXAM_CATEGORIES: ExamCategory[] = [
   {
     slug: "zilla-parishad",
     name: "जिल्हा परिषद (ZP) भरती",
-    nameEn: "Zilla Parishad (ZP) MH Mock Test",
-    description: "जिल्हा परिषद भरती अंतर्गत ग्रामसेवक, आरोग्य सेवक, वरिष्ठ सहाय्यक व कनिष्ठ अभियंता पदांसाठी मोफत मॉक टेस्ट.",
+    nameEn: "Zilla Parishad (ZP) EduSaaS Web",
+    description: "जिल्हा परिषद भरती अंतर्गत ग्रामसेवक, आरोग्य सेवक, वरिष्ठ सहाय्यक व कनिष्ठ अभियंता पदांसाठी मोफत Mock Test.",
     icon: "🏢",
     totalTests: 0,
     colorTheme: "#6d28d9", // Purple
@@ -86,7 +86,7 @@ export const EXAM_CATEGORIES: ExamCategory[] = [
     slug: "nagar-parishad",
     name: "नगर परिषद / महानगरपालिका भरती",
     nameEn: "Nagar Parishad & Mahanagarpalika Test",
-    description: "नगर परिषद, महानगरपालिका (BMC, PMC, NMMC) लिपिक, कर निर्धारक व अभियंता भरती सराव परीक्षा.",
+    description: "नगर परिषद, महानगरपालिका (BMC, PMC, NMMC) लिपिक, कर निर्धारक व अभियंता भरती सराव Exam.",
     icon: "🏙️",
     totalTests: 0,
     colorTheme: "#0369a1", // Sky Blue
@@ -130,8 +130,8 @@ export function generateQuizSchema(test: MockTest) {
     },
     "provider": {
       "@type": "Organization",
-      "name": "MH Mock Test Portal",
-      "sameAs": "https://mhmocktest.in"
+      "name": "EduSaaS Web Portal",
+      "sameAs": "https://edusaasweb.in"
     },
     "hasPart": test.questions.map((q, idx) => ({
       "@type": "Question",
@@ -173,10 +173,10 @@ export function generateFAQSchema() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "पोलीस भरती आणि तलाठी भरतीसाठी मोफत सराव परीक्षा कुठे मिळतील?",
+        "name": "Competitive Exams आणि Aptitude Tests भरतीसाठी मोफत सराव Exam कुठे मिळतील?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "MH Mock Test पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
+          "text": "EduSaaS Web पोर्टलवर Global Competitive Exams, Aptitude Tests भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव Exam उपलब्ध आहेत."
         }
       },
       {
@@ -184,7 +184,7 @@ export function generateFAQSchema() {
         "name": "Are these mock tests updated according to the latest 2026 Maharashtra government exam pattern?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes! All mock tests on MH Mock Test Portal are curated by subject matter experts following the latest TCS, IBPS, and MPSC exam patterns for 2026."
+          "text": "Yes! All mock tests on EduSaaS Web Portal are curated by subject matter experts following the latest TCS, IBPS, and MPSC exam patterns for 2026."
         }
       },
       {

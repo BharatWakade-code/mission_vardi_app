@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:274263956432:android:1496e3c97ecc7deebc37d5",
         "android_client_info": {
-          "package_name": "com.example.mission_vardi"
+          "package_name": "com.example.edusaas"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "274263956432-3cbe6r9n7ef58bv7n5hpd4of30v3hnhl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.mission_vardi",
+            "package_name": "com.example.edusaas",
             "certificate_hash": "6fd069c9d3af4d61e0e56b870a937919fb1b062f"
           }
         },

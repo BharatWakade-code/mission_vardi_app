@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/utils/routes_services/routes_name.dart';
+import 'package:edusaas/utils/common_widgets/common_app_bar.dart';
+import 'package:edusaas/utils/constants.dart';
 
 class NoteReadingScreen extends StatelessWidget {
   final Map<String, dynamic> noteData;

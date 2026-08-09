@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/models/profile_model/profile_response_model.dart';
-import 'package:mission_vardi/screens/profile_module/data/profile_repository.dart';
-import 'package:mission_vardi/screens/profile_module/profile_state.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/models/profile_model/profile_response_model.dart';
+import 'package:edusaas/screens/profile_module/data/profile_repository.dart';
+import 'package:edusaas/screens/profile_module/profile_state.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 
 @injectable
 class ProfileCubit extends Cubit<ProfileState> {

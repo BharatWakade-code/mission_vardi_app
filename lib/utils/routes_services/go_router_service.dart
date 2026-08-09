@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/routes_services/routes_name.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 

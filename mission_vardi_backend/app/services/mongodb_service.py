@@ -9,10 +9,10 @@ load_dotenv()
 # Default MongoDB Connection URI provided by the user.
 # The user can override this completely by setting the MONGODB_URI environment variable,
 # or by specifying MONGODB_URI in their deployment setup.
-DEFAULT_URI = "mongodb+srv://missionVardi:FlashSisko@missionvardi.mqa2rmf.mongodb.net/"
+DEFAULT_URI = "mongodb+srv://missionVardi:FlashSisko@edusaas.mqa2rmf.mongodb.net/"
 
 MONGODB_URI = os.getenv("MONGODB_URI", DEFAULT_URI)
-DB_NAME = os.getenv("DB_NAME", "missionvardi")
+DB_NAME = os.getenv("DB_NAME", "edusaas")
 
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import 'package:mission_vardi/screens/profile_module/activity_history_cubit.dart';
-import 'package:mission_vardi/screens/profile_module/activity_history_state.dart';
-import 'package:mission_vardi/screens/profile_module/history_details_bottom_sheet.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/screens/profile_module/activity_history_cubit.dart';
+import 'package:edusaas/screens/profile_module/activity_history_state.dart';
+import 'package:edusaas/screens/profile_module/history_details_bottom_sheet.dart';
+import 'package:edusaas/utils/common_widgets/common_app_bar.dart';
+import 'package:edusaas/utils/constants.dart';
 
 class ActivityHistoryScreen extends StatefulWidget {
   const ActivityHistoryScreen({super.key});

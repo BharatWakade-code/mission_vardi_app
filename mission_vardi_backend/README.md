@@ -1,4 +1,4 @@
-# Mission Vardi Backend
+# EduSaaS Backend
 
 FastAPI + MongoDB + Firebase Auth backend.
 

@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/screens/auth_module/auth_service.dart';
-import 'package:mission_vardi/screens/auth_module/auth_state.dart';
-import 'package:mission_vardi/screens/auth_module/data/auth_repository.dart';
-import 'package:mission_vardi/utils/push_notifications.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/screens/auth_module/auth_service.dart';
+import 'package:edusaas/screens/auth_module/auth_state.dart';
+import 'package:edusaas/screens/auth_module/data/auth_repository.dart';
+import 'package:edusaas/utils/push_notifications.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _repository;

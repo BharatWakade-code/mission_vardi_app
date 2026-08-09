@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
-import 'package:mission_vardi/utils/common_widgets/common_button.dart';
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/utils/common_widgets/common_button.dart';
+import 'package:edusaas/utils/constants.dart';
 
 class BasicServiceApprovalDialog extends StatelessWidget {
   const BasicServiceApprovalDialog({super.key});

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/screens/admin_module/admin_cubit.dart';
-import 'package:mission_vardi/screens/admin_module/admin_state.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/screens/admin_module/admin_cubit.dart';
+import 'package:edusaas/screens/admin_module/admin_state.dart';
+import 'package:edusaas/utils/common_widgets/common_app_bar.dart';
+import 'package:edusaas/utils/constants.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});

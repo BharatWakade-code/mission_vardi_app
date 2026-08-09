@@ -48,7 +48,7 @@ export default function Footer() {
               </span>
             </div>
             <p style={{ fontSize: "0.9rem", lineHeight: "1.6", marginBottom: "16px" }}>
-              महाराष्ट्रातील पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा व जिल्हा परिषद परीक्षांची तयारी करणाऱ्या विद्यार्थ्यांसाठी <strong>मराठीतील नंबर १ मोफत मॉक टेस्ट पोर्टल</strong> (Majhi Naukri Mock Test Alternative).
+              Globalातील Competitive Exams, Aptitude Tests भरती, MPSC राज्यसेवा व जिल्हा परिषद Examंची तयारी करणाऱ्या विद्यार्थ्यांसाठी <strong>मराठीतील नंबर १ मोफत Mock Test पोर्टल</strong> (Majhi Naukri Mock Test Alternative).
             </p>
             <div style={{ display: "flex", gap: "10px" }}>
               <span className="badge badge-orange">TCS / IBPS Pattern</span>
@@ -59,7 +59,7 @@ export default function Footer() {
           {/* Col 2: Exam Categories */}
           <div>
             <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
-              📋 मुख्य परीक्षा (Exam Categories)
+              📋 मुख्य Exam (Exam Categories)
             </h4>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
               {EXAM_CATEGORIES.slice(0, 5).map((cat) => (
@@ -83,10 +83,10 @@ export default function Footer() {
                 <Link href="/" style={{ color: "#cbd5e1" }}>🏠 सर्व मोफत सराव प्रश्नपत्रिका (All Free Tests)</Link>
               </li>
               <li>
-                <Link href="/mock-test/police-bharti" style={{ color: "#cbd5e1" }}>🛡️ पोलीस भरती अभ्यासक्रम व टेस्ट सिरीज २०२६</Link>
+                <Link href="/mock-test/police-bharti" style={{ color: "#cbd5e1" }}>🛡️ Competitive Exams अभ्यासक्रम व टेस्ट सिरीज २०२६</Link>
               </li>
               <li>
-                <Link href="/mock-test/talathi-bharti" style={{ color: "#cbd5e1" }}>📜 तलाठी भरती TCS पॅटर्न ऑनलाइन टेस्ट</Link>
+                <Link href="/mock-test/talathi-bharti" style={{ color: "#cbd5e1" }}>📜 Aptitude Tests भरती TCS पॅटर्न ऑनलाइन टेस्ट</Link>
               </li>
               <li>
                 <Link href="/#faq-section" style={{ color: "#cbd5e1" }}>❓ वारंवार विचारले जाणारे प्रश्न (FAQ)</Link>
@@ -121,7 +121,7 @@ export default function Footer() {
           color: "#64748b"
         }}>
           <div>
-            © {new Date().getFullYear()} <strong>MH Mock Test Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.
+            © {new Date().getFullYear()} <strong>EduSaaS Web Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.
           </div>
           <div style={{ display: "flex", gap: "20px" }}>
             <span>Privacy Policy</span>

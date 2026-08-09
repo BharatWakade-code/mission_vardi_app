@@ -4,22 +4,22 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:mission_vardi/screens/auth_module/auth_cubit.dart';
-import 'package:mission_vardi/screens/profile_module/profile_cubit.dart';
-import 'package:mission_vardi/screens/profile_module/profile_state.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/screens/auth_module/auth_cubit.dart';
+import 'package:edusaas/screens/profile_module/profile_cubit.dart';
+import 'package:edusaas/screens/profile_module/profile_state.dart';
+import 'package:edusaas/utils/common_widgets/common_app_bar.dart';
+import 'package:edusaas/utils/constants.dart';
 import 'package:intl/intl.dart';
 
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
-import 'package:mission_vardi/utils/common_widgets/common_bottom_sheet.dart';
-import 'package:mission_vardi/utils/common_widgets/common_auth_widgets.dart';
-import 'package:mission_vardi/screens/profile_module/history_details_bottom_sheet.dart';
+import 'package:edusaas/utils/routes_services/routes_name.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/common_widgets/common_bottom_sheet.dart';
+import 'package:edusaas/utils/common_widgets/common_auth_widgets.dart';
+import 'package:edusaas/screens/profile_module/history_details_bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/localization_module/change_language_bottom_sheet.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -619,7 +619,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Admin CMS Portal
                   if (user?.email == 'bharatwakade012@gmail.com' ||
-                      user?.email == 'admin@missionvardi.com') ...[
+                      user?.email == 'admin@edusaas.com') ...[
                     _buildActionTile(
                       title: 'admin_cms_portal'.tr(),
                       subtitle: 'Manage app content and users',
@@ -944,7 +944,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Mission Vardi',
+              Text('EduSaaS',
                   style: commonTextStyle.copyWith(
                       fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),

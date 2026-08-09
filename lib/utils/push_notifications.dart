@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 
 // ── Background message handler (must be top-level) ──────────────────────────
 @pragma('vm:entry-point')
@@ -14,9 +14,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 // ── Notification channel for Android ────────────────────────────────────────
 const AndroidNotificationChannel _channel = AndroidNotificationChannel(
-  'mission_vardi_high_importance',
-  'Mission Vardi Alerts',
-  description: 'Important alerts from Mission Vardi',
+  'edusaas_high_importance',
+  'EduSaaS Alerts',
+  description: 'Important alerts from EduSaaS',
   importance: Importance.max,
   playSound: true,
   enableVibration: true,

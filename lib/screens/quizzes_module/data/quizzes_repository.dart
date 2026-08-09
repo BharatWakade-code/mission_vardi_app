@@ -1,11 +1,11 @@
 import 'package:either_dart/either.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/models/home_module/get_pdf_answers_response.dart';
-import 'package:mission_vardi/models/quizz_model/quizz_list_reponse_model.dart';
-import 'package:mission_vardi/screens/quizzes_module/repository/quizzes_repository_impl.dart';
-import 'package:mission_vardi/screens/vardi_home_module/repository/home_repository_impl.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
+import 'package:edusaas/models/home_module/get_pdf_answers_response.dart';
+import 'package:edusaas/models/quizz_model/quizz_list_reponse_model.dart';
+import 'package:edusaas/screens/quizzes_module/repository/quizzes_repository_impl.dart';
+import 'package:edusaas/screens/vardi_home_module/repository/home_repository_impl.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
 
 @injectable
 class QuizzRepository implements QuizzesRepositoryImpl {

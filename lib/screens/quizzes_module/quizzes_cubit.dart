@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/models/quizz_model/quizz_list_reponse_model.dart';
-import 'package:mission_vardi/screens/quizzes_module/data/quizzes_repository.dart';
-import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
+import 'package:edusaas/models/quizz_model/quizz_list_reponse_model.dart';
+import 'package:edusaas/screens/quizzes_module/data/quizzes_repository.dart';
+import 'package:edusaas/screens/quizzes_module/quizzes_state.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
 
 @injectable
 class QuizzesCubit extends Cubit<QuizzesState> {

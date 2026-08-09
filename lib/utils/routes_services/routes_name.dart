@@ -1,22 +1,22 @@
 import 'package:go_router/go_router.dart';
-import 'package:mission_vardi/screens/auth_module/signin_screen.dart';
-import 'package:mission_vardi/screens/auth_module/signup_screen.dart';
-import 'package:mission_vardi/screens/pyq_module/pyq_screen.dart';
-import 'package:mission_vardi/screens/quizzes_module/quiz_play_screen.dart';
-import 'package:mission_vardi/screens/quizzes_module/quiz_result_screen.dart';
-import 'package:mission_vardi/screens/vardi_dashboard_module/vardi_dashboard_screen.dart';
-import 'package:mission_vardi/screens/welcome_screen.dart';
-import 'package:mission_vardi/screens/pdf_viewer_module/pdf_viewer_screen.dart';
-import 'package:mission_vardi/screens/vardi_home_module/police_bharti_info_screen.dart';
-import 'package:mission_vardi/screens/quizzes_module/category_items_screen.dart';
-import 'package:mission_vardi/screens/quizzes_module/note_reading_screen.dart';
-import 'package:mission_vardi/screens/quizzes_module/leaderboard_screen.dart';
-import 'package:mission_vardi/screens/admin_module/admin_dashboard_screen.dart';
-import 'package:mission_vardi/screens/profile_module/activity_history_screen.dart';
-import 'package:mission_vardi/screens/profile_module/activity_history_cubit.dart';
+import 'package:edusaas/screens/auth_module/signin_screen.dart';
+import 'package:edusaas/screens/auth_module/signup_screen.dart';
+import 'package:edusaas/screens/pyq_module/pyq_screen.dart';
+import 'package:edusaas/screens/quizzes_module/quiz_play_screen.dart';
+import 'package:edusaas/screens/quizzes_module/quiz_result_screen.dart';
+import 'package:edusaas/screens/vardi_dashboard_module/vardi_dashboard_screen.dart';
+import 'package:edusaas/screens/welcome_screen.dart';
+import 'package:edusaas/screens/pdf_viewer_module/pdf_viewer_screen.dart';
+import 'package:edusaas/screens/vardi_home_module/police_bharti_info_screen.dart';
+import 'package:edusaas/screens/quizzes_module/category_items_screen.dart';
+import 'package:edusaas/screens/quizzes_module/note_reading_screen.dart';
+import 'package:edusaas/screens/quizzes_module/leaderboard_screen.dart';
+import 'package:edusaas/screens/admin_module/admin_dashboard_screen.dart';
+import 'package:edusaas/screens/profile_module/activity_history_screen.dart';
+import 'package:edusaas/screens/profile_module/activity_history_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
 
 class RoutesNames {
   /// Auth Module

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mission_vardi/utils/common_widgets/common_button.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/common_widgets/common_button.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/routes_services/routes_name.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -58,7 +58,7 @@ class WelcomeScreen extends StatelessWidget {
 
                     /// Header Title
                     Text(
-                      'mission_vardi'.tr(),
+                      'edusaas'.tr(),
                       textAlign: TextAlign.center,
                       style: commonTextStyle.copyWith(
                         color: Colors.white,

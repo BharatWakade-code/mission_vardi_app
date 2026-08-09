@@ -1,6 +1,6 @@
 {
-    "name": "mission_vardi",
-    "short_name": "mission_vardi",
+    "name": "edusaas",
+    "short_name": "edusaas",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

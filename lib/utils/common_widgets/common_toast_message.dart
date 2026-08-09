@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/routes_services/go_router_service.dart';
 
 // Pure Flutter Custom FToast implementation to remove fluttertoast dependency
 // and solve native web platform initialization crashes.

@@ -1,9 +1,9 @@
 import 'package:either_dart/either.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/models/profile_model/profile_response_model.dart';
-import 'package:mission_vardi/screens/profile_module/repository/profile_repository_impl.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
+import 'package:edusaas/models/profile_model/profile_response_model.dart';
+import 'package:edusaas/screens/profile_module/repository/profile_repository_impl.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
 
 @injectable
 class ProfileRepository implements ProfileRepositoryImpl {

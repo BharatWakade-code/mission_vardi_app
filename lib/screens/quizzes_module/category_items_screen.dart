@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
-import 'package:mission_vardi/screens/quizzes_module/quizzes_cubit.dart';
-import 'package:mission_vardi/screens/quizzes_module/quizzes_state.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/routes_services/routes_name.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/quizzes_module/quizzes_cubit.dart';
+import 'package:edusaas/screens/quizzes_module/quizzes_state.dart';
+import 'package:edusaas/utils/common_widgets/common_app_bar.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/routes_services/routes_name.dart';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const _surface = Color(0xFFFFFFFF);

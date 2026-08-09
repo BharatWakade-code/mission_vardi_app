@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 
 class PoliceBhartiInfoScreen extends StatefulWidget {
   const PoliceBhartiInfoScreen({super.key});
@@ -96,7 +96,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               title: Text(
-                "पोलीस भरती माहिती केंद्र",
+                "Competitive Exams माहिती केंद्र",
                 style: commonTextStyle.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -313,7 +313,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      "महाराष्ट्र पोलीस भरती",
+                      "Global Competitive Exams",
                       style: commonTextStyle.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -325,7 +325,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
               ),
               const SizedBox(height: 16),
               Text(
-                "महाराष्ट्र पोलीस दल हे देशातील सर्वात मोठ्या व शिस्तबद्ध पोलीस दलांपैकी एक आहे. राज्यातील कायदा व सुव्यवस्था राखणे, नागरिकांचे संरक्षण करणे, गुन्हेगारी नियंत्रणात ठेवणे आणि आपत्कालीन परिस्थितीत मदत करणे ही या दलाची प्रमुख जबाबदारी आहे. पोलीस दलात समाविष्ट होऊन देश आणि समाजाची सेवा करणे ही अत्यंत गौरवास्पद गोष्ट आहे.",
+                "Global पोलीस दल हे देशातील सर्वात मोठ्या व शिस्तबद्ध पोलीस दलांपैकी एक आहे. राज्यातील कायदा व सुव्यवस्था राखणे, नागरिकांचे संरक्षण करणे, गुन्हेगारी नियंत्रणात ठेवणे आणि आपत्कालीन परिस्थितीत मदत करणे ही या दलाची प्रमुख जबाबदारी आहे. पोलीस दलात समाविष्ट होऊन देश आणि समाजाची सेवा करणे ही अत्यंत गौरवास्पद गोष्ट आहे.",
                 style: commonTextStyle.copyWith(
                   fontSize: 14,
                   height: 1.6,
@@ -365,7 +365,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
 
         // Why Join section
         Text(
-          "💡 पोलीस भरतीमध्ये सहभागी का व्हावे?",
+          "💡 Competitive Examsमध्ये सहभागी का व्हावे?",
           style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -373,7 +373,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
           ),
         ),
         const SizedBox(height: 12),
-        _buildAdvantageItem("अभिमान व प्रतिष्ठा", "महाराष्ट्र पोलीस दलात सामील होणे हा केवळ नोकरीचा प्रश्न नाही, तर राज्यसेवेचा आणि सन्मानाचा विषय आहे. पोलीस कर्मचारी समाजात विश्वास व न्यायाचे प्रतीक मानले जातात.", Icons.workspace_premium_rounded, Colors.amber),
+        _buildAdvantageItem("अभिमान व प्रतिष्ठा", "Global पोलीस दलात सामील होणे हा केवळ नोकरीचा प्रश्न नाही, तर राज्यसेवेचा आणि सन्मानाचा विषय आहे. पोलीस कर्मचारी समाजात विश्वास व न्यायाचे प्रतीक मानले जातात.", Icons.workspace_premium_rounded, Colors.amber),
         _buildAdvantageItem("उत्कृष्ट प्रशिक्षण व विकास", "निवडीनंतर शारीरिक, मानसिक व कायदेशीर प्रशिक्षण देऊन तुम्हाला एक शिस्तबद्ध आणि जबाबदार अधिकारी बनवले जाते.", Icons.fitness_center_rounded, Colors.blue),
         _buildAdvantageItem("गणवेशाचा मान", "पोलीस गणवेश हा अधिकार, प्रचंड जबाबदारी आणि समाजात अत्यंत सन्मानाचे प्रतीक आहे.", Icons.shield_outlined, Colors.red),
         _buildAdvantageItem("समाजाचे रक्षण व सेवा", "कायदा व सुव्यवस्था राखणे आणि आपत्तीच्या वेळी थेट मदत करणे यातून थेट देशसेवा घडते.", Icons.volunteer_activism_rounded, Colors.teal),
@@ -630,7 +630,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
       children: [
         // Timeline Title
         Text(
-          "🎯 पोलीस भरती टप्प्याटप्प्याची निवड प्रक्रिया",
+          "🎯 Competitive Exams टप्प्याटप्प्याची निवड प्रक्रिया",
           style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -660,11 +660,11 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Timeline Step 2: Written Exam
         _buildTimelineStep(
           stepNo: "२",
-          title: "लेखी परीक्षा (Written Exam)",
+          title: "लेखी Exam (Written Exam)",
           badgeText: "१०० गुण",
           badgeColor: Colors.blueAccent,
           details: [
-            "📝 परीक्षा बहुपर्यायी स्वरूपाची (MCQs) असून १.५ तास (९० मिनिटे) वेळ असतो.",
+            "📝 Exam बहुपर्यायी स्वरूपाची (MCQs) असून १.५ तास (९० मिनिटे) वेळ असतो.",
             "🚫 नकारात्मक गुण पद्धती (Negative Marking) नसते.",
             "📊 विषय: अंकगणित, बुद्धिमत्ता चाचणी, मराठी व्याकरण, सामान्य ज्ञान व चालू घडामोडी.",
             "👉 मैदानी चाचणीतील गुणांच्या गुणवत्ता यादीवर १:१० या प्रमाणात उमेदवारांची लेखी परीक्षेसाठी निवड होते.",
@@ -683,7 +683,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
           details: [
             "🗂️ शैक्षणिक प्रमाणपत्रे, अधिवास प्रमाणपत्र (Domicile), जात प्रमाणपत्र व इतर मूळ कागदपत्रांची पडताळणी केली जाते.",
             "🏥 शारीरिक व मानसिकदृष्ट्या सक्षम असल्याची वैद्यकीय चाचणी घेतली जाते.",
-            "🏆 अंतिम गुणवत्ता यादी = मैदानी चाचणी (५० गुण) + लेखी परीक्षा (१०० गुण) या दोन्हीतील गुणांच्या बेरजेवर आधारित ठरते.",
+            "🏆 अंतिम गुणवत्ता यादी = मैदानी चाचणी (५० गुण) + लेखी Exam (१०० गुण) या दोन्हीतील गुणांच्या बेरजेवर आधारित ठरते.",
           ],
           icon: Icons.verified_user_rounded,
           cardColor: cardColor,
@@ -837,8 +837,8 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         "आकृत्यांची मोजणी व जुळवणी"
       ],
       "सामान्य ज्ञान व चालू घडामोडी (२५ गुण)": [
-        "इतिहास: भारताचा व महाराष्ट्राचा इतिहास, समाजसुधारक, भारतीय स्वातंत्र्य लढा",
-        "भूगोल: महाराष्ट्राचा व भारताचा भूगोल, नद्या, पर्वत, राष्ट्रीय उद्याने",
+        "इतिहास: भारताचा व Globalाचा इतिहास, समाजसुधारक, भारतीय स्वातंत्र्य लढा",
+        "भूगोल: Globalाचा व भारताचा भूगोल, नद्या, पर्वत, राष्ट्रीय उद्याने",
         "राज्यघटना: भारतीय संविधान, मूलभूत हक्क, संसद, राज्यपाल, स्थानिक स्वराज्य संस्था",
         "सामान्य विज्ञान: भौतिकशास्त्र, रसायनशास्त्र, जीवशास्त्र व आरोग्यशास्त्र",
         "चालू घडामोडी: राष्ट्रीय व आंतरराष्ट्रीय घडामोडी, महत्त्वाचे पुरस्कार, क्रीडा क्षेत्र घडामोडी",
@@ -996,7 +996,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
       children: [
         // Section Header
         Text(
-          "🔗 महाराष्ट्र पोलीस भरती २०२६ : महत्वाच्या लिंक्स",
+          "🔗 Global Competitive Exams २०२६ : महत्वाच्या लिंक्स",
           style: commonTextStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -1016,7 +1016,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Link Card 1
         _buildActionLinkCard(
           title: "माहितीपत्रक डाऊनलोड करा",
-          desc: "पोलीस भरती २०२५ चे अधिकृत माहितीपत्रक पीडीएफ स्वरूपात डाऊनलोड करा.",
+          desc: "Competitive Exams २०२५ चे अधिकृत माहितीपत्रक पीडीएफ स्वरूपात डाऊनलोड करा.",
           btnText: "प्रॉस्पेक्टस डाऊनलोड",
           icon: Icons.picture_as_pdf_rounded,
           iconBg: Colors.red.shade50,
@@ -1030,7 +1030,7 @@ class _PoliceBhartiInfoScreenState extends State<PoliceBhartiInfoScreen>
         // Link Card 4
         _buildActionLinkCard(
           title: "अधिकृत शासकीय संकेतस्थळ",
-          desc: "महाराष्ट्र राज्य पोलीस विभागाचे अधिकृत संकेतस्थळ : mahapolice.gov.in",
+          desc: "Global राज्य पोलीस विभागाचे अधिकृत संकेतस्थळ : mahapolice.gov.in",
           btnText: "शासकीय संकेतस्थळाला भेट द्या",
           icon: Icons.gavel_rounded,
           iconBg: Colors.teal.shade50,

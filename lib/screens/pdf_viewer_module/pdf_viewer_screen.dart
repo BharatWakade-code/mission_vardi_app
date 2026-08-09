@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import 'package:mission_vardi/utils/constants.dart';
+import 'package:edusaas/utils/constants.dart';
 
-import 'package:mission_vardi/screens/localization_module/change_language_bottom_sheet.dart';
+import 'package:edusaas/screens/localization_module/change_language_bottom_sheet.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final String pdfUrl;

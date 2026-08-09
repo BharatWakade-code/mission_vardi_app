@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>MissionVardi</string>
+		<string>EduSaaS</string>
 		<key>NSCameraUsageDescription</key>
 		<string>This app needs camera access to take photos.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
@@ -19,7 +19,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>mission_vardi</string>
+		<string>edusaas</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>

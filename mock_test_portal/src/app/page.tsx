@@ -95,7 +95,7 @@ export default function HomePage() {
 
   useEffect(() => {
     // Check localStorage for existing logged-in user
-    const savedUser = localStorage.getItem("mission_vardi_user");
+    const savedUser = localStorage.getItem("edusaas_user");
     if (savedUser) {
       try {
         const u = JSON.parse(savedUser);
@@ -157,7 +157,7 @@ export default function HomePage() {
     if (res.success && res.user) {
       const u = res.user;
       setCurrentUser(u);
-      localStorage.setItem("mission_vardi_user", JSON.stringify(u));
+      localStorage.setItem("edusaas_user", JSON.stringify(u));
       setShowAuthModal(false);
       const uid = u.user_id || u.id;
       if (uid) {
@@ -178,7 +178,7 @@ export default function HomePage() {
     if (res.success && res.user) {
       const u = res.user;
       setCurrentUser(u);
-      localStorage.setItem("mission_vardi_user", JSON.stringify(u));
+      localStorage.setItem("edusaas_user", JSON.stringify(u));
       setShowAuthModal(false);
       alert(`🎉 रजिस्ट्रेशन यशस्वी! स्वागत आहे, ${u.name}! आता तुम्ही लीडरबोर्ड व फिजिकल चाचणी वापरू शकता.`);
     } else {
@@ -195,14 +195,14 @@ export default function HomePage() {
     await updateUserProfileApi(uid, updated);
     setAuthLoading(false);
     setCurrentUser(updated);
-    localStorage.setItem("mission_vardi_user", JSON.stringify(updated));
+    localStorage.setItem("edusaas_user", JSON.stringify(updated));
     setShowAuthModal(false);
     alert("✓ प्रोफाईल आणि जिल्हा माहिती यशस्वीरित्या अपडेट झाली!");
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem("mission_vardi_user");
+    localStorage.removeItem("edusaas_user");
     setFitnessLogs([]);
     setShowAuthModal(false);
   };
@@ -312,7 +312,7 @@ export default function HomePage() {
             background: "rgba(255,255,255,0.05)",
             boxShadow: "0 0 30px rgba(249, 115, 22, 0.2)"
           }}>
-            <img src="/logo.png" alt="MH Mock Test Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/logo.png" alt="EduSaaS Web Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         </div>
 
@@ -323,7 +323,7 @@ export default function HomePage() {
 
         {/* Subtle Brand Tagline */}
         <p style={{ color: "#475569", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 }}>
-          MH Mock Test Portal
+          EduSaaS Web Portal
         </p>
 
       </div>
@@ -353,7 +353,7 @@ export default function HomePage() {
             )}
             <div>
               <span style={{ color: "#ffffff", fontWeight: 700, fontSize: "0.95rem", display: "block" }}>{currentUser.name}</span>
-              <span style={{ color: "#94a3b8", fontSize: "0.75rem" }}>{currentUser.district || "महाराष्ट्र"}</span>
+              <span style={{ color: "#94a3b8", fontSize: "0.75rem" }}>{currentUser.district || "Global"}</span>
             </div>
             <button
               onClick={() => {
@@ -431,7 +431,7 @@ export default function HomePage() {
         }} />
 
         <span className="badge badge-orange animate-pulse" style={{ marginBottom: "16px", padding: "6px 14px", fontSize: "0.85rem" }}>
-          🚀 महाराष्ट्रातील नंबर १ मोफत मॉक टेस्ट, स्टडी व शारीरिक चाचणी पोर्टल
+          🚀 Globalातील नंबर १ मोफत Mock Test, स्टडी व शारीरिक चाचणी पोर्टल
         </span>
 
         <h1 style={{
@@ -444,7 +444,7 @@ export default function HomePage() {
           maxWidth: "900px",
           margin: "0 auto 16px auto"
         }} className="hero-title">
-          पोलीस भरती, तलाठी व MPSC <span className="gradient-text">मोफत ऑनलाइन अभ्यास मंच</span> (Live Exam Portal)
+          Competitive Exams, Aptitude Tests व MPSC <span className="gradient-text">मोफत ऑनलाइन अभ्यास मंच</span> (Live Exam Portal)
         </h1>
 
         <p style={{
@@ -525,7 +525,7 @@ export default function HomePage() {
           <span style={{ position: "absolute", left: "18px", fontSize: "1.3rem", color: "#94a3b8" }}>🔍</span>
           <input
             type="text"
-            placeholder="परीक्षा किंवा नोट्स शोधा (उदा. पोलीस भरती, तलाठी, MPSC)..."
+            placeholder="Exam किंवा नोट्स शोधा (उदा. Competitive Exams, Aptitude Tests, MPSC)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
@@ -605,7 +605,7 @@ export default function HomePage() {
             boxShadow: activeTab === "mock-tests" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          📝 सराव परीक्षा ({filteredTests.length})
+          📝 सराव Exam ({filteredTests.length})
         </button>
         <button
           onClick={() => setActiveTab("study-notes")}
@@ -700,7 +700,7 @@ export default function HomePage() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
             <div>
               <h2 style={{ fontSize: "1.8rem", color: "#ffffff", marginBottom: "4px" }}>
-                📋 उपलब्ध मोफत सराव परीक्षा (Available Free Mock Tests)
+                📋 उपलब्ध मोफत सराव Exam (Available Free Mock Tests)
               </h2>
               <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
                 तुमच्या इच्छित परीक्षेची निवड करा आणि लगेच ऑनलाइन टेस्ट सोडवायला सुरुवात करा.
@@ -764,7 +764,7 @@ export default function HomePage() {
                 boxShadow: selectedCategory === "all" ? "0 4px 15px rgba(249, 115, 22, 0.4)" : "none"
               }}
             >
-              🔥 सर्व परीक्षा (All Exams)
+              🔥 सर्व Exam (All Exams)
             </button>
 
             {categories.map((cat) => {
@@ -798,10 +798,10 @@ export default function HomePage() {
           {filteredTests.length === 0 ? (
             <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center", margin: "30px 0" }}>
               <div style={{ fontSize: "3rem", marginBottom: "12px" }}>😕</div>
-              <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "8px" }}>कोणतीही परीक्षा सापडली नाही!</h3>
+              <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "8px" }}>कोणतीही Exam सापडली नाही!</h3>
               <p style={{ color: "#94a3b8", marginBottom: "20px" }}>सध्या या विभागामध्ये कोणतीही लाईव्ह टेस्ट उपलब्ध नाही किंवा वेगळा शब्द शोधून पहा.</p>
               <button onClick={() => { setSelectedCategory("all"); setSearchQuery(""); }} className="btn btn-primary">
-                🔄 सर्व परीक्षा पहा (View All)
+                🔄 सर्व Exam पहा (View All)
               </button>
             </div>
           ) : (
@@ -868,7 +868,7 @@ export default function HomePage() {
               📜 मागील वर्षांच्या प्रश्नपत्रिका (Previous Year Question Papers - PYQ)
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-              पोलीस भरती व इतर स्पर्धा परीक्षांमध्ये विचारल्या गेलेल्या जुन्या प्रश्नपत्रिका आणि त्यांची उत्तरे.
+              Competitive Exams व इतर स्पर्धा Examंमध्ये विचारल्या गेलेल्या जुन्या प्रश्नपत्रिका आणि त्यांची उत्तरे.
             </p>
           </div>
 
@@ -931,8 +931,8 @@ export default function HomePage() {
               </h3>
               <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
                 {currentUser ?
-                  `स्वागत आहे, ${currentUser.name}! तुमचे प्रोफाईल यशस्वीरित्या जोडले गेले आहे. ऑनलाइन सराव परीक्षा सोडवा आणि जास्त गुण मिळवून लीडरबोर्डच्या टॉपवर या!` :
-                  "जर तुम्हाला तुमचे नाव या ग्लोबल लीडरबोर्डमध्ये पाहायचे असेल, तर लगेच लॉगिन किंवा मोफत रजिस्ट्रेशन करा आणि तुमचे प्रोफाईल अपडेट करा. सराव परीक्षा सोडवून तुमचे गुण लगेच लीडरबोर्डवर दिसतील!"}
+                  `स्वागत आहे, ${currentUser.name}! तुमचे प्रोफाईल यशस्वीरित्या जोडले गेले आहे. ऑनलाइन सराव Exam सोडवा आणि जास्त गुण मिळवून लीडरबोर्डच्या टॉपवर या!` :
+                  "जर तुम्हाला तुमचे नाव या ग्लोबल लीडरबोर्डमध्ये पाहायचे असेल, तर लगेच लॉगिन किंवा मोफत रजिस्ट्रेशन करा आणि तुमचे प्रोफाईल अपडेट करा. सराव Exam सोडवून तुमचे गुण लगेच लीडरबोर्डवर दिसतील!"}
               </p>
             </div>
             <div>
@@ -967,7 +967,7 @@ export default function HomePage() {
               🏆 ग्लोबल टॉपर लीडरबोर्ड (Global Top Aspirants)
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-              मिशन वर्दी ॲप व वेब पोर्टलवरील सर्वाधिक गुण मिळवणारे महाराष्ट्रातील टॉप विद्यार्थी!
+              मिशन वर्दी ॲप व वेब पोर्टलवरील सर्वाधिक गुण मिळवणारे Globalातील टॉप विद्यार्थी!
             </p>
           </div>
 
@@ -1019,7 +1019,7 @@ export default function HomePage() {
                           </div>
                         </td>
                         <td style={{ padding: "14px 16px", color: "#cbd5e1" }}>
-                          {user.district || "महाराष्ट्र"}
+                          {user.district || "Global"}
                         </td>
                         <td style={{ padding: "14px 16px", textAlign: "right", fontWeight: 800, color: "#34d399", fontSize: "1.1rem" }}>
                           {user.score_str || `${user.points} Points`}
@@ -1039,7 +1039,7 @@ export default function HomePage() {
         <section style={{ margin: "20px auto 40px auto", maxWidth: "1000px" }}>
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
             <h2 style={{ fontSize: "2rem", color: "#ffffff", marginBottom: "6px" }}>
-              🏃 महाराष्ट्र पोलीस भरती शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide & Logs)
+              🏃 Global Competitive Exams शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide & Logs)
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
               १६०० मीटर धावणे, १०० मीटर धावणे व गोळाफेक चाचणीचे गुण मोजा आणि तुमच्या रोजच्या सराव चाचणीच्या नोंदी ठेवा.
@@ -1202,7 +1202,7 @@ export default function HomePage() {
                 तुमचे वैयक्तिक स्टडी प्रोफाईल (User Profile Hub)
               </h2>
               <p style={{ color: "#cbd5e1", fontSize: "1.05rem", lineHeight: "1.6", marginBottom: "30px", maxWidth: "550px", margin: "0 auto 30px auto" }}>
-                मोबाईल ॲपप्रमाणेच तुमचे लीडरबोर्ड रँकिंग, सराव परीक्षांचे गुण आणि शारीरिक चाचणीच्या सर्व नोंदी एकाच ठिकाणी पाहण्यासाठी कृपया खात्यात प्रवेश करा किंवा मोफत नोंदणी करा.
+                मोबाईल ॲपप्रमाणेच तुमचे लीडरबोर्ड रँकिंग, सराव Examंचे गुण आणि शारीरिक चाचणीच्या सर्व नोंदी एकाच ठिकाणी पाहण्यासाठी कृपया खात्यात प्रवेश करा किंवा मोफत नोंदणी करा.
               </p>
               <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
                 <button
@@ -1263,10 +1263,10 @@ export default function HomePage() {
                     <div style={{ color: "#e2e8f0", fontSize: "1rem", marginBottom: "8px", display: "flex", gap: "16px", flexWrap: "wrap" }}>
                       <span>📧 {currentUser.email}</span>
                       {currentUser.mobile && <span>📱 {currentUser.mobile}</span>}
-                      <span>📍 जिल्हा: <strong style={{ color: "#fb923c" }}>{currentUser.district || "महाराष्ट्र"}</strong></span>
+                      <span>📍 जिल्हा: <strong style={{ color: "#fb923c" }}>{currentUser.district || "Global"}</strong></span>
                     </div>
                     <span className="badge badge-orange" style={{ fontSize: "0.8rem" }}>
-                      🎯 महाराष्ट्र पोलीस व तलाठी भरती उमेदवार
+                      🎯 Global पोलीस व Aptitude Tests भरती उमेदवार
                     </span>
                   </div>
                 </div>
@@ -1309,7 +1309,7 @@ export default function HomePage() {
                   <p style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>
                     {(() => {
                       const idx = leaderboard.findIndex(l => l.name === currentUser.name || l.user_id === (currentUser.user_id || currentUser.id));
-                      return idx !== -1 ? `टॉप १० मध्ये तुमची रँक #${idx + 1}` : "सराव परीक्षा सोडवून गुण मिळवा";
+                      return idx !== -1 ? `टॉप १० मध्ये तुमची रँक #${idx + 1}` : "सराव Exam सोडवून गुण मिळवा";
                     })()}
                   </p>
                 </div>
@@ -1329,7 +1329,7 @@ export default function HomePage() {
 
                 <div className="glass-card" style={{ textAlign: "center", padding: "26px", borderLeft: "4px solid #10b981" }}>
                   <div style={{ fontSize: "2.5rem", marginBottom: "8px" }}>📝</div>
-                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>सराव परीक्षा (Mock Tests)</h4>
+                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>सराव Exam (Mock Tests)</h4>
                   <div style={{ fontSize: "1.8rem", color: "#ffffff", fontWeight: 800, marginBottom: "4px" }}>
                     {tests.length}+ टेस्ट उपलब्ध
                   </div>
@@ -1540,13 +1540,13 @@ export default function HomePage() {
             }}>
               <div>
                 <div style={{ display: "inline-block", padding: "8px 16px", background: "rgba(255, 255, 255, 0.15)", borderRadius: "100px", fontSize: "0.85rem", fontWeight: 700, color: "#fff", marginBottom: "20px", backdropFilter: "blur(5px)", border: "1px solid rgba(255, 255, 255, 0.2)" }}>
-                  🇮🇳 महाराष्ट्र पोलीस व तलाठी भरती
+                  🇮🇳 Global पोलीस व Aptitude Tests भरती
                 </div>
                 <h2 style={{ fontSize: "2.2rem", fontWeight: 900, color: "#ffffff", lineHeight: "1.2", marginBottom: "16px", textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}>
                   मिशन वर्दी <br /><span style={{ color: "#fb923c" }}>स्टडी पोर्टल</span>
                 </h2>
                 <p style={{ color: "#e2e8f0", fontSize: "1rem", lineHeight: "1.6", marginBottom: "30px" }}>
-                  महाराष्ट्रातील लाखो विद्यार्थ्यांसोबत स्पर्धा करा, तुमचे गुण तपासा आणि वर्दीचे स्वप्न साकार करा!
+                  Globalातील लाखो विद्यार्थ्यांसोबत स्पर्धा करा, तुमचे गुण तपासा आणि वर्दीचे स्वप्न साकार करा!
                 </p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -1554,7 +1554,7 @@ export default function HomePage() {
                     <span style={{ fontSize: "1.5rem" }}>🏆</span>
                     <div>
                       <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>ग्लोबल लीडरबोर्ड रँकिंग</div>
-                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>महाराष्ट्रातील टॉप विद्यार्थ्यांमध्ये तुमचे नाव पहा</div>
+                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>Globalातील टॉप विद्यार्थ्यांमध्ये तुमचे नाव पहा</div>
                     </div>
                   </div>
 
@@ -1569,7 +1569,7 @@ export default function HomePage() {
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(0,0,0,0.25)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)" }}>
                     <span style={{ fontSize: "1.5rem" }}>⚡</span>
                     <div>
-                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>१००% मोफत सराव परीक्षा</div>
+                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>१००% मोफत सराव Exam</div>
                       <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>TCS / IBPS पॅटर्ननुसार दररोज नवीन टेस्ट</div>
                     </div>
                   </div>
@@ -1744,7 +1744,7 @@ export default function HomePage() {
       {/* Exam Categories Overview Section */}
       <section style={{ margin: "60px 0 40px 0" }}>
         <h2 style={{ fontSize: "1.8rem", color: "#ffffff", marginBottom: "24px", textAlign: "center" }}>
-          🏆 महाराष्ट्र स्पर्धा परीक्षा तयारी (Exam Categories Overview)
+          🏆 Global स्पर्धा Exam तयारी (Exam Categories Overview)
         </h2>
 
         <div className="grid-2">
@@ -1804,10 +1804,10 @@ export default function HomePage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "24px" }}>
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              १. MH Mock Test पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?
+              १. EduSaaS Web पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत Mock Test उपलब्ध आहेत?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              MH Mock Test पोर्टलवर <strong>महाराष्ट्र पोलीस भरती (Police Bharti 2026), तलाठी भरती (Talathi Bharti), MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद</strong> परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत.
+              EduSaaS Web पोर्टलवर <strong>Global Competitive Exams (Police Bharti 2026), Aptitude Tests भरती (Talathi Bharti), MPSC राज्यसेवा व संयुक्त Exam, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद</strong> परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव Exam उपलब्ध आहेत.
             </p>
           </div>
 
@@ -1822,10 +1822,10 @@ export default function HomePage() {
 
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              ३. Majhi Naukri Mock Test पेक्षा MH Mock Test पोर्टल कसे वेगळे व उत्तम आहे?
+              ३. Majhi Naukri Mock Test पेक्षा EduSaaS Web पोर्टल कसे वेगळे व उत्तम आहे?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              MH Mock Test पोर्टल हे आधुनिक वेब तंत्रज्ञानावर (Next.js SSR) आधारित असून येथे <strong>अतिशय वेगवान स्पीड (Zero Lag), टाइमरसह प्रत्यक्ष परीक्षेचा अनुभव (Exam Engine), स्टडी मटेरियल व नोट्स, मागील वर्षांच्या प्रश्नपत्रिका (PYQ), शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide) आणि ग्लोबल टॉपर लीडरबोर्ड</strong> एकाच मंचावर पूर्णपणे मोफत उपलब्ध आहे.
+              EduSaaS Web पोर्टल हे आधुनिक वेब तंत्रज्ञानावर (Next.js SSR) आधारित असून येथे <strong>अतिशय वेगवान स्पीड (Zero Lag), टाइमरसह प्रत्यक्ष परीक्षेचा अनुभव (Exam Engine), स्टडी मटेरियल व नोट्स, मागील वर्षांच्या प्रश्नपत्रिका (PYQ), शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide) आणि ग्लोबल टॉपर लीडरबोर्ड</strong> एकाच मंचावर पूर्णपणे मोफत उपलब्ध आहे.
             </p>
           </div>
         </div>
@@ -1847,23 +1847,23 @@ export default function HomePage() {
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "MH Mock Test Portal",
-              "url": "https://mhmocktest.in",
+              "name": "EduSaaS Web Portal",
+              "url": "https://edusaasweb.in",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://mhmocktest.in/mock-test/{search_term_string}",
+                "target": "https://edusaasweb.in/mock-test/{search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             },
             {
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "MH Mock Test",
-              "url": "https://mhmocktest.in",
-              "logo": "https://mhmocktest.in/logo.png",
+              "name": "EduSaaS Web",
+              "url": "https://edusaasweb.in",
+              "logo": "https://edusaasweb.in/logo.png",
               "sameAs": [
-                "https://www.youtube.com/@missionvardi",
-                "https://t.me/missionvardi"
+                "https://www.youtube.com/@edusaas",
+                "https://t.me/edusaas"
               ]
             },
             {
@@ -1872,10 +1872,10 @@ export default function HomePage() {
               "mainEntity": [
                 {
                   "@type": "Question",
-                  "name": "MH Mock Test पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत मॉक टेस्ट उपलब्ध आहेत?",
+                  "name": "EduSaaS Web पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत Mock Test उपलब्ध आहेत?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "MH Mock Test पोर्टलवर महाराष्ट्र पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा व संयुक्त परीक्षा, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव परीक्षा उपलब्ध आहेत."
+                    "text": "EduSaaS Web पोर्टलवर Global Competitive Exams, Aptitude Tests भरती, MPSC राज्यसेवा व संयुक्त Exam, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव Exam उपलब्ध आहेत."
                   }
                 },
                 {

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 import 'physical_prep_state.dart';
 
 class PhysicalPrepCubit extends Cubit<PhysicalPrepState> {

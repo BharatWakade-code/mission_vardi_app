@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/models/home_module/get_pdf_answers_response.dart';
-import 'package:mission_vardi/screens/vardi_home_module/data/home_repository.dart';
+import 'package:edusaas/models/home_module/get_pdf_answers_response.dart';
+import 'package:edusaas/screens/vardi_home_module/data/home_repository.dart';
 
 part 'vardi_home_state.dart';
 

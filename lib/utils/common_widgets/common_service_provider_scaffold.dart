@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/utils/common_widgets/common_white_container.dart';
+import 'package:edusaas/utils/common_widgets/common_white_container.dart';
 
 class CommonServiceProviderWidget extends StatelessWidget {
   final Widget? child;

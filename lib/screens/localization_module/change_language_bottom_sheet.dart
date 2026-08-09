@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 
 class ChangeLanguageBottomSheet extends StatelessWidget {
   const ChangeLanguageBottomSheet({super.key});

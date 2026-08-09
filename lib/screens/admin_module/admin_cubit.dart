@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mission_vardi/screens/admin_module/admin_state.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
+import 'package:edusaas/screens/admin_module/admin_state.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
 
 @injectable
 class AdminCubit extends Cubit<AdminState> {

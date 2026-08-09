@@ -166,7 +166,7 @@ export default function TestEngine({ test }: TestEngineProps) {
 
           <div style={{ fontSize: "3rem", marginBottom: "10px" }}>🏆</div>
           <h1 style={{ fontSize: "2rem", marginBottom: "8px", color: "#ffffff" }}>
-            अभिनंदन! परीक्षा निकाल व विश्लेषण (Test Scorecard)
+            अभिनंदन! Exam निकाल व विश्लेषण (Test Scorecard)
           </h1>
           <p style={{ color: "#94a3b8", fontSize: "1.05rem", marginBottom: "28px" }}>
             {test.title} • {test.titleEn}

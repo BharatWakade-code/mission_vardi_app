@@ -6,9 +6,9 @@ def format_talathi_quiz():
         
     output_data = {
         "title": "Talathi Bharti Practice Paper 1 (2019)",
-        "title_mr": "तलाठी भरती सराव प्रश्नसंच 1 (2019)",
+        "title_mr": "Aptitude Tests भरती सराव प्रश्नसंच 1 (2019)",
         "description": "Previous year Talathi Bharti mock test questions with answers.",
-        "description_mr": "मागील वर्षीचे तलाठी भरती सराव प्रश्न आणि उत्तरे.",
+        "description_mr": "मागील वर्षीचे Aptitude Tests भरती सराव प्रश्न आणि उत्तरे.",
         "category": "Talathi Bharti",
         "type": "mock_test",
         "questions": []

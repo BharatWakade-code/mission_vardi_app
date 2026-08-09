@@ -13,8 +13,8 @@ s3 = boto3.client("s3")
 DATA_BUCKET = os.getenv("DATA_BUCKET", "mission-vardi-data")
 
 # Configure MongoDB connection
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb+srv://missionVardi:Sisko%40123@missionvardi.mqa2rmf.mongodb.net/")
-DB_NAME = os.getenv("DB_NAME", "missionvardi")
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb+srv://missionVardi:Sisko%40123@edusaas.mqa2rmf.mongodb.net/")
+DB_NAME = os.getenv("DB_NAME", "edusaas")
 
 print(f"Connecting to MongoDB database '{DB_NAME}'...")
 client = MongoClient(MONGODB_URI)
@@ -80,7 +80,7 @@ def migrate_collection(s3_prefix, mongo_collection):
         print(f"ERROR: Failed during migration of prefix '{s3_prefix}': {e}")
 
 def main():
-    print("Starting Mission Vardi S3-to-MongoDB data migration...")
+    print("Starting EduSaaS S3-to-MongoDB data migration...")
     
     # Migrate standard collections
     migrate_collection("users/", collections_map["users"])

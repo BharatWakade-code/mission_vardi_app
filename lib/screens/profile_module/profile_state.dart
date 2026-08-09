@@ -1,4 +1,4 @@
-import 'package:mission_vardi/models/auth_model/auth_response_model.dart';
+import 'package:edusaas/models/auth_model/auth_response_model.dart';
 
 class ProfileState {
   final User? profileData;

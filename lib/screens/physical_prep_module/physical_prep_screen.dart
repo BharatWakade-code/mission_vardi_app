@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/screens/physical_prep_module/physical_prep_cubit.dart';
-import 'package:mission_vardi/screens/physical_prep_module/physical_prep_state.dart';
-import 'package:mission_vardi/utils/common_widgets/commonTextField.dart';
-import 'package:mission_vardi/utils/common_widgets/common_app_bar.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/physical_prep_module/physical_prep_cubit.dart';
+import 'package:edusaas/screens/physical_prep_module/physical_prep_state.dart';
+import 'package:edusaas/utils/common_widgets/commonTextField.dart';
+import 'package:edusaas/utils/common_widgets/common_app_bar.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
 
 class PhysicalPrepScreen extends StatefulWidget {
   const PhysicalPrepScreen({super.key});

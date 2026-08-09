@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/utils/network_services/api_services.dart';
-import 'package:mission_vardi/screens/profile_module/history_details_state.dart';
+import 'package:edusaas/utils/network_services/api_services.dart';
+import 'package:edusaas/screens/profile_module/history_details_state.dart';
 
 class HistoryDetailsCubit extends Cubit<HistoryDetailsState> {
   HistoryDetailsCubit() : super(HistoryDetailsState());

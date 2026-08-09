@@ -6,18 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:mission_vardi/utils/ad_services/ad_manager.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/utils/depenedency_injection/get_it_setup.dart';
-import 'package:mission_vardi/utils/network_services/check_internet_services.dart';
-import 'package:mission_vardi/utils/providers_list.dart';
-import 'package:mission_vardi/utils/routes_services/go_router_service.dart';
-import 'package:mission_vardi/utils/shared_pref_data.dart';
+import 'package:edusaas/utils/ad_services/ad_manager.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/utils/depenedency_injection/get_it_setup.dart';
+import 'package:edusaas/utils/network_services/check_internet_services.dart';
+import 'package:edusaas/utils/providers_list.dart';
+import 'package:edusaas/utils/routes_services/go_router_service.dart';
+import 'package:edusaas/utils/shared_pref_data.dart';
 import 'firebase_options.dart';
-import 'package:mission_vardi/utils/push_notifications.dart';
+import 'package:edusaas/utils/push_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
-import 'package:mission_vardi/screens/localization_module/locale_cubit.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/locale_cubit.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main() async {
@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
             child: child ?? const SizedBox.shrink(),
           ),
           debugShowCheckedModeBanner: false,
-          title: 'missionvardi'.tr(),
+          title: 'edusaas'.tr(),
           scrollBehavior: MyCustomScrollBehavior(),
           locale: locale,
           supportedLocales: const [

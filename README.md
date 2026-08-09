@@ -1,4 +1,4 @@
-# Mission Vardi App
+# EduSaaS App
 
 A Flutter-based educational application for students.
 

@@ -16,7 +16,7 @@ export default function Loading() {
           background: "rgba(255,255,255,0.05)", 
           boxShadow: "0 0 30px rgba(249, 115, 22, 0.2)"
         }}>
-          <img src="/logo.png" alt="MH Mock Test Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src="/logo.png" alt="EduSaaS Web Loading" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       </div>
       
@@ -27,7 +27,7 @@ export default function Loading() {
       
       {/* Subtle Brand Tagline */}
       <p style={{ color: "#475569", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 }}>
-        MH Mock Test Portal
+        EduSaaS Web Portal
       </p>
       
     </div>

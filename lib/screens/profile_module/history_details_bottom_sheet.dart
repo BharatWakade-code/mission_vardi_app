@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mission_vardi/screens/localization_module/app_localizations.dart';
+import 'package:edusaas/screens/localization_module/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mission_vardi/utils/constants.dart';
-import 'package:mission_vardi/screens/profile_module/history_details_cubit.dart';
-import 'package:mission_vardi/screens/profile_module/history_details_state.dart';
+import 'package:edusaas/utils/constants.dart';
+import 'package:edusaas/screens/profile_module/history_details_cubit.dart';
+import 'package:edusaas/screens/profile_module/history_details_state.dart';
 
 class HistoryDetailsBottomSheet extends StatelessWidget {
   final String sessionId;
