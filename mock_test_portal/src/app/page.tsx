@@ -64,6 +64,7 @@ export default function HomePage() {
   const scrollLeftPos = useRef(0);
 
   // New features state (Dashboard, Notes, PYQs, Leaderboard, Physical Fitness, Alerts, Profile)
+  const ENABLE_FITNESS_TRACKER = process.env.NEXT_PUBLIC_ENABLE_FITNESS_TRACKER === 'true';
   const [activeTab, setActiveTab] = useState<"mock-tests" | "study-notes" | "pyqs" | "leaderboard" | "physical-test" | "profile">("mock-tests");
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
