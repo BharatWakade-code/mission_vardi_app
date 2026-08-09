@@ -126,6 +126,32 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (["mock-tests", "study-notes", "pyqs", "leaderboard", "physical-test", "profile"].includes(hash)) {
+        setActiveTab(hash as any);
+      } else if (hash === "all-tests") {
+        setActiveTab("mock-tests");
+      }
+    };
+
+    // Initial check
+    handleHashChange();
+
+    // The Next.js router might not fire 'hashchange' on pushState, so we override pushState temporarily
+    // or just listen to popstate/hashchange. Popstate fires when URL changes.
+    window.addEventListener("hashchange", handleHashChange);
+
+    // Custom event listener if we dispatch it manually from Navbar
+    window.addEventListener("tabchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("tabchange", handleHashChange);
+    };
+  }, []);
+
+  useEffect(() => {
     const el = categoryScrollRef.current;
     if (el) {
       const handleWheel = (e: WheelEvent) => {
@@ -164,9 +190,9 @@ export default function HomePage() {
       if (uid) {
         fetchFitnessLogsApi(uid).then(setFitnessLogs);
       }
-      alert(`🎉 लॉगिन यशस्वी! स्वागत आहे, ${u.name || "विद्यार्थी"}!`);
+      alert(`🎉 Login successful! Welcome, ${u.name || "Student"}!`);
     } else {
-      setAuthError(res.message || "लॉगिन अयशस्वी झाले. कृपया ईमेल आणि पासवर्ड तपासा.");
+      setAuthError(res.message || "Login failed. Please check your email and password.");
     }
   };
 
@@ -181,9 +207,9 @@ export default function HomePage() {
       setCurrentUser(u);
       localStorage.setItem("edusaas_user", JSON.stringify(u));
       setShowAuthModal(false);
-      alert(`🎉 रजिस्ट्रेशन यशस्वी! स्वागत आहे, ${u.name}! आता तुम्ही लीडरबोर्ड व फिजिकल चाचणी वापरू शकता.`);
+      alert(`🎉 Registration successful! Welcome, ${u.name}! You can now use the leaderboard and physical tests.`);
     } else {
-      setAuthError(res.message || "रजिस्ट्रेशन अयशस्वी झाले. कृपया पुन्हा प्रयत्न करा.");
+      setAuthError(res.message || "Registration failed. Please try again.");
     }
   };
 
@@ -198,7 +224,7 @@ export default function HomePage() {
     setCurrentUser(updated);
     localStorage.setItem("edusaas_user", JSON.stringify(updated));
     setShowAuthModal(false);
-    alert("✓ प्रोफाईल आणि जिल्हा माहिती यशस्वीरित्या अपडेट झाली!");
+    alert("✓ Profile and district information updated successfully!");
   };
 
   const handleLogout = () => {
@@ -269,7 +295,7 @@ export default function HomePage() {
   const handleAddFitnessLog = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUser || (!currentUser.user_id && !currentUser.id)) {
-      alert("कृपया शारीरिक चाचणीची नोंद करण्यासाठी प्रथम लॉगिन करा!");
+      alert("Please login first to submit your physical test record!");
       setAuthMode("login");
       setShowAuthModal(true);
       return;
@@ -282,16 +308,16 @@ export default function HomePage() {
       run_100m_seconds: Number(run100Sec),
       shot_put_meters: Number(shotPutMeters),
       date: new Date().toISOString().split("T")[0],
-      notes: fitnessNotes || "नियमित सराव चाचणी",
+      notes: fitnessNotes || "नियMinत सराव चाचणी",
     };
     const success = await createFitnessLogApi(newLog);
     if (success) {
       const logs = await fetchFitnessLogsApi(userId);
       setFitnessLogs(logs);
       setFitnessNotes("");
-      alert("🎉 आजची शारीरिक चाचणी नोंद यशस्वीरित्या सेव्ह झाली!");
+      alert("🎉 Today's physical test record saved successfully!");
     } else {
-      alert("नोंद सेव्ह करताना समस्या आली. कृपया पुन्हा प्रयत्न करा.");
+      alert("Problem saving record. Please try again.");
     }
     setFitnessLoading(false);
   };
@@ -319,7 +345,7 @@ export default function HomePage() {
 
         {/* Professional Typography */}
         <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#f8fafc", marginBottom: "6px", letterSpacing: "0.5px" }}>
-          माहिती लोड होत आहे...
+          Loading information...
         </h2>
 
         {/* Subtle Brand Tagline */}
@@ -367,7 +393,7 @@ export default function HomePage() {
               className="btn btn-outline"
               style={{ padding: "6px 14px", fontSize: "0.85rem", marginLeft: "6px" }}
             >
-              ⚙️ माझे प्रोफाईल
+              ⚙️ My Profile
             </button>
           </div>
         ) : (
@@ -376,7 +402,7 @@ export default function HomePage() {
             className="btn btn-primary"
             style={{ padding: "10px 24px", borderRadius: "100px", fontSize: "0.95rem", boxShadow: "0 4px 15px rgba(249, 115, 22, 0.4)", display: "flex", alignItems: "center", gap: "8px" }}
           >
-            <span>🔑 विद्यार्थी लॉगिन / रजिस्ट्रेशन (Join Leaderboard)</span>
+            <span>🔑 Student Login / Register (Join Leaderboard)</span>
           </button>
         )}
       </div>
@@ -397,186 +423,13 @@ export default function HomePage() {
         }}>
           <span style={{ fontSize: "1.4rem", animation: "bounce 1s infinite" }}>🔔</span>
           <div style={{ flex: 1, minWidth: "250px" }}>
-            <span className="badge badge-orange" style={{ marginRight: "10px", fontSize: "0.75rem", padding: "4px 8px" }}>महत्त्वाचे अपडेट</span>
+            <span className="badge badge-orange" style={{ marginRight: "10px", fontSize: "0.75rem", padding: "4px 8px" }}>Important Update</span>
             <span style={{ color: "#ffffff", fontWeight: 600, fontSize: "0.95rem" }}>{alerts[0].message_mr}</span>
             <span style={{ color: "#cbd5e1", fontSize: "0.85rem", marginLeft: "10px" }}>({alerts[0].message_en})</span>
           </div>
         </div>
       )}
 
-      {/* Hero Banner Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        style={{
-          background: "linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          borderRadius: "24px",
-          padding: "50px 30px",
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-          marginBottom: "30px",
-          boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)"
-        }}>
-        <div style={{
-          position: "absolute",
-          top: "-100px",
-          right: "-100px",
-          width: "300px",
-          height: "300px",
-          background: "radial-gradient(circle, rgba(249, 115, 22, 0.2) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none"
-        }} />
-
-        <span className="badge badge-orange animate-pulse" style={{ marginBottom: "16px", padding: "6px 14px", fontSize: "0.85rem" }}>
-          🚀 Globalातील नंबर १ मोफत Mock Test, स्टडी व शारीरिक चाचणी पोर्टल
-        </span>
-
-        <h1 style={{
-          fontSize: "2.5rem",
-          fontWeight: 800,
-          color: "#ffffff",
-          marginBottom: "16px",
-          letterSpacing: "-0.5px",
-          lineHeight: "1.3",
-          maxWidth: "900px",
-          margin: "0 auto 16px auto"
-        }} className="hero-title">
-          Competitive Exams, Aptitude Tests व MPSC <span className="gradient-text">मोफत ऑनलाइन अभ्यास मंच</span> (Live Exam Portal)
-        </h1>
-
-        <p style={{
-          fontSize: "1.15rem",
-          color: "#cbd5e1",
-          maxWidth: "750px",
-          margin: "0 auto 30px auto",
-          lineHeight: "1.6",
-          fontWeight: 400
-        }}>
-          नवीन २०२६ पॅटर्नवर आधारित मोफत सराव प्रश्नपत्रिका सोडवा, स्टडी नोट्स वाचा, शारीरिक चाचणी (Physical Test) गुण मोजा आणि ग्लोबल लीडरबोर्डमध्ये तुमची रँक पहा!
-        </p>
-
-        {/* Live Home Dashboard Data (/home/dashboard) */}
-        {dashboardData && (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "20px",
-            maxWidth: "850px",
-            margin: "0 auto 30px auto",
-            textAlign: "left"
-          }}>
-            {/* Daily Quote Card */}
-            {dashboardData.daily_quotes && dashboardData.daily_quotes.length > 0 && (
-              <div style={{
-                background: "rgba(15, 23, 42, 0.7)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "16px",
-                padding: "16px 20px"
-              }}>
-                <div style={{ fontSize: "0.85rem", color: "#fb923c", fontWeight: 700, marginBottom: "6px" }}>💡 आजचा प्रेरणादायी सुविचार (Daily Quote)</div>
-                <div style={{ color: "#ffffff", fontSize: "0.95rem", fontStyle: "italic", marginBottom: "6px", lineHeight: "1.4" }}>
-                  {dashboardData.daily_quotes[0].mr}
-                </div>
-                <div style={{ color: "#94a3b8", fontSize: "0.8rem" }}>
-                  {dashboardData.daily_quotes[0].en}
-                </div>
-              </div>
-            )}
-
-            {/* Countdown Card */}
-            {dashboardData.countdown && (
-              <div style={{
-                background: "rgba(15, 23, 42, 0.7)",
-                border: "1px solid rgba(52, 211, 153, 0.3)",
-                borderRadius: "16px",
-                padding: "16px 20px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center"
-              }}>
-                <div style={{ fontSize: "0.85rem", color: "#34d399", fontWeight: 700, marginBottom: "6px" }}>⏰ {dashboardData.countdown.title}</div>
-                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                  <div>
-                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "#ffffff" }}>{dashboardData.countdown.daysLeft}</span>
-                    <span style={{ fontSize: "0.85rem", color: "#94a3b8", marginLeft: "4px" }}>दिवस (Days)</span>
-                  </div>
-                  <span style={{ color: "#94a3b8" }}>•</span>
-                  <div>
-                    <span style={{ fontSize: "1.4rem", fontWeight: 700, color: "#cbd5e1" }}>{dashboardData.countdown.hoursLeft}</span>
-                    <span style={{ fontSize: "0.85rem", color: "#94a3b8", marginLeft: "4px" }}>तास</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Live Search Bar */}
-        <div style={{
-          maxWidth: "600px",
-          margin: "0 auto 30px auto",
-          position: "relative",
-          display: "flex",
-          alignItems: "center"
-        }}>
-          <span style={{ position: "absolute", left: "18px", fontSize: "1.3rem", color: "#94a3b8" }}>🔍</span>
-          <input
-            type="text"
-            placeholder="Exam किंवा नोट्स शोधा (उदा. Competitive Exams, Aptitude Tests, MPSC)..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "16px 20px 16px 52px",
-              borderRadius: "14px",
-              background: "rgba(15, 23, 42, 0.9)",
-              border: "2px solid rgba(249, 115, 22, 0.4)",
-              color: "#ffffff",
-              fontSize: "1.05rem",
-              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)"
-            }}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              style={{ position: "absolute", right: "16px", background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: "1.2rem", border: "none" }}
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
-        {/* Quick Statistics Banner */}
-        <div style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "30px",
-          flexWrap: "wrap",
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-          paddingTop: "24px",
-          maxWidth: "800px",
-          margin: "0 auto"
-        }}>
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#34d399" }}>५०,०००+</div>
-            <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>रोज सराव करणारे विद्यार्थी</div>
-          </div>
-          <div style={{ width: "1px", background: "rgba(255, 255, 255, 0.1)" }} />
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#fb923c" }}>१००% मोफत</div>
-            <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>कोणतीही फी किंवा छुपे शुल्क नाही</div>
-          </div>
-          <div style={{ width: "1px", background: "rgba(255, 255, 255, 0.1)" }} />
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#60a5fa" }}>Live API</div>
-            <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>FastAPI व MongoDB कनेक्टेड</div>
-          </div>
-        </div>
-      </motion.section>
 
       {/* Top Ad placement */}
       <AdSlot type="leaderboard" title="Google AdSense Top Leaderboard - Premium Education Banner" />
@@ -606,7 +459,7 @@ export default function HomePage() {
             boxShadow: activeTab === "mock-tests" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          📝 सराव Exam ({filteredTests.length})
+          📝 Mock Exams ({filteredTests.length})
         </button>
         <button
           onClick={() => setActiveTab("study-notes")}
@@ -623,7 +476,7 @@ export default function HomePage() {
             boxShadow: activeTab === "study-notes" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          📚 स्टडी मटेरियल व नोट्स ({notes.length})
+          📚 Study Materials & Notes ({notes.length})
         </button>
         <button
           onClick={() => setActiveTab("pyqs")}
@@ -640,7 +493,7 @@ export default function HomePage() {
             boxShadow: activeTab === "pyqs" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          📜 मागील प्रश्नपत्रिका ({pyqs.length})
+          📜 Previous Year Papers ({pyqs.length})
         </button>
         <button
           onClick={() => setActiveTab("leaderboard")}
@@ -657,7 +510,7 @@ export default function HomePage() {
             boxShadow: activeTab === "leaderboard" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          🏆 टॉपर लीडरबोर्ड ({leaderboard.length})
+          🏆 Top Leaderboard ({leaderboard.length})
         </button>
         <button
           onClick={() => setActiveTab("physical-test")}
@@ -674,7 +527,7 @@ export default function HomePage() {
             boxShadow: activeTab === "physical-test" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          🏃 शारीरिक चाचणी (Physical Fitness)
+          🏃 Physical Fitness
         </button>
         <button
           onClick={() => setActiveTab("profile")}
@@ -691,7 +544,7 @@ export default function HomePage() {
             boxShadow: activeTab === "profile" ? "0 4px 20px rgba(249, 115, 22, 0.4)" : "none"
           }}
         >
-          👤 माझे प्रोफाईल (Profile)
+          👤 My Profile
         </button>
       </div>
 
@@ -701,14 +554,14 @@ export default function HomePage() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
             <div>
               <h2 style={{ fontSize: "1.8rem", color: "#ffffff", marginBottom: "4px" }}>
-                📋 उपलब्ध मोफत सराव Exam (Available Free Mock Tests)
+                📋 Available Free Mock Tests
               </h2>
               <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-                तुमच्या इच्छित परीक्षेची निवड करा आणि लगेच ऑनलाइन टेस्ट सोडवायला सुरुवात करा.
+                Select your desired exam and start solving the online test instantly.
               </p>
             </div>
             <div style={{ fontSize: "0.9rem", color: "#fb923c", fontWeight: 600 }}>
-              एकूण {filteredTests.length} टेस्ट उपलब्ध
+              Total {filteredTests.length} tests available
             </div>
           </div>
 
@@ -765,7 +618,7 @@ export default function HomePage() {
                 boxShadow: selectedCategory === "all" ? "0 4px 15px rgba(249, 115, 22, 0.4)" : "none"
               }}
             >
-              🔥 सर्व Exam (All Exams)
+              🔥 All Exams
             </button>
 
             {categories.map((cat) => {
@@ -799,10 +652,10 @@ export default function HomePage() {
           {filteredTests.length === 0 ? (
             <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center", margin: "30px 0" }}>
               <div style={{ fontSize: "3rem", marginBottom: "12px" }}>😕</div>
-              <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "8px" }}>कोणतीही Exam सापडली नाही!</h3>
-              <p style={{ color: "#94a3b8", marginBottom: "20px" }}>सध्या या विभागामध्ये कोणतीही लाईव्ह टेस्ट उपलब्ध नाही किंवा वेगळा शब्द शोधून पहा.</p>
+              <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "8px" }}>No Exam Found!</h3>
+              <p style={{ color: "#94a3b8", marginBottom: "20px" }}>Currently no live test available in this section or try searching a different word.</p>
               <button onClick={() => { setSelectedCategory("all"); setSearchQuery(""); }} className="btn btn-primary">
-                🔄 सर्व Exam पहा (View All)
+                🔄 View All Exams
               </button>
             </div>
           ) : (
@@ -820,18 +673,18 @@ export default function HomePage() {
         <section style={{ margin: "20px 0 40px 0" }}>
           <div style={{ marginBottom: "24px" }}>
             <h2 style={{ fontSize: "1.8rem", color: "#ffffff", marginBottom: "6px" }}>
-              📚 स्टडी मटेरियल, चालू घडामोडी व व्याकरण नोट्स (Live Notes)
+              📚 Study Materials, Current Affairs & Grammar Notes (Live Notes)
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-              परीक्षेसाठी अत्यंत उपयुक्त अशा सविस्तर नोट्स आणि स्टडी मटेरियल मोफत वाचा.
+              Read detailed notes and study materials for exams for free.
             </p>
           </div>
 
           {notes.length === 0 ? (
             <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center" }}>
               <div style={{ fontSize: "3rem", marginBottom: "12px" }}>📭</div>
-              <h3 style={{ fontSize: "1.3rem", color: "#ffffff" }}>सध्या कोणत्याही नोट्स उपलब्ध नाहीत</h3>
-              <p style={{ color: "#94a3b8" }}>लवकरच नवीन नोट्स जोडल्या जातील.</p>
+              <h3 style={{ fontSize: "1.3rem", color: "#ffffff" }}>Currently no notes available</h3>
+              <p style={{ color: "#94a3b8" }}>New notes will be added soon.</p>
             </div>
           ) : (
             <div className="grid-3">
@@ -852,7 +705,7 @@ export default function HomePage() {
                     className="btn btn-primary"
                     style={{ width: "100%", justifyContent: "center", marginTop: "10px" }}
                   >
-                    📖 संपूर्ण नोट्स वाचा (Read Note)
+                    📖 Read Complete Note
                   </button>
                 </div>
               ))}
@@ -866,18 +719,18 @@ export default function HomePage() {
         <section style={{ margin: "20px 0 40px 0" }}>
           <div style={{ marginBottom: "24px" }}>
             <h2 style={{ fontSize: "1.8rem", color: "#ffffff", marginBottom: "6px" }}>
-              📜 मागील वर्षांच्या प्रश्नपत्रिका (Previous Year Question Papers - PYQ)
+              📜 Previous Year Question Papers (PYQ)
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-              Competitive Exams व इतर स्पर्धा Examंमध्ये विचारल्या गेलेल्या जुन्या प्रश्नपत्रिका आणि त्यांची उत्तरे.
+              Old question papers and answers asked in Competitive Exams and other competitive exams.
             </p>
           </div>
 
           {pyqs.length === 0 ? (
             <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center" }}>
               <div style={{ fontSize: "3rem", marginBottom: "12px" }}>📂</div>
-              <h3 style={{ fontSize: "1.3rem", color: "#ffffff" }}>सध्या जुन्या प्रश्नपत्रिका लोड होत आहेत</h3>
-              <p style={{ color: "#94a3b8" }}>लवकरच सर्व मागील प्रश्नपत्रिका डाउनलोडसाठी उपलब्ध होतील.</p>
+              <h3 style={{ fontSize: "1.3rem", color: "#ffffff" }}>Currently old question papers are loading</h3>
+              <p style={{ color: "#94a3b8" }}>All previous question papers will be available for download soon.</p>
             </div>
           ) : (
             <div className="grid-3">
@@ -885,7 +738,7 @@ export default function HomePage() {
                 <div key={pyq.id} className="glass-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid #f97316" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                      <span className="badge badge-orange" style={{ fontSize: "0.8rem", fontWeight: 700 }}>वर्ष: {pyq.year}</span>
+                      <span className="badge badge-orange" style={{ fontSize: "0.8rem", fontWeight: 700 }}>Year: {pyq.year}</span>
                       <span className="badge badge-blue" style={{ fontSize: "0.75rem" }}>{pyq.category || "PYQ Paper"}</span>
                     </div>
                     <h3 style={{ fontSize: "1.2rem", color: "#ffffff", marginBottom: "10px" }}>{pyq.title}</h3>
@@ -895,11 +748,11 @@ export default function HomePage() {
                   </div>
                   {pyq.pdfUrl && pyq.pdfUrl !== "jsjsjs" ? (
                     <a href={pyq.pdfUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ width: "100%", justifyContent: "center", textDecoration: "none" }}>
-                      📥 पेपर डाउनलोड करा (Download PDF)
+                      📥 Download Paper (PDF)
                     </a>
                   ) : (
-                    <button onClick={() => alert("ही प्रश्नपत्रिका लवकरच PDF स्वरूपात उपलब्ध होईल!")} className="btn btn-outline" style={{ width: "100%", justifyContent: "center" }}>
-                      📄 प्रश्नपत्रिका पहा
+                    <button onClick={() => alert("This question paper will be available in PDF format soon!")} className="btn btn-outline" style={{ width: "100%", justifyContent: "center" }}>
+                      📄 View Question Paper
                     </button>
                   )}
                 </div>
@@ -928,12 +781,12 @@ export default function HomePage() {
           }}>
             <div style={{ flex: 1, minWidth: "280px", textAlign: "left" }}>
               <h3 style={{ fontSize: "1.25rem", color: "#ffffff", marginBottom: "6px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>🌟 लीडरबोर्डमध्ये तुमचे नाव पाहायचे आहे का?</span>
+                <span>🌟 Do you want to see your name in the leaderboard?</span>
               </h3>
               <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
                 {currentUser ?
-                  `स्वागत आहे, ${currentUser.name}! तुमचे प्रोफाईल यशस्वीरित्या जोडले गेले आहे. ऑनलाइन सराव Exam सोडवा आणि जास्त गुण मिळवून लीडरबोर्डच्या टॉपवर या!` :
-                  "जर तुम्हाला तुमचे नाव या ग्लोबल लीडरबोर्डमध्ये पाहायचे असेल, तर लगेच लॉगिन किंवा मोफत रजिस्ट्रेशन करा आणि तुमचे प्रोफाईल अपडेट करा. सराव Exam सोडवून तुमचे गुण लगेच लीडरबोर्डवर दिसतील!"}
+                  `Welcome, ${currentUser.name}! Your profile has been successfully added. Take online mock exams, score high, and top the leaderboard!` :
+                  "If you want to see your name in this global leaderboard, login or register for free now and update your profile. Take mock exams and your scores will immediately appear on the leaderboard!"}
               </p>
             </div>
             <div>
@@ -949,7 +802,7 @@ export default function HomePage() {
                   className="btn btn-primary"
                   style={{ whiteSpace: "nowrap", padding: "12px 22px", fontSize: "0.95rem" }}
                 >
-                  ✏️ प्रोफाईल व जिल्हा संपादित करा
+                  ✏️ Edit Profile & District
                 </button>
               ) : (
                 <button
@@ -957,7 +810,7 @@ export default function HomePage() {
                   className="btn btn-primary"
                   style={{ whiteSpace: "nowrap", padding: "12px 26px", fontSize: "1.05rem", boxShadow: "0 4px 15px rgba(249, 115, 22, 0.5)" }}
                 >
-                  🔑 लॉगिन / रजिस्ट्रेशन करा (Login Now)
+                  🔑 Login / Register Now
                 </button>
               )}
             </div>
@@ -965,27 +818,27 @@ export default function HomePage() {
 
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
             <h2 style={{ fontSize: "2rem", color: "#ffffff", marginBottom: "6px" }}>
-              🏆 ग्लोबल टॉपर लीडरबोर्ड (Global Top Aspirants)
+              🏆 Global Top Aspirants Leaderboard
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-              मिशन वर्दी ॲप व वेब पोर्टलवरील सर्वाधिक गुण मिळवणारे Globalातील टॉप विद्यार्थी!
+              Top students from EduSaaS app and web portal with the highest scores!
             </p>
           </div>
 
           {leaderboard.length === 0 ? (
             <div className="glass-card" style={{ padding: "60px 20px", textAlign: "center" }}>
               <div style={{ fontSize: "3rem", marginBottom: "12px" }} className="animate-spin">⏳</div>
-              <h3 style={{ fontSize: "1.3rem", color: "#ffffff" }}>लीडरबोर्ड रँकिंग लोड होत आहे...</h3>
+              <h3 style={{ fontSize: "1.3rem", color: "#ffffff" }}>Loading leaderboard ranking...</h3>
             </div>
           ) : (
             <div className="glass-card" style={{ padding: "24px", overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid rgba(255, 255, 255, 0.1)", color: "#fb923c", fontSize: "0.95rem" }}>
-                    <th style={{ padding: "12px 16px", width: "80px" }}>रँक (Rank)</th>
-                    <th style={{ padding: "12px 16px" }}>विद्यार्थ्याचे नाव (Aspirant Name)</th>
-                    <th style={{ padding: "12px 16px" }}>जिल्हा (District)</th>
-                    <th style={{ padding: "12px 16px", textAlign: "right" }}>एकूण गुण (Points)</th>
+                    <th style={{ padding: "12px 16px", width: "80px" }}>Rank</th>
+                    <th style={{ padding: "12px 16px" }}>Aspirant Name</th>
+                    <th style={{ padding: "12px 16px" }}>District</th>
+                    <th style={{ padding: "12px 16px", textAlign: "right" }}>Total Points</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -993,9 +846,9 @@ export default function HomePage() {
                     const rank = idx + 1;
                     let rankBadge = `${rank}`;
                     let rowStyle: React.CSSProperties = { borderBottom: "1px solid rgba(255, 255, 255, 0.05)", transition: "background 0.2s" };
-                    if (rank === 1) { rankBadge = "🥇 १"; rowStyle = { ...rowStyle, background: "rgba(234, 179, 8, 0.15)" }; }
-                    else if (rank === 2) { rankBadge = "🥈 २"; rowStyle = { ...rowStyle, background: "rgba(148, 163, 184, 0.15)" }; }
-                    else if (rank === 3) { rankBadge = "🥉 ३"; rowStyle = { ...rowStyle, background: "rgba(217, 119, 6, 0.15)" }; }
+                    if (rank === 1) { rankBadge = "🥇 1"; rowStyle = { ...rowStyle, background: "rgba(234, 179, 8, 0.15)" }; }
+                    else if (rank === 2) { rankBadge = "🥈 2"; rowStyle = { ...rowStyle, background: "rgba(148, 163, 184, 0.15)" }; }
+                    else if (rank === 3) { rankBadge = "🥉 3"; rowStyle = { ...rowStyle, background: "rgba(217, 119, 6, 0.15)" }; }
 
                     const isCurrent = currentUser && (currentUser.name === user.name || currentUser.id === user.user_id || currentUser.user_id === user.user_id);
 
@@ -1014,8 +867,8 @@ export default function HomePage() {
                               </div>
                             )}
                             <div>
-                              <span style={{ fontWeight: 700, color: "#ffffff", fontSize: "1rem" }}>{user.name || "अनामिक विद्यार्थी"}</span>
-                              {isCurrent && <span className="badge badge-orange" style={{ marginLeft: "8px", fontSize: "0.7rem", padding: "2px 6px" }}>तुम्ही (You)</span>}
+                              <span style={{ fontWeight: 700, color: "#ffffff", fontSize: "1rem" }}>{user.name || "Anonymous Student"}</span>
+                              {isCurrent && <span className="badge badge-orange" style={{ marginLeft: "8px", fontSize: "0.7rem", padding: "2px 6px" }}>You</span>}
                             </div>
                           </div>
                         </td>
@@ -1040,10 +893,10 @@ export default function HomePage() {
         <section style={{ margin: "20px auto 40px auto", maxWidth: "1000px" }}>
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
             <h2 style={{ fontSize: "2rem", color: "#ffffff", marginBottom: "6px" }}>
-              🏃 Global Competitive Exams शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide & Logs)
+              🏃 Global Competitive Exams Physical Test Tracker
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-              १६०० मीटर धावणे, १०० मीटर धावणे व गोळाफेक चाचणीचे गुण मोजा आणि तुमच्या रोजच्या सराव चाचणीच्या नोंदी ठेवा.
+              Calculate your scores for 1600m run, 100m run, and shot put and keep a record of your daily practice tests.
             </p>
           </div>
 
@@ -1051,21 +904,21 @@ export default function HomePage() {
             {/* Left Box: Physical Marks Calculator Chart */}
             <div className="glass-card" style={{ padding: "24px", borderLeft: "4px solid #f97316" }}>
               <h3 style={{ fontSize: "1.35rem", color: "#ffffff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>🎯 शारीरिक चाचणी गुण गणक (Marks Calculator)</span>
+                <span>🎯 Physical Test Marks Calculator</span>
               </h3>
 
               <form onSubmit={handleAddFitnessLog} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div>
                   <label style={{ display: "block", color: "#cbd5e1", fontSize: "0.9rem", marginBottom: "6px", fontWeight: 600 }}>
-                    १. १६०० मीटर धावणे (1600m Running - 20 Marks):
+                    1. 1600m Running (20 Marks):
                   </label>
                   <div style={{ display: "flex", gap: "10px" }}>
                     <div style={{ flex: 1 }}>
-                      <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>मिनिटे (Min):</span>
+                      <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Minutes (Min):</span>
                       <input type="number" min="3" max="10" value={run1600Min} onChange={(e) => setRun1600Min(Number(e.target.value))} style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "rgba(15, 23, 42, 0.9)", border: "1px solid #f97316", color: "#fff" }} />
                     </div>
                     <div style={{ flex: 1 }}>
-                      <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>सेकंद (Sec):</span>
+                      <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Seconds (Sec):</span>
                       <input type="number" min="0" max="59" value={run1600Sec} onChange={(e) => setRun1600Sec(Number(e.target.value))} style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "rgba(15, 23, 42, 0.9)", border: "1px solid #f97316", color: "#fff" }} />
                     </div>
                   </div>
@@ -1073,29 +926,29 @@ export default function HomePage() {
 
                 <div>
                   <label style={{ display: "block", color: "#cbd5e1", fontSize: "0.9rem", marginBottom: "6px", fontWeight: 600 }}>
-                    २. १०० मीटर धावणे (100m Running - 15 Marks):
+                    2. 100m Running (15 Marks):
                   </label>
                   <div>
-                    <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>सेकंद (Sec e.g. 11.5):</span>
+                    <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Seconds (Sec e.g. 11.5):</span>
                     <input type="number" step="0.1" min="9" max="25" value={run100Sec} onChange={(e) => setRun100Sec(Number(e.target.value))} style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "rgba(15, 23, 42, 0.9)", border: "1px solid #f97316", color: "#fff" }} />
                   </div>
                 </div>
 
                 <div>
                   <label style={{ display: "block", color: "#cbd5e1", fontSize: "0.9rem", marginBottom: "6px", fontWeight: 600 }}>
-                    ३. गोळाफेक (Shot Put - 15 Marks):
+                    3. Shot Put (15 Marks):
                   </label>
                   <div>
-                    <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>अंतर मीटरमध्ये (Meters e.g. 8.50):</span>
+                    <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Distance in Meters (e.g. 8.50):</span>
                     <input type="number" step="0.1" min="3" max="15" value={shotPutMeters} onChange={(e) => setShotPutMeters(Number(e.target.value))} style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "rgba(15, 23, 42, 0.9)", border: "1px solid #f97316", color: "#fff" }} />
                   </div>
                 </div>
 
                 <div>
                   <label style={{ display: "block", color: "#cbd5e1", fontSize: "0.9rem", marginBottom: "6px", fontWeight: 600 }}>
-                    📝 आजच्या सरावाची टीप (Notes/Ground location):
+                    📝 Today's practice note (Notes/Ground location):
                   </label>
-                  <input type="text" placeholder="उदा. सकाळी ६ वाजता शिवाजी स्टेडियमवर सराव" value={fitnessNotes} onChange={(e) => setFitnessNotes(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "rgba(15, 23, 42, 0.9)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff" }} />
+                  <input type="text" placeholder="e.g. Practice at Shivaji Stadium at 6 AM" value={fitnessNotes} onChange={(e) => setFitnessNotes(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "8px", background: "rgba(15, 23, 42, 0.9)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff" }} />
                 </div>
 
                 {(() => {
@@ -1103,20 +956,20 @@ export default function HomePage() {
                   return (
                     <div style={{ background: "rgba(30, 41, 59, 0.9)", padding: "16px", borderRadius: "12px", border: "1px solid #34d399", marginTop: "6px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.85rem", color: "#cbd5e1" }}>
-                        <span>१६००मी गुण: <strong>{s.score1600}/20</strong></span>
-                        <span>१००मी गुण: <strong>{s.score100}/15</strong></span>
-                        <span>गोळा गुण: <strong>{s.scoreShot}/15</strong></span>
+                        <span>1600m Marks: <strong>{s.score1600}/20</strong></span>
+                        <span>100m Marks: <strong>{s.score100}/15</strong></span>
+                        <span>Shot Put Marks: <strong>{s.scoreShot}/15</strong></span>
                       </div>
                       <div style={{ textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "10px", marginTop: "6px" }}>
-                        <span style={{ fontSize: "1.05rem", color: "#ffffff", fontWeight: 700 }}>तुमचे अंदाजे एकूण शारीरिक गुण: </span>
-                        <span style={{ fontSize: "1.6rem", color: "#34d399", fontWeight: 800 }}>{s.total} / ५०</span>
+                        <span style={{ fontSize: "1.05rem", color: "#ffffff", fontWeight: 700 }}>Your estimated total physical marks: </span>
+                        <span style={{ fontSize: "1.6rem", color: "#34d399", fontWeight: 800 }}>{s.total} / 50</span>
                       </div>
                     </div>
                   );
                 })()}
 
                 <button type="submit" disabled={fitnessLoading} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "14px", fontSize: "1.05rem" }}>
-                  {fitnessLoading ? "सेव्ह होत आहे..." : currentUser ? "➕ आजची शारीरिक चाचणी नोंद सेव्ह करा (Save Log)" : "🔒 सेव्ह करण्यासाठी प्रथम लॉगिन करा"}
+                  {fitnessLoading ? "Saving..." : currentUser ? "➕ Save Today's Physical Test Log" : "🔒 Login first to save"}
                 </button>
               </form>
             </div>
@@ -1125,28 +978,28 @@ export default function HomePage() {
             <div className="glass-card" style={{ padding: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ fontSize: "1.35rem", color: "#ffffff", margin: 0 }}>
-                  📊 तुमची शारीरिक प्रगती व नोंदी (History)
+                  📊 Your Physical Progress & History
                 </h3>
-                {currentUser && <span className="badge badge-blue" style={{ fontSize: "0.8rem" }}>{fitnessLogs.length} नोंदी</span>}
+                {currentUser && <span className="badge badge-blue" style={{ fontSize: "0.8rem" }}>{fitnessLogs.length} Logs</span>}
               </div>
 
               {!currentUser ? (
                 <div style={{ textAlign: "center", padding: "40px 20px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "14px", border: "1px dashed rgba(255,255,255,0.2)" }}>
                   <div style={{ fontSize: "3rem", marginBottom: "12px" }}>🔒</div>
-                  <h4 style={{ fontSize: "1.2rem", color: "#ffffff", marginBottom: "8px" }}>तुमचा सराव इतिहास पाहण्यासाठी लॉगिन करा</h4>
+                  <h4 style={{ fontSize: "1.2rem", color: "#ffffff", marginBottom: "8px" }}>Login to view your practice history</h4>
                   <p style={{ color: "#94a3b8", fontSize: "0.9rem", marginBottom: "20px", lineHeight: "1.5" }}>
-                    लॉगिन केल्यानंतर तुम्ही दररोज केलेल्या धावणे व गोळाफेक सरावाच्या सर्व नोंदी येथे सुरक्षित राहतील.
+                    लॉगिन केल्यानंतर तुम्ही दररोज केलेल्या धावणे व गोळाफेक सरावाच्या सर्व Logs येथे सुरक्षित राहतील.
                   </p>
                   <button onClick={() => { setAuthMode("login"); setShowAuthModal(true); }} className="btn btn-primary" style={{ margin: "0 auto" }}>
-                    🔑 लगेच लॉगिन करा (Login Now)
+                    🔑 Login Now
                   </button>
                 </div>
               ) : fitnessLogs.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px 20px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "14px" }}>
                   <div style={{ fontSize: "3rem", marginBottom: "12px" }}>📝</div>
-                  <h4 style={{ fontSize: "1.2rem", color: "#ffffff", marginBottom: "8px" }}>अद्याप कोणतीही शारीरिक नोंद केलेली नाही</h4>
+                  <h4 style={{ fontSize: "1.2rem", color: "#ffffff", marginBottom: "8px" }}>No physical logs recorded yet</h4>
                   <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-                    डावीकडील गणक वापरून तुमची पहिली शारीरिक चाचणी नोंद सेव्ह करा!
+                    Use the calculator on the left to save your first physical test log!
                   </p>
                 </div>
               ) : (
@@ -1157,11 +1010,11 @@ export default function HomePage() {
                     return (
                       <div key={log.id || log._id || idx} style={{ background: "rgba(15, 23, 42, 0.8)", padding: "14px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)", position: "relative" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "6px" }}>
-                          <span style={{ color: "#fb923c", fontWeight: 700, fontSize: "0.9rem" }}>📅 दिनांक: {log.date || log.created_at?.split("T")[0] || "आज"}</span>
+                          <span style={{ color: "#fb923c", fontWeight: 700, fontSize: "0.9rem" }}>📅 Date: {log.date || log.created_at?.split("T")[0] || "Today"}</span>
                           {log.id || log._id ? (
                             <button
                               onClick={async () => {
-                                if (confirm("ही नोंद डिलीट करायची आहे का?")) {
+                                if (confirm("Do you want to delete this log?")) {
                                   await deleteFitnessLogApi(log.id || log._id!);
                                   const logs = await fetchFitnessLogsApi(currentUser.user_id || currentUser.id!);
                                   setFitnessLogs(logs);
@@ -1169,14 +1022,14 @@ export default function HomePage() {
                               }}
                               style={{ background: "transparent", color: "#ef4444", border: "none", cursor: "pointer", fontSize: "0.85rem" }}
                             >
-                              🗑️ डिलीट
+                              🗑️ Delete
                             </button>
                           ) : null}
                         </div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", fontSize: "0.85rem", color: "#cbd5e1" }}>
-                          <div>🏃 १६००मी: <strong>{min} मि {sec} से</strong></div>
-                          <div>⚡ १००मी: <strong>{log.run_100m_seconds || 12} से</strong></div>
-                          <div>🤾 गोळा: <strong>{log.shot_put_meters || 8} मी</strong></div>
+                          <div>🏃 1600m: <strong>{min} Min {sec} Sec</strong></div>
+                          <div>⚡ 100m: <strong>{log.run_100m_seconds || 12} Sec</strong></div>
+                          <div>🤾 Shot Put: <strong>{log.shot_put_meters || 8} m</strong></div>
                         </div>
                         {log.notes && (
                           <div style={{ marginTop: "8px", fontSize: "0.8rem", color: "#94a3b8", fontStyle: "italic" }}>
@@ -1200,10 +1053,10 @@ export default function HomePage() {
             <div className="glass-card animate-scale-up" style={{ padding: "60px 30px", textAlign: "center", maxWidth: "700px", margin: "40px auto", border: "1px solid rgba(249, 115, 22, 0.5)", background: "linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)" }}>
               <div style={{ fontSize: "4.5rem", marginBottom: "16px" }}>🔒</div>
               <h2 style={{ fontSize: "2rem", color: "#ffffff", marginBottom: "12px", fontWeight: 800 }}>
-                तुमचे वैयक्तिक स्टडी प्रोफाईल (User Profile Hub)
+                Your Personal Study Profile (User Profile Hub)
               </h2>
               <p style={{ color: "#cbd5e1", fontSize: "1.05rem", lineHeight: "1.6", marginBottom: "30px", maxWidth: "550px", margin: "0 auto 30px auto" }}>
-                मोबाईल ॲपप्रमाणेच तुमचे लीडरबोर्ड रँकिंग, सराव Examंचे गुण आणि शारीरिक चाचणीच्या सर्व नोंदी एकाच ठिकाणी पाहण्यासाठी कृपया खात्यात प्रवेश करा किंवा मोफत नोंदणी करा.
+                मोबाईल ॲपप्रमाणेच तुमचे लीडरबोर्ड Rankिंग, Mock Examंचे Marks आणि शारीरिक चाचणीच्या सर्व Logs एकाच ठिकाणी पाहण्यासाठी कृपया खात्यात प्रवेश करा किंवा मोफत नोंदणी करा.
               </p>
               <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
                 <button
@@ -1211,14 +1064,14 @@ export default function HomePage() {
                   className="btn btn-primary"
                   style={{ padding: "14px 32px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px", boxShadow: "0 6px 20px rgba(249, 115, 22, 0.5)" }}
                 >
-                  🔑 खात्यात लॉगिन करा (Login Now)
+                  🔑 Login to Account (Login Now)
                 </button>
                 <button
                   onClick={() => { setAuthMode("register"); setAuthError(""); setShowAuthModal(true); }}
                   className="btn btn-outline"
                   style={{ padding: "14px 32px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px", borderColor: "#f97316", color: "#fb923c" }}
                 >
-                  📝 मोफत नवीन नोंदणी (Free Register)
+                  📝 Free Registration (Register)
                 </button>
               </div>
             </div>
@@ -1264,10 +1117,10 @@ export default function HomePage() {
                     <div style={{ color: "#e2e8f0", fontSize: "1rem", marginBottom: "8px", display: "flex", gap: "16px", flexWrap: "wrap" }}>
                       <span>📧 {currentUser.email}</span>
                       {currentUser.mobile && <span>📱 {currentUser.mobile}</span>}
-                      <span>📍 जिल्हा: <strong style={{ color: "#fb923c" }}>{currentUser.district || "Global"}</strong></span>
+                      <span>📍 District: <strong style={{ color: "#fb923c" }}>{currentUser.district || "Global"}</strong></span>
                     </div>
                     <span className="badge badge-orange" style={{ fontSize: "0.8rem" }}>
-                      🎯 Global पोलीस व Aptitude Tests भरती उमेदवार
+                      🎯 Global Police & Aptitude Tests Aspirant
                     </span>
                   </div>
                 </div>
@@ -1284,14 +1137,14 @@ export default function HomePage() {
                     className="btn btn-primary"
                     style={{ padding: "12px 22px", fontSize: "0.95rem", fontWeight: 700 }}
                   >
-                    ✏️ माहिती व जिल्हा संपादित करा
+                    ✏️ Edit Info & District
                   </button>
                   <button
                     onClick={handleLogout}
                     className="btn btn-outline"
                     style={{ padding: "12px 22px", fontSize: "0.95rem", fontWeight: 700, borderColor: "#ef4444", color: "#ef4444" }}
                   >
-                    🚪 लॉग आउट करा
+                    🚪 Logout
                   </button>
                 </div>
               </div>
@@ -1300,42 +1153,42 @@ export default function HomePage() {
               <div className="grid-3" style={{ marginBottom: "30px" }}>
                 <div className="glass-card" style={{ textAlign: "center", padding: "26px", borderLeft: "4px solid #f97316" }}>
                   <div style={{ fontSize: "2.5rem", marginBottom: "8px" }}>🏆</div>
-                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>लीडरबोर्ड स्थिती (Leaderboard)</h4>
+                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>Leaderboard Status</h4>
                   <div style={{ fontSize: "1.8rem", color: "#ffffff", fontWeight: 800, marginBottom: "4px" }}>
                     {(() => {
                       const idx = leaderboard.findIndex(l => l.name === currentUser.name || l.user_id === (currentUser.user_id || currentUser.id));
-                      return idx !== -1 ? `#${idx + 1} रँक` : "सहभागी व्हा";
+                      return idx !== -1 ? `#${idx + 1} Rank` : "Participate";
                     })()}
                   </div>
                   <p style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>
                     {(() => {
                       const idx = leaderboard.findIndex(l => l.name === currentUser.name || l.user_id === (currentUser.user_id || currentUser.id));
-                      return idx !== -1 ? `टॉप १० मध्ये तुमची रँक #${idx + 1}` : "सराव Exam सोडवून गुण मिळवा";
+                      return idx !== -1 ? `टॉप 10 मध्ये तुमची Rank #${idx + 1}` : "Mock Exam सोडवून Marks Minळवा";
                     })()}
                   </p>
                 </div>
 
                 <div className="glass-card" style={{ textAlign: "center", padding: "26px", borderLeft: "4px solid #3b82f6" }}>
                   <div style={{ fontSize: "2.5rem", marginBottom: "8px" }}>🏃</div>
-                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>शारीरिक चाचणी नोंदी (Fitness Logs)</h4>
+                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>शारीरिक चाचणी Logs (Fitness Logs)</h4>
                   <div style={{ fontSize: "1.8rem", color: "#ffffff", fontWeight: 800, marginBottom: "4px" }}>
-                    {fitnessLogs.length} नोंदी
+                    {fitnessLogs.length} Logs
                   </div>
                   <p style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>
                     {fitnessLogs.length > 0
-                      ? `सर्वोच्च गुण: ${Math.max(...fitnessLogs.map(f => getFitnessLogMarks(f).total))} / ५०`
+                      ? `Highest Score: ${Math.max(...fitnessLogs.map(f => getFitnessLogMarks(f).total))} / 50`
                       : "अद्याप कोणतीही नोंद केलेली नाही"}
                   </p>
                 </div>
 
                 <div className="glass-card" style={{ textAlign: "center", padding: "26px", borderLeft: "4px solid #10b981" }}>
                   <div style={{ fontSize: "2.5rem", marginBottom: "8px" }}>📝</div>
-                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>सराव Exam (Mock Tests)</h4>
+                  <h4 style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "6px" }}>Mock Exams (Mock Tests)</h4>
                   <div style={{ fontSize: "1.8rem", color: "#ffffff", fontWeight: 800, marginBottom: "4px" }}>
-                    {tests.length}+ टेस्ट उपलब्ध
+                    {tests.length}+ Tests Available
                   </div>
                   <p style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>
-                    TCS / IBPS पॅटर्ननुसार नियमित सराव
+                    TCS / IBPS पॅटर्ननुसार नियMinत सराव
                   </p>
                 </div>
               </div>
@@ -1345,10 +1198,10 @@ export default function HomePage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
                   <div>
                     <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "4px" }}>
-                      📜 माझी शारीरिक चाचणी प्रगती (Fitness Activity History)
+                      📜 My Physical Test Progress (Fitness Activity History)
                     </h3>
                     <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-                      तुमच्या रोजच्या १६०० मीटर, १०० मीटर व गोळाफेक सरावाच्या नोंदी.
+                      तुमच्या रोजच्या 1600 mटर, 100 mटर व गोळाफेक सरावाच्या Logs.
                     </p>
                   </div>
                   <button
@@ -1356,19 +1209,19 @@ export default function HomePage() {
                     className="btn btn-primary"
                     style={{ padding: "10px 18px", fontSize: "0.9rem", fontWeight: 700 }}
                   >
-                    ➕ नवीन शारीरिक चाचणी नोंद करा ➡
+                    ➕ Add New Physical Test Log ➡
                   </button>
                 </div>
 
                 {fitnessLogs.length === 0 ? (
                   <div style={{ textAlign: "center", padding: "40px 20px", background: "rgba(0,0,0,0.25)", borderRadius: "16px", border: "1px dashed rgba(255,255,255,0.15)" }}>
                     <div style={{ fontSize: "2.5rem", marginBottom: "10px" }}>📭</div>
-                    <h4 style={{ color: "#fff", fontSize: "1.1rem", marginBottom: "6px" }}>अद्याप एकही शारीरिक चाचणी नोंद नाही</h4>
+                    <h4 style={{ color: "#fff", fontSize: "1.1rem", marginBottom: "6px" }}>No physical test logs yet</h4>
                     <p style={{ color: "#94a3b8", fontSize: "0.9rem", marginBottom: "16px" }}>
-                      तुमची रोजची धावण्याची वेळ आणि गोळाफेक अंतर मोजा आणि येथे सेव्ह करा.
+                      तुमची रोजची धावण्याची वेळ आणि गोळाफेक अंतर मोजा आणि येथे Secव्ह करा.
                     </p>
                     <button onClick={() => setActiveTab("physical-test")} className="btn btn-outline" style={{ padding: "8px 16px", fontSize: "0.85rem" }}>
-                      🏃 गुण मोजा आणि नोंद सेव्ह करा
+                      🏃 Marks मोजा आणि नोंद Secव्ह करा
                     </button>
                   </div>
                 ) : (
@@ -1376,11 +1229,11 @@ export default function HomePage() {
                     <table style={{ width: "100%", borderCollapse: "collapse", color: "#e2e8f0" }}>
                       <thead>
                         <tr style={{ background: "rgba(15, 23, 42, 0.8)", textAlign: "left", borderBottom: "2px solid #f97316" }}>
-                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>तारीख (Date)</th>
-                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>१६०० मीटर (वेळ व गुण)</th>
-                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>१०० मीटर (वेळ व गुण)</th>
-                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>गोळाफेक (अंतर व गुण)</th>
-                          <th style={{ padding: "14px", fontSize: "0.9rem", textAlign: "right" }}>एकूण गुण (Total)</th>
+                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>Date</th>
+                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>1600 mटर (वेळ व Marks)</th>
+                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>100 mटर (वेळ व Marks)</th>
+                          <th style={{ padding: "14px", fontSize: "0.9rem" }}>Shot Put (Distance & Marks)</th>
+                          <th style={{ padding: "14px", fontSize: "0.9rem", textAlign: "right" }}>Total Marks</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1390,19 +1243,19 @@ export default function HomePage() {
                           const marks = getFitnessLogMarks(log);
                           return (
                             <tr key={log.id || log._id || idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                              <td style={{ padding: "14px", fontWeight: 600 }}>{log.date || log.created_at?.split("T")[0] || "आज"}</td>
+                              <td style={{ padding: "14px", fontWeight: 600 }}>{log.date || log.created_at?.split("T")[0] || "Today"}</td>
                               <td style={{ padding: "14px" }}>
-                                {min}मि {sec}से <br /><span style={{ color: "#fb923c", fontSize: "0.85rem" }}>({marks.score1600} गुण)</span>
+                                {min}Min {sec}Sec <br /><span style={{ color: "#fb923c", fontSize: "0.85rem" }}>({marks.score1600} Marks)</span>
                               </td>
                               <td style={{ padding: "14px" }}>
-                                {log.run_100m_seconds || 12} सेकंद <br /><span style={{ color: "#fb923c", fontSize: "0.85rem" }}>({marks.score100} गुण)</span>
+                                {log.run_100m_seconds || 12} Secकंद <br /><span style={{ color: "#fb923c", fontSize: "0.85rem" }}>({marks.score100} Marks)</span>
                               </td>
                               <td style={{ padding: "14px" }}>
-                                {log.shot_put_meters || 8} मीटर <br /><span style={{ color: "#fb923c", fontSize: "0.85rem" }}>({marks.scoreShot} गुण)</span>
+                                {log.shot_put_meters || 8} mटर <br /><span style={{ color: "#fb923c", fontSize: "0.85rem" }}>({marks.scoreShot} Marks)</span>
                               </td>
                               <td style={{ padding: "14px", textAlign: "right" }}>
                                 <span style={{ display: "inline-block", padding: "6px 14px", background: "rgba(249, 115, 22, 0.2)", color: "#fb923c", borderRadius: "100px", fontWeight: 800, fontSize: "1rem", border: "1px solid #f97316" }}>
-                                  🎯 {marks.total} / ५०
+                                  🎯 {marks.total} / 50
                                 </span>
                               </td>
                             </tr>
@@ -1486,12 +1339,12 @@ export default function HomePage() {
               borderRadius: "12px",
               border: "1px solid rgba(255,255,255,0.05)"
             }}>
-              {selectedNote.content || "या नोट्सचा सविस्तर मजकूर लवकरच अपडेट केला जाईल."}
+              {selectedNote.content || "The detailed content of these notes will be updated soon."}
             </div>
 
             <div style={{ marginTop: "24px", textAlign: "right" }}>
               <button onClick={() => setSelectedNote(null)} className="btn btn-primary">
-                ✓ बंद करा (Close)
+                ✓ Close
               </button>
             </div>
           </div>
@@ -1541,44 +1394,44 @@ export default function HomePage() {
             }}>
               <div>
                 <div style={{ display: "inline-block", padding: "8px 16px", background: "rgba(255, 255, 255, 0.15)", borderRadius: "100px", fontSize: "0.85rem", fontWeight: 700, color: "#fff", marginBottom: "20px", backdropFilter: "blur(5px)", border: "1px solid rgba(255, 255, 255, 0.2)" }}>
-                  🇮🇳 Global पोलीस व Aptitude Tests भरती
+                  🇮🇳 Global Police & Aptitude Tests Prep
                 </div>
                 <h2 style={{ fontSize: "2.2rem", fontWeight: 900, color: "#ffffff", lineHeight: "1.2", marginBottom: "16px", textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}>
-                  मिशन वर्दी <br /><span style={{ color: "#fb923c" }}>स्टडी पोर्टल</span>
+                  EduSaaS <br /><span style={{ color: "#fb923c" }}>Study Portal</span>
                 </h2>
                 <p style={{ color: "#e2e8f0", fontSize: "1rem", lineHeight: "1.6", marginBottom: "30px" }}>
-                  Globalातील लाखो विद्यार्थ्यांसोबत स्पर्धा करा, तुमचे गुण तपासा आणि वर्दीचे स्वप्न साकार करा!
+                  Compete with lakhs of students globally, check your scores, and achieve your dream job!
                 </p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(0,0,0,0.25)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)" }}>
                     <span style={{ fontSize: "1.5rem" }}>🏆</span>
                     <div>
-                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>ग्लोबल लीडरबोर्ड रँकिंग</div>
-                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>Globalातील टॉप विद्यार्थ्यांमध्ये तुमचे नाव पहा</div>
+                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>Global Leaderboard</div>
+                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>See your name among the top students globally</div>
                     </div>
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(0,0,0,0.25)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)" }}>
                     <span style={{ fontSize: "1.5rem" }}>🏃</span>
                     <div>
-                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>फिजिकल चाचणी गुण गणक</div>
-                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>५० पैकी तुमचे शारीरिक चाचणी गुण लगेच मोजा</div>
+                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>Physical Fitness Calculator</div>
+                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>Instantly calculate your physical test marks out of 50</div>
                     </div>
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(0,0,0,0.25)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)" }}>
                     <span style={{ fontSize: "1.5rem" }}>⚡</span>
                     <div>
-                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>१००% मोफत सराव Exam</div>
-                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>TCS / IBPS पॅटर्ननुसार दररोज नवीन टेस्ट</div>
+                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>100% Free Mock Exams</div>
+                      <div style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>New tests daily based on TCS / IBPS pattern</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div style={{ marginTop: "30px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.15)", color: "#cbd5e1", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>🔒 सुरक्षित व खात्रीशीर • १ लाख+ विद्यार्थ्यांचा विश्वास</span>
+                <span>🔒 Secure & Trusted • Trusted by 1 Lakh+ Students</span>
               </div>
             </div>
 
@@ -1617,14 +1470,14 @@ export default function HomePage() {
 
               <div style={{ marginBottom: "24px" }}>
                 <h3 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#ffffff", marginBottom: "6px" }}>
-                  {authMode === "login" && "स्वागत आहे! (Welcome Back)"}
-                  {authMode === "register" && "मोफत नोंदणी (Create Account)"}
-                  {authMode === "profile" && "माझे प्रोफाईल (Edit Profile)"}
+                  {authMode === "login" && "Welcome Back!"}
+                  {authMode === "register" && "Free Registration (Create Account)"}
+                  {authMode === "profile" && "My Profile (Edit Profile)"}
                 </h3>
                 <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
-                  {authMode === "login" && "तुमच्या खात्यात लॉगिन करा आणि सराव सुरू करा."}
-                  {authMode === "register" && "केवळ १ मिनिटात तुमची नोंदणी पूर्ण करा आणि लीडरबोर्डवर या."}
-                  {authMode === "profile" && "तुमचे नाव व जिल्हा लीडरबोर्डसाठी अपडेट ठेवा."}
+                  {authMode === "login" && "Login to your account and start practicing."}
+                  {authMode === "register" && "Complete your registration in just 1 minute and get on the leaderboard."}
+                  {authMode === "profile" && "Keep your name and district updated for the leaderboard."}
                 </p>
               </div>
 
@@ -1636,14 +1489,14 @@ export default function HomePage() {
                     onClick={() => { setAuthMode("login"); setAuthError(""); }}
                     style={{ flex: 1, padding: "12px", borderRadius: "12px", fontWeight: 700, fontSize: "1rem", cursor: "pointer", border: "none", background: authMode === "login" ? "var(--primary-gradient)" : "transparent", color: "#fff", transition: "all 0.3s", boxShadow: authMode === "login" ? "0 4px 15px rgba(249, 115, 22, 0.4)" : "none" }}
                   >
-                    🔑 लॉगिन (Login)
+                    🔑 Login
                   </button>
                   <button
                     type="button"
                     onClick={() => { setAuthMode("register"); setAuthError(""); }}
                     style={{ flex: 1, padding: "12px", borderRadius: "12px", fontWeight: 700, fontSize: "1rem", cursor: "pointer", border: "none", background: authMode === "register" ? "var(--primary-gradient)" : "transparent", color: "#fff", transition: "all 0.3s", boxShadow: authMode === "register" ? "0 4px 15px rgba(249, 115, 22, 0.4)" : "none" }}
                   >
-                    📝 नवीन नोंदणी (Register)
+                    📝 Register
                   </button>
                 </div>
               )}
@@ -1658,18 +1511,18 @@ export default function HomePage() {
               {authMode === "login" && (
                 <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📧 ईमेल पत्ता (Email):</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📧 Email Address:</label>
                     <input type="email" required placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "1rem", transition: "border 0.2s" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>🔒 पासवर्ड (Password):</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>🔒 Password:</label>
                     <input type="password" required placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "1rem", transition: "border 0.2s" }} />
                   </div>
                   <button type="submit" disabled={authLoading} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "16px", marginTop: "10px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px", boxShadow: "0 8px 25px rgba(249, 115, 22, 0.4)" }}>
-                    {authLoading ? "लॉगिन होत आहे..." : "🔑 खात्यात प्रवेश करा (Login Now)"}
+                    {authLoading ? "Logging in..." : "🔑 Access Account (Login Now)"}
                   </button>
                   <div style={{ textAlign: "center", marginTop: "12px", fontSize: "0.95rem", color: "#94a3b8" }}>
-                    खाते नाही? <span onClick={() => { setAuthMode("register"); setAuthError(""); }} style={{ color: "#fb923c", cursor: "pointer", fontWeight: 700, textDecoration: "underline" }}>मोफत नवीन खाते उघडा ➡</span>
+                    Don't have an account? <span onClick={() => { setAuthMode("register"); setAuthError(""); }} style={{ color: "#fb923c", cursor: "pointer", fontWeight: 700, textDecoration: "underline" }}>Create new free account ➡</span>
                   </div>
                 </form>
               )}
@@ -1677,32 +1530,32 @@ export default function HomePage() {
               {authMode === "register" && (
                 <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>👤 पूर्ण नाव (Full Name):</label>
-                    <input type="text" required placeholder="उदा. राहुल शर्मा" value={name} onChange={(e) => setName(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>👤 Full Name:</label>
+                    <input type="text" required placeholder="e.g. Rahul Sharma" value={name} onChange={(e) => setName(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📧 ईमेल पत्ता (Email):</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📧 Email Address:</label>
                     <input type="email" required placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>🔒 पासवर्ड तयार करा (Password):</label>
-                    <input type="password" required placeholder="कमीत कमी ६ अक्षरे" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>🔒 Create Password:</label>
+                    <input type="password" required placeholder="Minimum 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                   </div>
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     <div style={{ flex: "1 1 160px" }}>
-                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 मोबाईल नंबर (Optional):</label>
+                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 Mobile Number (Optional):</label>
                       <input type="tel" placeholder="9876543210" value={mobile} onChange={(e) => setMobile(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                     </div>
                     <div style={{ flex: "1 1 160px" }}>
-                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 जिल्हा (District) *:</label>
-                      <input type="text" required placeholder="उदा. पुणे" value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
+                      <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 District *:</label>
+                      <input type="text" required placeholder="e.g. Pune" value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: "12px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "0.95rem" }} />
                     </div>
                   </div>
                   <button type="submit" disabled={authLoading} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "14px", marginTop: "8px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px", boxShadow: "0 8px 25px rgba(249, 115, 22, 0.4)" }}>
-                    {authLoading ? "रजिस्ट्रेशन होत आहे..." : "✓ मोफत नोंदणी करा (Register Now)"}
+                    {authLoading ? "Registering..." : "✓ Register for Free (Register Now)"}
                   </button>
                   <div style={{ textAlign: "center", marginTop: "10px", fontSize: "0.95rem", color: "#94a3b8" }}>
-                    आधीच खाते आहे? <span onClick={() => { setAuthMode("login"); setAuthError(""); }} style={{ color: "#fb923c", cursor: "pointer", fontWeight: 700, textDecoration: "underline" }}>लॉगिन करा ➡</span>
+                    Already have an account? <span onClick={() => { setAuthMode("login"); setAuthError(""); }} style={{ color: "#fb923c", cursor: "pointer", fontWeight: 700, textDecoration: "underline" }}>Login ➡</span>
                   </div>
                 </form>
               )}
@@ -1710,19 +1563,19 @@ export default function HomePage() {
               {authMode === "profile" && currentUser && (
                 <form onSubmit={handleUpdateProfile} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>👤 तुमचे नाव (Name):</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>👤 Your Name:</label>
                     <input type="text" required value={name} onChange={(e) => setName(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid #f97316", color: "#fff", fontSize: "1rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 मोबाईल नंबर (Optional):</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📱 Mobile Number (Optional):</label>
                     <input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", fontSize: "1rem" }} />
                   </div>
                   <div>
-                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 तुमचा जिल्हा (District for Leaderboard) *:</label>
+                    <label style={{ display: "block", color: "#e2e8f0", fontSize: "0.9rem", fontWeight: 600, marginBottom: "6px" }}>📍 Your District (For Leaderboard) *:</label>
                     <input type="text" required value={district} onChange={(e) => setDistrict(e.target.value)} style={{ width: "100%", padding: "14px 16px", borderRadius: "14px", background: "rgba(0, 0, 0, 0.4)", border: "1px solid #f97316", color: "#fff", fontSize: "1rem" }} />
                   </div>
                   <button type="submit" disabled={authLoading} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "16px", marginTop: "10px", fontSize: "1.1rem", fontWeight: 800, borderRadius: "14px" }}>
-                    {authLoading ? "अपडेट होत आहे..." : "✓ बदल सेव्ह करा (Save Profile)"}
+                    {authLoading ? "Updating..." : "✓ Save Changes"}
                   </button>
                   <button
                     type="button"
@@ -1730,7 +1583,7 @@ export default function HomePage() {
                     className="btn btn-outline"
                     style={{ width: "100%", justifyContent: "center", padding: "14px", color: "#ef4444", borderColor: "#ef4444", fontSize: "1.05rem", fontWeight: 700 }}
                   >
-                    🚪 लॉग आउट करा (Logout)
+                    🚪 Logout
                   </button>
                 </form>
               )}
@@ -1745,7 +1598,7 @@ export default function HomePage() {
       {/* Exam Categories Overview Section */}
       <section style={{ margin: "60px 0 40px 0" }}>
         <h2 style={{ fontSize: "1.8rem", color: "#ffffff", marginBottom: "24px", textAlign: "center" }}>
-          🏆 Global स्पर्धा Exam तयारी (Exam Categories Overview)
+          🏆 Global Competitive Exams Prep (Exam Categories Overview)
         </h2>
 
         <div className="grid-2">
@@ -1782,7 +1635,7 @@ export default function HomePage() {
                   {cat.description}
                 </p>
                 <Link href={`/mock-test/${cat.slug}`} style={{ color: "#fb923c", fontWeight: 700, fontSize: "0.9rem", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <span>सर्व टेस्ट पहा (Explore Tests) ➡</span>
+                  <span>Explore All Tests ➡</span>
                 </Link>
               </div>
             </div>
@@ -1799,34 +1652,34 @@ export default function HomePage() {
         margin: "60px 0 20px 0"
       }}>
         <h2 style={{ fontSize: "1.7rem", color: "#ffffff", marginBottom: "16px", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", paddingBottom: "12px" }}>
-          ❓ वारंवार विचारले जाणारे प्रश्न (Frequently Asked Questions - FAQ)
+          ❓ Frequently Asked Questions (FAQ)
         </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "24px" }}>
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              १. EduSaaS Web पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत Mock Test उपलब्ध आहेत?
+              1. Which exams have free mock tests available on EduSaaS Web?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              EduSaaS Web पोर्टलवर <strong>Global Competitive Exams (Police Bharti 2026), Aptitude Tests भरती (Talathi Bharti), MPSC राज्यसेवा व संयुक्त Exam, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद</strong> परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव Exam उपलब्ध आहेत.
+              EduSaaS Web पोर्टलवर <strong>Global Competitive Exams (Police Bharti 2026), Aptitude Tests भरती (Talathi Bharti), MPSC राज्यSecवा व संयुक्त Exam, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद</strong> परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन Mock Exam उपलब्ध आहेत.
             </p>
           </div>
 
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              २. ऑनलाइन टेस्ट सोडवल्यानंतर निकाल व स्पष्टीकरण लगेच मिळते का?
+              2. Do I get the result and explanation immediately after solving the test?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              होय! प्रत्येक टेस्ट सबमिट केल्याबरोबर तुम्हाला तुमचे एकूण प्राप्त गुण (Score), अचूकता (Accuracy percentage), बरोबर व चुकलेले प्रश्न, तसेच प्रत्येक प्रश्नाचे <strong>सविस्तर उत्तर व स्पष्टीकरण (Detailed Explanations)</strong> स्क्रीनवर लगेच पाहायला मिळते.
+              होय! प्रत्येक टेस्ट सबMinट केल्याबरोबर तुम्हाला तुमचे एकूण प्राप्त Marks (Score), अचूकता (Accuracy percentage), बरोबर व चुकलेले Questions, तSecच प्रत्येक Questionsाचे <strong>सविस्तर उत्तर व स्पष्टीकरण (Detailed Explanations)</strong> स्क्रीनवर लगेच पाहायला Minळते.
             </p>
           </div>
 
           <div>
             <h3 style={{ fontSize: "1.15rem", color: "#fb923c", marginBottom: "6px" }}>
-              ३. Majhi Naukri Mock Test पेक्षा EduSaaS Web पोर्टल कसे वेगळे व उत्तम आहे?
+              3. How is EduSaaS Web better and different from other portals?
             </h3>
             <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: "1.6" }}>
-              EduSaaS Web पोर्टल हे आधुनिक वेब तंत्रज्ञानावर (Next.js SSR) आधारित असून येथे <strong>अतिशय वेगवान स्पीड (Zero Lag), टाइमरसह प्रत्यक्ष परीक्षेचा अनुभव (Exam Engine), स्टडी मटेरियल व नोट्स, मागील वर्षांच्या प्रश्नपत्रिका (PYQ), शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide) आणि ग्लोबल टॉपर लीडरबोर्ड</strong> एकाच मंचावर पूर्णपणे मोफत उपलब्ध आहे.
+              EduSaaS Web पोर्टल हे आधुनिक वेब तंत्रज्ञानावर (Next.js SSR) आधारित असून येथे <strong>अतिशय वेगवान स्पीड (Zero Lag), टाइमरसह प्रत्यक्ष परीक्षेचा अनुभव (Exam Engine), स्टडी मटेरियल व नोट्स, मागील वर्षांच्या Questionsपत्रिका (PYQ), शारीरिक चाचणी ट्रॅकर (Physical Fitness Guide) आणि ग्लोबल टॉपर लीडरबोर्ड</strong> एकाच मंचावर पूर्णपणे मोफत उपलब्ध आहे.
             </p>
           </div>
         </div>
@@ -1876,15 +1729,15 @@ export default function HomePage() {
                   "name": "EduSaaS Web पोर्टलवर कोणकोणत्या परीक्षेसाठी मोफत Mock Test उपलब्ध आहेत?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "EduSaaS Web पोर्टलवर Global Competitive Exams, Aptitude Tests भरती, MPSC राज्यसेवा व संयुक्त Exam, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव Exam उपलब्ध आहेत."
+                    "text": "EduSaaS Web पोर्टलवर Global Competitive Exams, Aptitude Tests भरती, MPSC राज्यSecवा व संयुक्त Exam, जिल्हा परिषद भरती (ZP Bharti), आरोग्य विभाग आणि नगर परिषद परीक्षेसाठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन Mock Exam उपलब्ध आहेत."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "ऑनलाइन टेस्ट सोडवल्यानंतर निकाल व स्पष्टीकरण लगेच मिळते का?",
+                  "name": "ऑनलाइन टेस्ट सोडवल्यानंतर निकाल व स्पष्टीकरण लगेच Minळते का?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "होय! प्रत्येक टेस्ट सबमिट केल्याबरोबर तुम्हाला तुमचे एकूण प्राप्त गुण (Score), अचूकता (Accuracy percentage), बरोबर व चुकलेले प्रश्न, तसेच प्रत्येक प्रश्नाचे सविस्तर उत्तर व स्पष्टीकरण (Detailed Explanations) स्क्रीनवर लगेच पाहायला मिळते."
+                    "text": "Yes! As soon as you submit the test, you will immediately see your total score, accuracy percentage, correct and incorrect questions, as well as detailed explanations for each question."
                   }
                 }
               ]

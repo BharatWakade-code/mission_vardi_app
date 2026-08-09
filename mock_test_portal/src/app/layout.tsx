@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: "EduSaaS Web | Best Site for Police Bharti & Talathi Mock Test in Marathi",
     template: "%s | EduSaaS Web Portal"
   },
-  description: "Globalातील सर्वोत्तम मोफत ऑनलाइन सराव Exam (Free Mock Tests). Police Bharti, Talathi Bharti, MPSC, ZP Bharti व आरोग्य विभाग परीक्षेसाठी TCS/IBPS पॅटर्ननुसार सराव प्रश्नपत्रिका.",
+  description: "Globalातील सर्वोत्तम मोफत ऑनलाइन Mock Exam (Free Mock Tests). Police Bharti, Talathi Bharti, MPSC, ZP Bharti व आरोग्य विभाग परीक्षेसाठी TCS/IBPS पॅटर्ननुसार Mock Question Paper.",
   keywords: [
     "best site for police EduSaaS Web in marathi",
     "free talathi bharti online test tcs pattern",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     "police bharti syllabus and test series",
     "majhi naukri mock test alternative",
     "EduSaaS Web online",
-    "Competitive Exams मोफत सराव Exam",
+    "Competitive Exams मोफत Mock Exam",
     "Aptitude Tests भरती ऑनलाइन टेस्ट",
     "mpsc rajyaseva mock test free",
     "mh cet mock test",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "EduSaaS Web Portal",
-    description: "Competitive Exams व Aptitude Tests भरती मोफत सराव Exam २०२६ - TCS/IBPS Pattern",
+    description: "Competitive Exams व Aptitude Tests भरती मोफत Mock Exam २०२६ - TCS/IBPS Pattern",
     images: ["https://edusaasweb.in/logo.png"],
   },
   verification: {

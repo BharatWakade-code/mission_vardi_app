@@ -59,7 +59,7 @@ export default function Footer() {
           {/* Col 2: Exam Categories */}
           <div>
             <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
-              📋 मुख्य Exam (Exam Categories)
+              📋 Main Exams (Exam Categories)
             </h4>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
               {EXAM_CATEGORIES.slice(0, 5).map((cat) => (
@@ -76,20 +76,20 @@ export default function Footer() {
           {/* Col 3: Quick Links & SEO */}
           <div>
             <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
-              ⚡ महत्वाच्या लिंक्स (Important Links)
+              ⚡ Important Links
             </h4>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
               <li>
-                <Link href="/" style={{ color: "#cbd5e1" }}>🏠 सर्व मोफत सराव प्रश्नपत्रिका (All Free Tests)</Link>
+                <Link href="/" style={{ color: "#cbd5e1" }}>🏠 सर्व मोफत Mock Question Paper (All Free Tests)</Link>
               </li>
               <li>
-                <Link href="/mock-test/police-bharti" style={{ color: "#cbd5e1" }}>🛡️ Competitive Exams अभ्यासक्रम व टेस्ट सिरीज २०२६</Link>
+                <Link href="/mock-test/police-bharti" style={{ color: "#cbd5e1" }}>🛡️ Competitive Exams Syllabus & Test Series</Link>
               </li>
               <li>
-                <Link href="/mock-test/talathi-bharti" style={{ color: "#cbd5e1" }}>📜 Aptitude Tests भरती TCS पॅटर्न ऑनलाइन टेस्ट</Link>
+                <Link href="/mock-test/talathi-bharti" style={{ color: "#cbd5e1" }}>📜 Aptitude Tests TCS Pattern Online Test</Link>
               </li>
               <li>
-                <Link href="/#faq-section" style={{ color: "#cbd5e1" }}>❓ वारंवार विचारले जाणारे प्रश्न (FAQ)</Link>
+                <Link href="/#faq-section" style={{ color: "#cbd5e1" }}>❓ Frequently Asked Questions (FAQ)</Link>
               </li>
             </ul>
           </div>
@@ -97,10 +97,10 @@ export default function Footer() {
           {/* Col 4: Disclaimer & Support */}
           <div>
             <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
-              ⚠️ कायदेशीर सूचना (Disclaimer)
+              ⚠️ Disclaimer
             </h4>
             <p style={{ fontSize: "0.85rem", lineHeight: "1.5", color: "#64748b", marginBottom: "12px" }}>
-              हे एक स्वतंत्र शैक्षणिक पोर्टल असून याचा कोणत्याही सरकारी संस्थेशी किंवा आयोगाशी अधिकृत संबंध नाही. आम्ही विद्यार्थ्यांना स्पर्धा परीक्षेच्या सरावासाठी मोफत प्रश्नपत्रिका व मार्गदर्शन उपलब्ध करून देतो.
+              This is an independent educational portal and has no official affiliation with any government entity or commission. We provide free question papers and guidance to students for competitive exam practice.
             </p>
             <div style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>
               📧 सपोर्ट संपर्क: <strong>bharatwakade012@gmail.com</strong>

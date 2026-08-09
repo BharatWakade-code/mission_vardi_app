@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
   return {
     title: `${category.name} | Free Online Mock Test Series 2026`,
-    description: `${category.nameEn} - ${category.description} सोडवा मोफत सराव प्रश्नपत्रिका व मिळवा लगेच निकाल.`,
+    description: `${category.nameEn} - ${category.description} सोडवा मोफत Mock Question Paper व मिळवा लगेच निकाल.`,
     keywords: [
       category.name,
       category.nameEn,
@@ -134,7 +134,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </p>
 
         <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
-          <span className="badge badge-orange">🔥 एकूण {tests.length} सराव Exam</span>
+          <span className="badge badge-orange">🔥 एकूण {tests.length} Mock Exam</span>
           <span className="badge badge-green">⚡ १००% मोफत व त्वरित निकाल</span>
           <span className="badge badge-blue">🎯 TCS व IBPS पॅटर्ननुसार</span>
         </div>
@@ -146,14 +146,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       {/* Tests Grid */}
       <div style={{ marginBottom: "20px" }}>
         <h2 style={{ fontSize: "1.6rem", color: "#ffffff", marginBottom: "20px" }}>
-          📝 उपलब्ध सराव प्रश्नपत्रिका (Practice Tests)
+          📝 उपलब्ध Mock Question Paper (Practice Tests)
         </h2>
       </div>
 
       {tests.length === 0 ? (
         <div className="glass-card" style={{ padding: "50px", textAlign: "center" }}>
           <h3 style={{ color: "#ffffff", marginBottom: "10px" }}>लवकरच नवीन टेस्ट जोडल्या जातील!</h3>
-          <p style={{ color: "#94a3b8", marginBottom: "20px" }}>आमची टीम या परीक्षेसाठी नवीन २०२६ पॅटर्ननुसार प्रश्नपत्रिका तयार करत आहे.</p>
+          <p style={{ color: "#94a3b8", marginBottom: "20px" }}>आमची टीम या परीक्षेसाठी नवीन २०२६ पॅटर्ननुसार Questionsपत्रिका तयार करत आहे.</p>
           <Link href="/" className="btn btn-primary">🏠 इतर Exam पहा</Link>
         </div>
       ) : (

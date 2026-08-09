@@ -104,16 +104,16 @@ export default function ExamCard({ test }: ExamCardProps) {
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>❓</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>एकूण प्रश्न</div>
-              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalQuestions} प्रश्न</div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>Total Questions</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalQuestions} Questions</div>
             </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>🎯</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>एकूण गुण</div>
-              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalMarks} गुण</div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>Total Marks</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalMarks} Marks</div>
             </div>
           </div>
 
@@ -129,7 +129,7 @@ export default function ExamCard({ test }: ExamCardProps) {
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>⭐</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>विद्यार्थी रेटिंग</div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>Student Rating</div>
               <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#fbbf24" }}>{test.rating} ({test.reviewsCount})</div>
             </div>
           </div>
@@ -160,10 +160,10 @@ export default function ExamCard({ test }: ExamCardProps) {
           {isNavigating ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              लोड होत आहे...
+              Loading...
             </>
           ) : (
-            "⚡ टेस्ट सोडवा (Start Test Now)"
+            "⚡ Start Test Now"
           )}
         </button>
       </div>

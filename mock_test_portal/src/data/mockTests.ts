@@ -39,54 +39,54 @@ export interface ExamCategory {
 export const EXAM_CATEGORIES: ExamCategory[] = [
   {
     slug: "police-bharti",
-    name: "Competitive Exams सराव Exam",
-    nameEn: "Maharashtra Police EduSaaS Web",
-    description: "पोलीस शिपाई, चालक व SRFP भरतीसाठी नवीन पॅटर्ननुसार मोफत ऑनलाइन सराव Exam (मराठी व्याकरण, सामान्य ज्ञान, गणित व बुद्धिमत्ता).",
+    name: "Police Bharti Exams",
+    nameEn: "Maharashtra Police Bharti",
+    description: "Free online mock exams based on new pattern for Police recruitment (Grammar, GK, Math & Reasoning).",
     icon: "🛡️",
     totalTests: 0,
     colorTheme: "#1e3a8a", // Navy Blue
   },
   {
     slug: "talathi-bharti",
-    name: "Aptitude Tests भरती सराव प्रश्नपत्रिका",
+    name: "Talathi Bharti Practice Tests",
     nameEn: "Talathi Bharti Online Practice Test",
-    description: "महसूल विभाग Aptitude Tests भरती Exam टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत सराव टेस्ट सिरीज.",
+    description: "Free mock test series based on TCS and IBPS pattern for Talathi Bharti.",
     icon: "📜",
     totalTests: 0,
     colorTheme: "#047857", // Emerald Green
   },
   {
     slug: "mpsc-rajyaseva",
-    name: "एमपीएससी राज्यसेवा / संयुक्त Exam",
+    name: "MPSC Rajyaseva / Combined Exams",
     nameEn: "MPSC Rajyaseva & Combine Group B/C",
-    description: "MPSC राज्यसेवा पूर्व व मुख्य Exam तसेच संयुक्त गट ब व गट क (PSI, STI, ASO) परीक्षेसाठी दर्जेदार सराव प्रश्न.",
+    description: "High quality practice questions for MPSC State Services Prelims & Mains and Combined Group B & C exams.",
     icon: "🏛️",
     totalTests: 0,
     colorTheme: "#b45309", // Amber / Saffron
   },
   {
     slug: "zilla-parishad",
-    name: "जिल्हा परिषद (ZP) भरती",
-    nameEn: "Zilla Parishad (ZP) EduSaaS Web",
-    description: "जिल्हा परिषद भरती अंतर्गत ग्रामसेवक, आरोग्य सेवक, वरिष्ठ सहाय्यक व कनिष्ठ अभियंता पदांसाठी मोफत Mock Test.",
+    name: "Zilla Parishad (ZP) Exams",
+    nameEn: "Zilla Parishad (ZP) Bharti",
+    description: "Free Mock Tests for Gram Sevak, Health Worker, Senior Assistant and Junior Engineer posts.",
     icon: "🏢",
     totalTests: 0,
     colorTheme: "#6d28d9", // Purple
   },
   {
     slug: "arogya-vibhag",
-    name: "आरोग्य विभाग भरती गट क व ड",
+    name: "Arogya Vibhag Group C & D",
     nameEn: "Arogya Vibhag Group C & D Test",
-    description: "सार्वजनिक आरोग्य विभाग व वैद्यकीय शिक्षण विभाग भरतीसाठी तांत्रिक व अतांत्रिक प्रश्नांची मोफत टेस्ट सिरीज.",
+    description: "Free test series of technical and non-technical questions for Public Health Department.",
     icon: "🏥",
     totalTests: 0,
     colorTheme: "#be123c", // Rose Red
   },
   {
     slug: "nagar-parishad",
-    name: "नगर परिषद / महानगरपालिका भरती",
+    name: "Nagar Parishad / Mahanagarpalika",
     nameEn: "Nagar Parishad & Mahanagarpalika Test",
-    description: "नगर परिषद, महानगरपालिका (BMC, PMC, NMMC) लिपिक, कर निर्धारक व अभियंता भरती सराव Exam.",
+    description: "Municipal Council, Municipal Corporation (BMC, PMC, NMMC) Clerk, Tax Assessor and Engineer recruitment practice exams.",
     icon: "🏙️",
     totalTests: 0,
     colorTheme: "#0369a1", // Sky Blue
@@ -173,10 +173,10 @@ export function generateFAQSchema() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Competitive Exams आणि Aptitude Tests भरतीसाठी मोफत सराव Exam कुठे मिळतील?",
+        "name": "Competitive Exams आणि Aptitude Tests भरतीसाठी मोफत Mock Exam कुठे मिळतील?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "EduSaaS Web पोर्टलवर Global Competitive Exams, Aptitude Tests भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन सराव Exam उपलब्ध आहेत."
+          "text": "EduSaaS Web पोर्टलवर Global Competitive Exams, Aptitude Tests भरती, MPSC आणि जिल्हा परिषद परीक्षेसाठी TCS व IBPS पॅटर्ननुसार संपूर्ण मोफत ऑनलाइन Mock Exam उपलब्ध आहेत."
         }
       },
       {
@@ -192,7 +192,7 @@ export function generateFAQSchema() {
         "name": "ऑनलाइन टेस्ट सोडवल्यानंतर लगेच निकाल व स्पष्टीकरण मिळते का?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "होय! प्रत्येक टेस्ट सबमिट केल्याबरोबर तुम्हाला तुमचे एकूण गुण, अचूकता (Accuracy %), आणि प्रत्येक प्रश्नाचे सविस्तर उत्तर व स्पष्टीकरण (Detailed Explanations) पाहायला मिळते."
+          "text": "होय! प्रत्येक टेस्ट सबमिट केल्याबरोबर तुम्हाला तुमचे Total Marks, Accuracy (%), आणि प्रत्येक Questionsाचे सविस्तर उत्तर व स्पष्टीकरण (Detailed Explanations) पाहायला मिळते."
         }
       }
     ]

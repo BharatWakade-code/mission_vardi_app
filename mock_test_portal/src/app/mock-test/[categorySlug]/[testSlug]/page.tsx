@@ -36,14 +36,14 @@ export async function generateMetadata({ params }: TestPageProps): Promise<Metad
 
   return {
     title: `${test.title} | Online Free Practice Mock Test`,
-    description: `${test.titleEn} - सोडवा मोफत ऑनलाइन Exam (${test.totalQuestions} प्रश्न, ${test.totalMarks} गुण). लगेच निकाल व स्पष्टीकरण मिळवा.`,
+    description: `${test.titleEn} - सोडवा मोफत ऑनलाइन Exam (${test.totalQuestions} Questions, ${test.totalMarks} Marks). लगेच निकाल व स्पष्टीकरण मिळवा.`,
     keywords: [
       test.title,
       test.titleEn,
       test.categoryName,
       "free mock test online",
       "maharashtra competitive exam practice test",
-      "Competitive Exams सराव Exam"
+      "Competitive Exams Mock Exam"
     ],
     openGraph: {
       title: `${test.title} - Free Practice Test`,
@@ -58,7 +58,7 @@ export default async function TestPage({ params }: TestPageProps) {
   const test = await fetchLiveQuizById(testSlug);
   const categories = await fetchLiveCategories();
   const category = categories.find((c) => c.slug === categorySlug) || {
-    name: test?.categoryName || "सराव Exam",
+    name: test?.categoryName || "Mock Exam",
     slug: categorySlug,
   };
 

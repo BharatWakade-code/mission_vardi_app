@@ -22,7 +22,7 @@ export default function Loading() {
       
       {/* Professional Typography */}
       <h2 style={{ fontSize: "1.2rem", fontWeight: 600, color: "#f8fafc", marginBottom: "6px", letterSpacing: "0.5px" }}>
-        माहिती लोड होत आहे...
+        माहिती Loading...
       </h2>
       
       {/* Subtle Brand Tagline */}

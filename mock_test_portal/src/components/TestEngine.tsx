@@ -166,7 +166,7 @@ export default function TestEngine({ test }: TestEngineProps) {
 
           <div style={{ fontSize: "3rem", marginBottom: "10px" }}>🏆</div>
           <h1 style={{ fontSize: "2rem", marginBottom: "8px", color: "#ffffff" }}>
-            अभिनंदन! Exam निकाल व विश्लेषण (Test Scorecard)
+            Congratulations! Test Scorecard
           </h1>
           <p style={{ color: "#94a3b8", fontSize: "1.05rem", marginBottom: "28px" }}>
             {test.title} • {test.titleEn}
@@ -181,28 +181,28 @@ export default function TestEngine({ test }: TestEngineProps) {
             margin: "0 auto 30px auto"
           }}>
             <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>एकूण प्राप्त गुण (Score)</div>
+              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>एकूण प्राप्त Marks (Score)</div>
               <div style={{ fontSize: "2rem", fontWeight: 800, color: "#34d399" }}>
                 {res.score} <span style={{ fontSize: "1rem", color: "#64748b" }}>/ {test.totalMarks}</span>
               </div>
             </div>
 
             <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>अचूकता (Accuracy %)</div>
+              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>Accuracy (%)</div>
               <div style={{ fontSize: "2rem", fontWeight: 800, color: "#60a5fa" }}>
                 {res.accuracy}%
               </div>
             </div>
 
             <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>बरोबर उत्तरे (Correct)</div>
+              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>Correct Answers</div>
               <div style={{ fontSize: "2rem", fontWeight: 800, color: "#10b981" }}>
                 {res.correctCount}
               </div>
             </div>
 
             <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>चुकलेली उत्तरे (Incorrect)</div>
+              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>Incorrect Answers</div>
               <div style={{ fontSize: "2rem", fontWeight: 800, color: "#f43f5e" }}>
                 {res.incorrectCount}
               </div>
@@ -230,10 +230,10 @@ export default function TestEngine({ test }: TestEngineProps) {
               }}
               className="btn btn-primary"
             >
-              🔄 पुन्हा टेस्ट सोडवा (Re-attempt Test)
+              🔄 Re-attempt Test
             </button>
             <Link href="/" className="btn btn-outline">
-              📋 इतर मोफत टेस्ट पहा (All Mock Tests)
+              📋 All Mock Tests
             </Link>
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function TestEngine({ test }: TestEngineProps) {
 
         {/* Solution & Pedagogical Explanation Review Mode */}
         <h2 style={{ fontSize: "1.6rem", marginBottom: "20px", color: "#ffffff", borderLeft: "4px solid #f97316", paddingLeft: "12px" }}>
-          📖 सर्व प्रश्नांची अचूक उत्तरे व सविस्तर स्पष्टीकरण (Detailed Solutions)
+          📖 सर्व Questionsांची अचूक उत्तरे व सविस्तर स्पष्टीकरण (Detailed Solutions)
         </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -260,12 +260,12 @@ export default function TestEngine({ test }: TestEngineProps) {
                 {/* Question Top Bar */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
                   <span className="badge" style={{ background: "rgba(255, 255, 255, 0.08)", color: "#e2e8f0", fontSize: "0.9rem" }}>
-                    प्रश्न क्रमांक {idx + 1}
+                    Question No {idx + 1}
                   </span>
                   <div>
-                    {isCorrect && <span className="badge badge-green">✓ बरोबर उत्तर (Correct) +{q.marks} गुण</span>}
-                    {isUnattempted && <span className="badge" style={{ background: "rgba(148, 163, 184, 0.15)", color: "#94a3b8" }}>⚠ सोडवला नाही (Unattempted) 0 गुण</span>}
-                    {!isCorrect && !isUnattempted && <span className="badge" style={{ background: "rgba(244, 63, 94, 0.15)", color: "#f43f5e" }}>✕ चुकले (Incorrect) 0 गुण</span>}
+                    {isCorrect && <span className="badge badge-green">✓ Correct +{q.marks} Marks</span>}
+                    {isUnattempted && <span className="badge" style={{ background: "rgba(148, 163, 184, 0.15)", color: "#94a3b8" }}>⚠ Unattempted 0 Marks</span>}
+                    {!isCorrect && !isUnattempted && <span className="badge" style={{ background: "rgba(244, 63, 94, 0.15)", color: "#f43f5e" }}>✕ Incorrect 0 Marks</span>}
                   </div>
                 </div>
 
@@ -343,7 +343,7 @@ export default function TestEngine({ test }: TestEngineProps) {
                   lineHeight: "1.6"
                 }}>
                   <div style={{ fontWeight: 700, color: "#60a5fa", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span>💡 सविस्तर स्पष्टीकरण (Solution Explanation):</span>
+                    <span>💡 Solution Explanation:</span>
                   </div>
                   {q.explanation}
                 </div>
@@ -354,7 +354,7 @@ export default function TestEngine({ test }: TestEngineProps) {
 
         <div style={{ marginTop: "40px", textAlign: "center" }}>
           <Link href="/" className="btn btn-primary" style={{ padding: "14px 28px", fontSize: "1.05rem" }}>
-            🏠 मुख्य पृष्ठावर जा (Back to Home)
+            🏠 Back to Home
           </Link>
         </div>
       </div>
@@ -400,7 +400,7 @@ export default function TestEngine({ test }: TestEngineProps) {
             fontWeight: 700,
             fontSize: "1.1rem"
           }}>
-            <span className={isTimeLow ? "animate-pulse" : ""}>⏱️ उरलेला वेळ:</span>
+            <span className={isTimeLow ? "animate-pulse" : ""}>⏱️ Time Remaining:</span>
             <span>{formatTime(timeRemaining)}</span>
           </div>
 
@@ -409,7 +409,7 @@ export default function TestEngine({ test }: TestEngineProps) {
             className="btn btn-success"
             style={{ padding: "10px 20px" }}
           >
-            ✓ टेस्ट सबमिट करा (Submit)
+            ✓ Submit Test
           </button>
         </div>
       </div>
@@ -435,14 +435,14 @@ export default function TestEngine({ test }: TestEngineProps) {
                   padding: "6px 12px",
                   borderRadius: "8px"
                 }}>
-                  प्रश्न {currentIdx + 1} / {test.questions.length}
+                  Questions {currentIdx + 1} / {test.questions.length}
                 </span>
                 <span className="badge" style={{ background: "rgba(255, 255, 255, 0.05)", color: "#cbd5e1" }}>
-                  +{currentQuestion.marks} गुण (Marks)
+                  +{currentQuestion.marks} Marks (Marks)
                 </span>
               </div>
               <span style={{ fontSize: "0.85rem", color: "#64748b" }}>
-                🎯 नकारात्मक गुण (Negative Marking): नाही (No)
+                🎯 नकारात्मक Marks (Negative Marking): नाही (No)
               </span>
             </div>
 
@@ -520,7 +520,7 @@ export default function TestEngine({ test }: TestEngineProps) {
               className="btn btn-outline"
               style={{ opacity: currentIdx === 0 ? 0.5 : 1, cursor: currentIdx === 0 ? "not-allowed" : "pointer" }}
             >
-              ⬅ मागील प्रश्न (Previous)
+              ⬅ मागील Questions (Previous)
             </button>
 
             <div style={{ display: "flex", gap: "10px" }}>
@@ -529,14 +529,14 @@ export default function TestEngine({ test }: TestEngineProps) {
                 className="btn"
                 style={{ background: "rgba(245, 158, 11, 0.15)", color: "#fbbf24", border: "1px solid rgba(245, 158, 11, 0.4)" }}
               >
-                🔖 रिव्ह्यूसाठी ठेवा (Mark for Review)
+                🔖 Mark for Review
               </button>
 
               <button
                 onClick={handleSaveAndNext}
                 className="btn btn-primary"
               >
-                पुढील प्रश्न (Next) ➡
+                पुढील Questions (Next) ➡
               </button>
             </div>
           </div>
@@ -545,8 +545,8 @@ export default function TestEngine({ test }: TestEngineProps) {
         {/* Right Column: Question Palette & Navigation Grid */}
         <div className="glass-card" style={{ padding: "20px", position: "sticky", top: "165px" }}>
           <h3 style={{ fontSize: "1.1rem", color: "#ffffff", marginBottom: "14px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span>📊 प्रश्न पॅलेट (Question Grid)</span>
-            <span className="badge badge-orange">{test.questions.length} प्रश्न</span>
+            <span>📊 Questions पॅलेट (Question Grid)</span>
+            <span className="badge badge-orange">{test.questions.length} Questions</span>
           </h3>
 
           {/* Palette Color Legend */}
@@ -625,7 +625,7 @@ export default function TestEngine({ test }: TestEngineProps) {
                     boxShadow: isCurrent ? "0 0 10px rgba(255, 255, 255, 0.5)" : "none",
                     transform: isCurrent ? "scale(1.08)" : "scale(1)"
                   }}
-                  title={`प्रश्न ${idx + 1} (${status})`}
+                  title={`Questions ${idx + 1} (${status})`}
                 >
                   {idx + 1}
                 </button>
@@ -671,7 +671,7 @@ export default function TestEngine({ test }: TestEngineProps) {
               तुम्हाला नक्की टेस्ट सबमिट करायची आहे का?
             </h3>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "24px" }}>
-              एकदा टेस्ट सबमिट केल्यानंतर तुम्ही उत्तरे बदलू शकणार नाही. लगेच तुमचे गुण व स्पष्टीकरण (Scorecard) स्क्रीनवर दिसेल.
+              एकदा टेस्ट सबमिट केल्यानंतर तुम्ही उत्तरे बदलू शकणार नाही. लगेच तुमचे Marks व स्पष्टीकरण (Scorecard) स्क्रीनवर दिसेल.
             </p>
 
             <div style={{ display: "flex", gap: "14px", justifyContent: "center" }}>

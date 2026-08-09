@@ -68,11 +68,11 @@ function mapBackendQuestion(q: BackendQuestion, idx: number): Question {
 
   return {
     id: typeof q.id === "number" ? q.id : idx + 1,
-    questionText: q.text_mr || q.text || `प्रश्न क्रमांक ${idx + 1}`,
+    questionText: q.text_mr || q.text || `Question No ${idx + 1}`,
     questionTextEn: q.text || q.text_mr,
     options: options,
     correctOptionIndex: correctIdx,
-    explanation: `बरोबर उत्तर: ${q.correctAnswer}`,
+    explanation: `Correct Answer: ${q.correctAnswer}`,
     marks: 2,
   };
 }
@@ -89,7 +89,7 @@ function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
 
   // Match existing category name if present
   const existingCat = EXAM_CATEGORIES.find((c) => c.slug === slug);
-  const catName = existingCat ? existingCat.name : bq.category || "सराव Exam";
+  const catName = existingCat ? existingCat.name : bq.category || "Mock Exam";
   const catNameEn = existingCat ? existingCat.nameEn : bq.category || "Practice Test";
 
   const totalQuestions = bq.totalQuestions || (questions.length > 0 ? questions.length : 25); // default 25 if listed without questions and backend didn't provide totalQuestions
@@ -201,7 +201,7 @@ export async function fetchLiveCategories(): Promise<ExamCategory[]> {
         slug: test.categorySlug,
         name: test.categoryName,
         nameEn: test.categoryNameEn,
-        description: `${test.categoryName} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन सराव Exam.`,
+        description: `${test.categoryName} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन Mock Exam.`,
         icon: icon,
         totalTests: testCounts[test.categorySlug] || 1,
         colorTheme: colorTheme,
@@ -432,10 +432,10 @@ export async function loginUserApi(email: string, password: string): Promise<{ s
     if (res.ok && (json.status || json.user || json.data)) {
       return { success: true, user: json.user || json.data || json };
     }
-    return { success: false, message: json.detail || json.message || "लॉगिन अयशस्वी. कृपया ईमेल आणि पासवर्ड तपासा." };
+    return { success: false, message: json.detail || json.message || "Login failed. Please check your email and password." };
   } catch (error) {
     console.error("Login API Error:", error);
-    return { success: false, message: "सर्व्हरशी संपर्क होऊ शकला नाही. कृपया इंटरनेट तपासा." };
+    return { success: false, message: "Could not connect to server. Please check your internet." };
   }
 }
 
@@ -450,10 +450,10 @@ export async function registerUserApi(name: string, email: string, password: str
     if (res.ok && (json.status || json.user || json.data || res.status === 200)) {
       return { success: true, user: json.user || json.data || { name, email, mobile, district } };
     }
-    return { success: false, message: json.detail || json.message || "रजिस्ट्रेशन अयशस्वी." };
+    return { success: false, message: json.detail || json.message || "Registration failed." };
   } catch (error) {
     console.error("Register API Error:", error);
-    return { success: false, message: "सर्व्हरशी संपर्क होऊ शकला नाही." };
+    return { success: false, message: "Could not connect to server." };
   }
 }
 
