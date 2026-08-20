@@ -123,10 +123,11 @@ export default function Footer() {
           <div>
             © {new Date().getFullYear()} <strong>MH Mock Test Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.
           </div>
-          <div style={{ display: "flex", gap: "20px" }}>
-            <span>Privacy Policy</span>
-            <span>Terms of Service</span>
-            <span>AdSense Disclosure</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+            <Link href="/about-us" style={{ color: "inherit", textDecoration: "none" }}>About Us</Link>
+            <Link href="/contact-us" style={{ color: "inherit", textDecoration: "none" }}>Contact Us</Link>
+            <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "none" }}>Privacy Policy</Link>
+            <Link href="/terms-of-service" style={{ color: "inherit", textDecoration: "none" }}>Terms of Service</Link>
           </div>
         </div>
       </div>
