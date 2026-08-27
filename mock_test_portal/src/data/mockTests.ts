@@ -44,7 +44,7 @@ export const EXAM_CATEGORIES: ExamCategory[] = [
     description: "पोलीस शिपाई, चालक व SRFP भरतीसाठी नवीन पॅटर्ननुसार मोफत ऑनलाइन सराव परीक्षा (मराठी व्याकरण, सामान्य ज्ञान, गणित व बुद्धिमत्ता).",
     icon: "🛡️",
     totalTests: 0,
-    colorTheme: "#1e3a8a", // Navy Blue
+    colorTheme: "#eff6ff", // Navy Blue
   },
   {
     slug: "talathi-bharti",

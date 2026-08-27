@@ -39,7 +39,7 @@ export function categoryToSlug(category: string): string {
   if (lower === "daily challenge") return "daily-challenge";
   if (lower === "police bharti" || lower === "police") return "police-bharti";
   if (lower === "talathi" || lower === "talathi bharti") return "talathi-bharti";
-  return lower.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return lower.replace(/\s+/g, "-").replace(/[^\w\u0900-\u097F\-]+/g, "").replace(/^-|-$/g, "") || "cat-" + Math.random().toString(36).substr(2, 5);
 }
 
 // Helper to convert backend question format to Frontend Question format
@@ -108,7 +108,7 @@ function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
     totalMarks: totalMarks,
     totalQuestions: totalQuestions,
     difficulty: diff,
-    badge: bq.type === "challenge" ? "⚡ Daily Challenge" : "🔥 Live API",
+    badge: bq.type === "challenge" ? "⚡ Daily Challenge" : undefined,
     rating: 0,
     reviewsCount: 0,
     questions: questions,
@@ -160,56 +160,59 @@ export async function fetchLiveQuizById(idOrSlug: string): Promise<MockTest | un
   return undefined;
 }
 
-/**
- * Fetch all categories dynamically combining static category metadata and any new categories found in API
- */
 export async function fetchLiveCategories(): Promise<ExamCategory[]> {
-  const tests = await fetchLiveQuizzes();
-  const dynamicCategories = [...EXAM_CATEGORIES];
-  const existingSlugs = new Set(dynamicCategories.map((c) => c.slug));
-
-  // Count actual tests per category
-  const testCounts: Record<string, number> = {};
-  for (const t of tests) {
-    testCounts[t.categorySlug] = (testCounts[t.categorySlug] || 0) + 1;
-  }
-
-  // Update counts for existing categories to match actual live database tests
-  for (const cat of dynamicCategories) {
-    cat.totalTests = testCounts[cat.slug] || 0;
-  }
-
-  // Add any new categories from backend API
-  for (const test of tests) {
-    if (!existingSlugs.has(test.categorySlug)) {
-      existingSlugs.add(test.categorySlug);
-
-      let icon = "📝";
-      let colorTheme = "#0369a1"; // Default sky blue
-      if (test.categorySlug === "srpf") {
-        icon = "🛡️";
-        colorTheme = "#1e3a8a";
-      } else if (test.categorySlug === "forest-guard") {
-        icon = "🌲";
-        colorTheme = "#047857";
-      } else if (test.categorySlug === "daily-challenge") {
-        icon = "⚡";
-        colorTheme = "#b45309";
+  try {
+    const res = await fetch(`${API_BASE_URL}/category`, { next: { revalidate: 30 } });
+    const json = await res.json();
+    
+    if (res.ok && json.status && Array.isArray(json.data)) {
+      // 1. Fetch live tests to calculate actual counts
+      const tests = await fetchLiveQuizzes();
+      const testCounts: Record<string, number> = {};
+      for (const t of tests) {
+        testCounts[t.categorySlug] = (testCounts[t.categorySlug] || 0) + 1;
       }
 
-      dynamicCategories.push({
-        slug: test.categorySlug,
-        name: test.categoryName,
-        nameEn: test.categoryNameEn,
-        description: `${test.categoryName} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन सराव परीक्षा.`,
-        icon: icon,
-        totalTests: testCounts[test.categorySlug] || 1,
-        colorTheme: colorTheme,
-      });
+      // 2. Map backend Categories to Frontend ExamCategory interface
+      const dynamicCategories: ExamCategory[] = json.data
+        .filter((cat: any) => cat.isActive !== false) // Hide inactive categories
+        .map((cat: any) => {
+          const slug = categoryToSlug(cat.name);
+          
+          // Determine Icon and Color dynamically or randomly based on name
+          let icon = "📝";
+          let colorTheme = "#0369a1"; // Default sky blue
+          
+          const nameStr = cat.name.toLowerCase();
+          if (nameStr.includes("पोलीस") || slug.includes("police")) { icon = "🛡️"; colorTheme = "#eff6ff"; }
+          else if (nameStr.includes("तलाठी") || slug.includes("talathi")) { icon = "📜"; colorTheme = "#047857"; }
+          else if (nameStr.includes("एमपीएससी") || nameStr.includes("mpsc") || slug.includes("mpsc")) { icon = "🏛️"; colorTheme = "#b45309"; }
+          else if (nameStr.includes("जिल्हा") || slug.includes("zilla") || slug.includes("zp")) { icon = "🏢"; colorTheme = "#6d28d9"; }
+          else if (nameStr.includes("आरोग्य") || slug.includes("arogya")) { icon = "🏥"; colorTheme = "#be123c"; }
+          else if (nameStr.includes("नगर") || slug.includes("nagar")) { icon = "🏙️"; colorTheme = "#0369a1"; }
+          else if (slug.includes("srpf")) { icon = "🛡️"; colorTheme = "#eff6ff"; }
+          else if (slug.includes("forest")) { icon = "🌲"; colorTheme = "#047857"; }
+          else if (slug.includes("challenge")) { icon = "⚡"; colorTheme = "#b45309"; }
+
+          return {
+            slug: slug,
+            name: cat.name,
+            nameEn: cat.name, // Can be improved if translation provided
+            description: cat.description || `${cat.name} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन सराव परीक्षा.`,
+            icon: icon,
+            totalTests: testCounts[slug] || 0,
+            colorTheme: colorTheme,
+          };
+        });
+
+      return dynamicCategories;
     }
+  } catch (error) {
+    console.warn("Failed to fetch categories from API:", error);
   }
 
-  return dynamicCategories;
+  // Fallback to empty if DB fetch fails
+  return [];
 }
 
 /**

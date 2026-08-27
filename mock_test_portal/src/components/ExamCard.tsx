@@ -14,7 +14,7 @@ interface ExamCardProps {
 export default function ExamCard({ test }: ExamCardProps) {
   const category = getCategoryBySlug(test.categorySlug);
   const icon = category?.icon || "📝";
-  const themeColor = category?.colorTheme || "#3b82f6";
+  const themeColor = category?.colorTheme || "#2563eb";
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
 
@@ -52,9 +52,9 @@ export default function ExamCard({ test }: ExamCardProps) {
         {/* Top Badges */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px", flexWrap: "wrap", gap: "8px" }}>
           <span className="badge" style={{
-            background: "rgba(255, 255, 255, 0.08)",
-            color: "#e2e8f0",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
+            background: "rgba(0, 0, 0, 0.04)",
+            color: "#475569",
+            border: "1px solid rgba(0, 0, 0, 0.08)",
             fontSize: "0.75rem",
             display: "flex",
             alignItems: "center",
@@ -75,7 +75,7 @@ export default function ExamCard({ test }: ExamCardProps) {
         <h3 style={{
           fontSize: "1.2rem",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#0f172a",
           marginBottom: "8px",
           lineHeight: "1.4"
         }}>
@@ -95,33 +95,33 @@ export default function ExamCard({ test }: ExamCardProps) {
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
           gap: "10px",
-          background: "rgba(15, 23, 42, 0.6)",
+          background: "#ffffff",
           padding: "14px",
           borderRadius: "10px",
-          border: "1px solid rgba(255, 255, 255, 0.05)",
+          border: "1px solid rgba(0, 0, 0, 0.02)",
           marginBottom: "20px"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>❓</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>एकूण प्रश्न</div>
-              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalQuestions} प्रश्न</div>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>एकूण प्रश्न</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#1e293b" }}>{test.totalQuestions} प्रश्न</div>
             </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>🎯</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>एकूण गुण</div>
-              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.totalMarks} गुण</div>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>एकूण गुण</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#1e293b" }}>{test.totalMarks} गुण</div>
             </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>⏱️</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>वेळ (Duration)</div>
-              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{test.durationMinutes} मिनिटे</div>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>वेळ (Duration)</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#1e293b" }}>{test.durationMinutes} मिनिटे</div>
             </div>
           </div>
 
@@ -129,7 +129,7 @@ export default function ExamCard({ test }: ExamCardProps) {
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "1.1rem" }}>⭐</span>
             <div>
-              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>विद्यार्थी रेटिंग</div>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>विद्यार्थी रेटिंग</div>
               <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#fbbf24" }}>{test.rating} ({test.reviewsCount})</div>
             </div>
           </div>

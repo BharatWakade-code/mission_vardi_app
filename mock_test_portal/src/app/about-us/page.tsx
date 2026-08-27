@@ -11,7 +11,7 @@ export default function AboutUs() {
     <div className="container" style={{ padding: "100px 20px 60px" }}>
       <h1 style={{ marginBottom: "30px", fontSize: "2.5rem" }}>About Us</h1>
       
-      <div style={{ lineHeight: "1.8", color: "#e2e8f0" }}>
+      <div style={{ lineHeight: "1.8", color: "#475569" }}>
         <p style={{ fontSize: "1.2rem", marginBottom: "20px" }}>
           Welcome to <strong>MH Mock Test</strong>, your number one source for competitive exam preparation in Maharashtra.
         </p>
@@ -36,8 +36,8 @@ export default function AboutUs() {
           Unlike many other portals that charge hefty fees, our platform is 100% free. We focus on providing an excellent user experience, detailed score reports, and immediate answer feedback so you can evaluate your performance instantly. Our site is designed to be accessible, fast, and completely focused on student success.
         </p>
         
-        <div style={{ marginTop: "40px", padding: "20px", background: "rgba(255, 255, 255, 0.05)", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.1)" }}>
-          <h3 style={{ marginBottom: "10px", color: "#ffffff" }}>Disclaimer</h3>
+        <div style={{ marginTop: "40px", padding: "20px", background: "rgba(0, 0, 0, 0.02)", borderRadius: "8px", border: "1px solid rgba(0,0,0,0.06)" }}>
+          <h3 style={{ marginBottom: "10px", color: "#0f172a" }}>Disclaimer</h3>
           <p style={{ fontSize: "0.9rem", color: "#94a3b8", margin: 0 }}>
             MH Mock Test is an independent educational portal. We are not officially affiliated with the Government of Maharashtra, MPSC, or any other government recruitment agency.
           </p>

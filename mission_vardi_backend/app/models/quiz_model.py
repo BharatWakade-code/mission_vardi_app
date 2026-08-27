@@ -21,6 +21,8 @@ class QuizCreate(BaseModel):
     description_mr: Optional[str] = None
     category: Optional[str] = None
     type: Optional[str] = None
+    is_premium: Optional[bool] = False
+    price: Optional[float] = 0.0
     questions: List[Question]
 
 class QuizResultSubmit(BaseModel):

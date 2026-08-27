@@ -90,11 +90,11 @@ export default async function TestPage({ params }: TestPageProps) {
           marginBottom: "16px",
           flexWrap: "wrap"
         }}>
-          <Link href="/" style={{ color: "#cbd5e1" }}>🏠 मुख्य पृष्ठ</Link>
+          <Link href="/" style={{ color: "#475569" }}>🏠 मुख्य पृष्ठ</Link>
           <span>/</span>
-          <Link href={`/mock-test/${category.slug}`} style={{ color: "#cbd5e1" }}>{category.name}</Link>
+          <Link href={`/mock-test/${category.slug}`} style={{ color: "#475569" }}>{category.name}</Link>
           <span>/</span>
-          <span style={{ color: "#fb923c", fontWeight: 600 }}>{test.title}</span>
+          <span style={{ color: "#2563eb", fontWeight: 600 }}>{test.title}</span>
         </nav>
       </div>
 

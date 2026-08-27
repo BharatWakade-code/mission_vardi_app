@@ -179,3 +179,25 @@ async def delete_quiz(quiz_id: str):
         "status": False,
         "message": "Quiz not found"
     }
+
+from app.services.auth_service import get_current_user
+from fastapi import Depends
+
+@router.get("/user/my-results", summary="Get current user's quiz results")
+async def get_my_results(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["id"]
+    results = list(results_collection.find({"user_id": user_id}, {"_id": 0}).sort("submittedAt", 1))
+    
+    # We might also want to fetch quiz titles for each result
+    # For a small platform, we can just grab all quizzes and map them
+    all_quizzes = list(quizzes_collection.find({}, {"id": 1, "title": 1, "_id": 0}))
+    quiz_map = {q["id"]: q.get("title", "Unknown Quiz") for q in all_quizzes}
+    
+    for r in results:
+        r["quiz_title"] = quiz_map.get(r["quiz_id"], "Unknown Quiz")
+        
+    return {
+        "status": True,
+        "message": "Results fetched successfully",
+        "data": results
+    }

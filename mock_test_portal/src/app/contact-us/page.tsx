@@ -25,7 +25,7 @@ export default function ContactUs() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "40px" }}>
         
         {/* Contact Form */}
-        <div style={{ background: "rgba(255, 255, 255, 0.02)", padding: "30px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)" }}>
+        <div style={{ background: "rgba(255, 255, 255, 0.02)", padding: "30px", borderRadius: "12px", border: "1px solid rgba(0,0,0,0.02)" }}>
           {status === "success" ? (
             <div style={{ textAlign: "center", padding: "40px 0" }}>
               <div style={{ fontSize: "3rem", marginBottom: "20px" }}>✅</div>
@@ -41,38 +41,38 @@ export default function ContactUs() {
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
-                <label style={{ display: "block", marginBottom: "8px", color: "#e2e8f0" }}>Full Name</label>
+                <label style={{ display: "block", marginBottom: "8px", color: "#475569" }}>Full Name</label>
                 <input 
                   type="text" 
                   required
-                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }} 
+                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(0,0,0,0.06)", color: "#fff" }} 
                   placeholder="John Doe"
                 />
               </div>
               <div>
-                <label style={{ display: "block", marginBottom: "8px", color: "#e2e8f0" }}>Email Address</label>
+                <label style={{ display: "block", marginBottom: "8px", color: "#475569" }}>Email Address</label>
                 <input 
                   type="email" 
                   required
-                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }} 
+                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(0,0,0,0.06)", color: "#fff" }} 
                   placeholder="john@example.com"
                 />
               </div>
               <div>
-                <label style={{ display: "block", marginBottom: "8px", color: "#e2e8f0" }}>Subject</label>
+                <label style={{ display: "block", marginBottom: "8px", color: "#475569" }}>Subject</label>
                 <input 
                   type="text" 
                   required
-                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }} 
+                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(0,0,0,0.06)", color: "#fff" }} 
                   placeholder="How can we help?"
                 />
               </div>
               <div>
-                <label style={{ display: "block", marginBottom: "8px", color: "#e2e8f0" }}>Message</label>
+                <label style={{ display: "block", marginBottom: "8px", color: "#475569" }}>Message</label>
                 <textarea 
                   required
                   rows={5}
-                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", resize: "vertical" }} 
+                  style={{ width: "100%", padding: "12px", borderRadius: "6px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(0,0,0,0.06)", color: "#fff", resize: "vertical" }} 
                   placeholder="Write your message here..."
                 />
               </div>
@@ -99,7 +99,7 @@ export default function ContactUs() {
 
         {/* Contact Info */}
         <div>
-          <h2 style={{ fontSize: "1.5rem", marginBottom: "20px", color: "#e2e8f0" }}>Get in Touch</h2>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "20px", color: "#475569" }}>Get in Touch</h2>
           <p style={{ color: "#94a3b8", lineHeight: "1.7", marginBottom: "30px" }}>
             Whether you have a question about our mock tests, found a bug, or just want to say hi, we're ready to answer all your questions.
           </p>
@@ -108,7 +108,7 @@ export default function ContactUs() {
             <div style={{ display: "flex", alignItems: "flex-start", gap: "15px" }}>
               <div style={{ fontSize: "1.5rem" }}>📧</div>
               <div>
-                <h4 style={{ color: "#e2e8f0", marginBottom: "4px" }}>Email Support</h4>
+                <h4 style={{ color: "#475569", marginBottom: "4px" }}>Email Support</h4>
                 <p style={{ color: "#94a3b8", margin: 0 }}>bharatwakade012@gmail.com</p>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function ContactUs() {
             <div style={{ display: "flex", alignItems: "flex-start", gap: "15px" }}>
               <div style={{ fontSize: "1.5rem" }}>🕒</div>
               <div>
-                <h4 style={{ color: "#e2e8f0", marginBottom: "4px" }}>Response Time</h4>
+                <h4 style={{ color: "#475569", marginBottom: "4px" }}>Response Time</h4>
                 <p style={{ color: "#94a3b8", margin: 0 }}>We typically reply within 24-48 hours during business days.</p>
               </div>
             </div>

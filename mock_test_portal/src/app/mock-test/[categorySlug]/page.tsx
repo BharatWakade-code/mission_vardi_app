@@ -80,9 +80,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         color: "#94a3b8",
         marginBottom: "24px"
       }}>
-        <Link href="/" style={{ color: "#cbd5e1" }}>🏠 मुख्य पृष्ठ</Link>
+        <Link href="/" style={{ color: "#475569" }}>🏠 मुख्य पृष्ठ</Link>
         <span>/</span>
-        <span style={{ color: "#fb923c", fontWeight: 600 }}>{category.name}</span>
+        <span style={{ color: "#2563eb", fontWeight: 600 }}>{category.name}</span>
       </nav>
 
       {/* Category Hero Header */}
@@ -111,7 +111,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             width: "64px",
             height: "64px",
             borderRadius: "16px",
-            background: "rgba(255, 255, 255, 0.05)",
+            background: "rgba(0, 0, 0, 0.02)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -120,7 +120,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             {category.icon}
           </span>
           <div>
-            <h1 style={{ fontSize: "2.2rem", color: "#ffffff", marginBottom: "4px" }}>
+            <h1 style={{ fontSize: "2.2rem", color: "#0f172a", marginBottom: "4px" }}>
               {category.name}
             </h1>
             <div style={{ fontSize: "1.1rem", color: "#94a3b8", fontWeight: 500 }}>
@@ -129,7 +129,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </div>
 
-        <p style={{ fontSize: "1.05rem", color: "#cbd5e1", maxWidth: "800px", lineHeight: "1.6", marginBottom: "20px" }}>
+        <p style={{ fontSize: "1.05rem", color: "#475569", maxWidth: "800px", lineHeight: "1.6", marginBottom: "20px" }}>
           {category.description}
         </p>
 
@@ -145,14 +145,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
       {/* Tests Grid */}
       <div style={{ marginBottom: "20px" }}>
-        <h2 style={{ fontSize: "1.6rem", color: "#ffffff", marginBottom: "20px" }}>
+        <h2 style={{ fontSize: "1.6rem", color: "#0f172a", marginBottom: "20px" }}>
           📝 उपलब्ध सराव प्रश्नपत्रिका (Practice Tests)
         </h2>
       </div>
 
       {tests.length === 0 ? (
         <div className="glass-card" style={{ padding: "50px", textAlign: "center" }}>
-          <h3 style={{ color: "#ffffff", marginBottom: "10px" }}>लवकरच नवीन टेस्ट जोडल्या जातील!</h3>
+          <h3 style={{ color: "#0f172a", marginBottom: "10px" }}>लवकरच नवीन टेस्ट जोडल्या जातील!</h3>
           <p style={{ color: "#94a3b8", marginBottom: "20px" }}>आमची टीम या परीक्षेसाठी नवीन २०२६ पॅटर्ननुसार प्रश्नपत्रिका तयार करत आहे.</p>
           <Link href="/" className="btn btn-primary">🏠 इतर परीक्षा पहा</Link>
         </div>

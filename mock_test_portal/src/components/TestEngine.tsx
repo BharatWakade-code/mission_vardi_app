@@ -149,7 +149,7 @@ export default function TestEngine({ test }: TestEngineProps) {
           padding: "32px",
           textAlign: "center",
           marginBottom: "30px",
-          borderTop: "4px solid #10b981",
+          borderTop: "4px solid #059669",
           position: "relative",
           overflow: "hidden"
         }}>
@@ -165,7 +165,7 @@ export default function TestEngine({ test }: TestEngineProps) {
           }} />
 
           <div style={{ fontSize: "3rem", marginBottom: "10px" }}>🏆</div>
-          <h1 style={{ fontSize: "2rem", marginBottom: "8px", color: "#ffffff" }}>
+          <h1 style={{ fontSize: "2rem", marginBottom: "8px", color: "#0f172a" }}>
             अभिनंदन! परीक्षा निकाल व विश्लेषण (Test Scorecard)
           </h1>
           <p style={{ color: "#94a3b8", fontSize: "1.05rem", marginBottom: "28px" }}>
@@ -180,28 +180,28 @@ export default function TestEngine({ test }: TestEngineProps) {
             maxWidth: "900px",
             margin: "0 auto 30px auto"
           }}>
-            <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
               <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>एकूण प्राप्त गुण (Score)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#34d399" }}>
-                {res.score} <span style={{ fontSize: "1rem", color: "#64748b" }}>/ {test.totalMarks}</span>
+              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#059669" }}>
+                {res.score} <span style={{ fontSize: "1rem", color: "#94a3b8" }}>/ {test.totalMarks}</span>
               </div>
             </div>
 
-            <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
               <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>अचूकता (Accuracy %)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#60a5fa" }}>
+              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#2563eb" }}>
                 {res.accuracy}%
               </div>
             </div>
 
-            <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
               <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>बरोबर उत्तरे (Correct)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#10b981" }}>
+              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#059669" }}>
                 {res.correctCount}
               </div>
             </div>
 
-            <div style={{ background: "rgba(15, 23, 42, 0.8)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
               <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>चुकलेली उत्तरे (Incorrect)</div>
               <div style={{ fontSize: "2rem", fontWeight: 800, color: "#f43f5e" }}>
                 {res.incorrectCount}
@@ -242,7 +242,7 @@ export default function TestEngine({ test }: TestEngineProps) {
         <AdSlot type="leaderboard" title="Google AdSense Banner - High RPM Education Placement" />
 
         {/* Solution & Pedagogical Explanation Review Mode */}
-        <h2 style={{ fontSize: "1.6rem", marginBottom: "20px", color: "#ffffff", borderLeft: "4px solid #f97316", paddingLeft: "12px" }}>
+        <h2 style={{ fontSize: "1.6rem", marginBottom: "20px", color: "#0f172a", borderLeft: "4px solid #2563eb", paddingLeft: "12px" }}>
           📖 सर्व प्रश्नांची अचूक उत्तरे व सविस्तर स्पष्टीकरण (Detailed Solutions)
         </h2>
 
@@ -255,22 +255,22 @@ export default function TestEngine({ test }: TestEngineProps) {
             return (
               <div key={q.id} className="glass-card" style={{
                 padding: "24px",
-                borderLeft: `4px solid ${isCorrect ? "#10b981" : isUnattempted ? "#94a3b8" : "#f43f5e"}`
+                borderLeft: `4px solid ${isCorrect ? "#059669" : isUnattempted ? "#94a3b8" : "#f43f5e"}`
               }}>
                 {/* Question Top Bar */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-                  <span className="badge" style={{ background: "rgba(255, 255, 255, 0.08)", color: "#e2e8f0", fontSize: "0.9rem" }}>
+                  <span className="badge" style={{ background: "rgba(0, 0, 0, 0.04)", color: "#475569", fontSize: "0.9rem" }}>
                     प्रश्न क्रमांक {idx + 1}
                   </span>
                   <div>
                     {isCorrect && <span className="badge badge-green">✓ बरोबर उत्तर (Correct) +{q.marks} गुण</span>}
-                    {isUnattempted && <span className="badge" style={{ background: "rgba(148, 163, 184, 0.15)", color: "#94a3b8" }}>⚠ सोडवला नाही (Unattempted) 0 गुण</span>}
+                    {isUnattempted && <span className="badge" style={{ background: "rgba(148, 163, 184, 0.1)", color: "#94a3b8" }}>⚠ सोडवला नाही (Unattempted) 0 गुण</span>}
                     {!isCorrect && !isUnattempted && <span className="badge" style={{ background: "rgba(244, 63, 94, 0.15)", color: "#f43f5e" }}>✕ चुकले (Incorrect) 0 गुण</span>}
                   </div>
                 </div>
 
                 {/* Question Text */}
-                <h3 style={{ fontSize: "1.2rem", color: "#ffffff", marginBottom: "6px", lineHeight: "1.5" }}>
+                <h3 style={{ fontSize: "1.2rem", color: "#0f172a", marginBottom: "6px", lineHeight: "1.5" }}>
                   {q.questionText}
                 </h3>
                 {q.questionTextEn && (
@@ -285,14 +285,14 @@ export default function TestEngine({ test }: TestEngineProps) {
                     const isTheCorrectAns = oIdx === q.correctOptionIndex;
                     const isUserAns = oIdx === userAns;
 
-                    let bgStyle = "rgba(15, 23, 42, 0.6)";
-                    let borderStyle = "1px solid rgba(255, 255, 255, 0.08)";
-                    let textCol = "#cbd5e1";
+                    let bgStyle = "#ffffff";
+                    let borderStyle = "1px solid rgba(0, 0, 0, 0.04)";
+                    let textCol = "#475569";
 
                     if (isTheCorrectAns) {
-                      bgStyle = "rgba(16, 185, 129, 0.15)";
+                      bgStyle = "rgba(16, 185, 129, 0.1)";
                       borderStyle = "1px solid rgba(16, 185, 129, 0.6)";
-                      textCol = "#34d399";
+                      textCol = "#059669";
                     } else if (isUserAns && !isTheCorrectAns) {
                       bgStyle = "rgba(244, 63, 94, 0.15)";
                       borderStyle = "1px solid rgba(244, 63, 94, 0.6)";
@@ -315,7 +315,7 @@ export default function TestEngine({ test }: TestEngineProps) {
                           width: "28px",
                           height: "28px",
                           borderRadius: "6px",
-                          background: "rgba(255, 255, 255, 0.05)",
+                          background: "rgba(0, 0, 0, 0.02)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -334,15 +334,15 @@ export default function TestEngine({ test }: TestEngineProps) {
 
                 {/* Explanation Box */}
                 <div style={{
-                  background: "rgba(30, 58, 138, 0.25)",
+                  background: "rgba(37, 99, 235, 0.03)",
                   border: "1px solid rgba(59, 130, 246, 0.3)",
                   borderRadius: "10px",
                   padding: "16px",
-                  color: "#e2e8f0",
+                  color: "#475569",
                   fontSize: "0.95rem",
                   lineHeight: "1.6"
                 }}>
-                  <div style={{ fontWeight: 700, color: "#60a5fa", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <div style={{ fontWeight: 700, color: "#2563eb", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
                     <span>💡 सविस्तर स्पष्टीकरण (Solution Explanation):</span>
                   </div>
                   {q.explanation}
@@ -375,13 +375,13 @@ export default function TestEngine({ test }: TestEngineProps) {
         justifyContent: "space-between",
         flexWrap: "wrap",
         gap: "16px",
-        background: "rgba(15, 23, 42, 0.9)"
+        background: "#0f172a"
       }}>
         <div>
-          <span className="badge badge-blue" style={{ marginBottom: "4px" }}>
+          <span className="badge badge-blue" style={{ marginBottom: "4px", background: "#ffffff", border: "none" }}>
             {test.categoryName} • TCS Pattern
           </span>
-          <h1 style={{ fontSize: "1.25rem", color: "#ffffff", margin: 0 }}>
+          <h1 style={{ fontSize: "1.25rem", color: "#ffffff", margin: 0, marginTop: "8px" }}>
             {test.title}
           </h1>
         </div>
@@ -392,11 +392,11 @@ export default function TestEngine({ test }: TestEngineProps) {
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            background: isTimeLow ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.15)",
+            background: isTimeLow ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.1)",
             border: `1px solid ${isTimeLow ? "rgba(244, 63, 94, 0.5)" : "rgba(16, 185, 129, 0.5)"}`,
             padding: "8px 16px",
             borderRadius: "10px",
-            color: isTimeLow ? "#f43f5e" : "#34d399",
+            color: isTimeLow ? "#f43f5e" : "#059669",
             fontWeight: 700,
             fontSize: "1.1rem"
           }}>
@@ -425,7 +425,7 @@ export default function TestEngine({ test }: TestEngineProps) {
         <div className="glass-card" style={{ padding: "30px", minHeight: "480px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
             {/* Question Top Specs */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "14px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(0, 0, 0, 0.04)", paddingBottom: "14px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <span style={{
                   background: "var(--primary-gradient)",
@@ -437,17 +437,17 @@ export default function TestEngine({ test }: TestEngineProps) {
                 }}>
                   प्रश्न {currentIdx + 1} / {test.questions.length}
                 </span>
-                <span className="badge" style={{ background: "rgba(255, 255, 255, 0.05)", color: "#cbd5e1" }}>
+                <span className="badge" style={{ background: "rgba(0, 0, 0, 0.02)", color: "#475569" }}>
                   +{currentQuestion.marks} गुण (Marks)
                 </span>
               </div>
-              <span style={{ fontSize: "0.85rem", color: "#64748b" }}>
+              <span style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
                 🎯 नकारात्मक गुण (Negative Marking): नाही (No)
               </span>
             </div>
 
             {/* Question Text */}
-            <h2 style={{ fontSize: "1.35rem", color: "#ffffff", marginBottom: "8px", lineHeight: "1.5", fontWeight: 600 }}>
+            <h2 style={{ fontSize: "1.35rem", color: "#0f172a", marginBottom: "8px", lineHeight: "1.5", fontWeight: 600 }}>
               {currentQuestion.questionText}
             </h2>
             {currentQuestion.questionTextEn && (
@@ -467,9 +467,9 @@ export default function TestEngine({ test }: TestEngineProps) {
                     style={{
                       padding: "16px 20px",
                       borderRadius: "12px",
-                      background: isSelected ? "rgba(249, 115, 22, 0.2)" : "rgba(15, 23, 42, 0.6)",
-                      border: isSelected ? "2px solid #f97316" : "1px solid rgba(255, 255, 255, 0.08)",
-                      color: isSelected ? "#ffffff" : "#cbd5e1",
+                      background: isSelected ? "rgba(37, 99, 235, 0.1)" : "#ffffff",
+                      border: isSelected ? "2px solid #2563eb" : "1px solid rgba(0, 0, 0, 0.04)",
+                      color: isSelected ? "#0f172a" : "#475569",
                       fontSize: "1.05rem",
                       fontWeight: isSelected ? 600 : 400,
                       textAlign: "left",
@@ -478,14 +478,14 @@ export default function TestEngine({ test }: TestEngineProps) {
                       alignItems: "center",
                       gap: "14px",
                       transition: "var(--transition)",
-                      boxShadow: isSelected ? "0 0 15px rgba(249, 115, 22, 0.2)" : "none"
+                      boxShadow: isSelected ? "0 0 15px rgba(37, 99, 235, 0.1)" : "none"
                     }}
                   >
                     <span style={{
                       width: "32px",
                       height: "32px",
                       borderRadius: "8px",
-                      background: isSelected ? "#f97316" : "rgba(255, 255, 255, 0.05)",
+                      background: isSelected ? "#2563eb" : "rgba(0, 0, 0, 0.02)",
                       color: isSelected ? "#fff" : "#94a3b8",
                       display: "flex",
                       alignItems: "center",
@@ -496,7 +496,7 @@ export default function TestEngine({ test }: TestEngineProps) {
                       {String.fromCharCode(65 + oIdx)}
                     </span>
                     <span style={{ flex: 1 }}>{opt}</span>
-                    {isSelected && <span style={{ color: "#f97316", fontSize: "1.2rem" }}>✓</span>}
+                    {isSelected && <span style={{ color: "#2563eb", fontSize: "1.2rem" }}>✓</span>}
                   </button>
                 );
               })}
@@ -510,7 +510,7 @@ export default function TestEngine({ test }: TestEngineProps) {
             alignItems: "center",
             marginTop: "36px",
             paddingTop: "20px",
-            borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            borderTop: "1px solid rgba(0, 0, 0, 0.04)",
             flexWrap: "wrap",
             gap: "12px"
           }}>
@@ -544,7 +544,7 @@ export default function TestEngine({ test }: TestEngineProps) {
 
         {/* Right Column: Question Palette & Navigation Grid */}
         <div className="glass-card" style={{ padding: "20px", position: "sticky", top: "165px" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "#ffffff", marginBottom: "14px", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h3 style={{ fontSize: "1.1rem", color: "#0f172a", marginBottom: "14px", borderBottom: "1px solid rgba(0, 0, 0, 0.04)", paddingBottom: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span>📊 प्रश्न पॅलेट (Question Grid)</span>
             <span className="badge badge-orange">{test.questions.length} प्रश्न</span>
           </h3>
@@ -556,23 +556,23 @@ export default function TestEngine({ test }: TestEngineProps) {
             gap: "8px",
             fontSize: "0.75rem",
             marginBottom: "18px",
-            background: "rgba(15, 23, 42, 0.6)",
+            background: "#ffffff",
             padding: "10px",
             borderRadius: "8px"
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#cbd5e1" }}>
-              <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#10b981" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
+              <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#059669" }} />
               <span>सोडवले (Answered)</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#cbd5e1" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
               <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#f43f5e" }} />
               <span>सोडवले नाही (Not Ans)</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#cbd5e1" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
               <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#fbbf24" }} />
               <span>रिव्ह्यू (Marked)</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#cbd5e1" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
               <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#475569" }} />
               <span>पाहिले नाही (Unvisited)</span>
             </div>
@@ -596,16 +596,18 @@ export default function TestEngine({ test }: TestEngineProps) {
               let borderCol = "transparent";
 
               if (status === "answered") {
-                bgCol = "#10b981"; // emerald
+                bgCol = "#059669"; // emerald
+                textCol = "#ffffff";
               } else if (status === "unanswered") {
                 bgCol = "#f43f5e"; // rose/red
+                textCol = "#ffffff";
               } else if (status === "marked") {
                 bgCol = "#fbbf24"; // amber
-                textCol = "#000000";
+                textCol = "#0f172a";
               }
 
               if (isCurrent) {
-                borderCol = "#ffffff";
+                borderCol = "#0f172a";
               }
 
               return (
@@ -651,7 +653,7 @@ export default function TestEngine({ test }: TestEngineProps) {
           left: 0,
           width: "100%",
           height: "100%",
-          background: "rgba(0, 0, 0, 0.8)",
+          background: "rgba(0, 0, 0, 0.1)",
           backdropFilter: "blur(8px)",
           display: "flex",
           alignItems: "center",
@@ -664,10 +666,10 @@ export default function TestEngine({ test }: TestEngineProps) {
             width: "100%",
             padding: "30px",
             textAlign: "center",
-            borderTop: "4px solid #f97316"
+            borderTop: "4px solid #2563eb"
           }}>
             <div style={{ fontSize: "3rem", marginBottom: "12px" }}>⚠️</div>
-            <h3 style={{ fontSize: "1.4rem", color: "#ffffff", marginBottom: "10px" }}>
+            <h3 style={{ fontSize: "1.4rem", color: "#0f172a", marginBottom: "10px" }}>
               तुम्हाला नक्की टेस्ट सबमिट करायची आहे का?
             </h3>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "24px" }}>

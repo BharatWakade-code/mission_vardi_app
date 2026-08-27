@@ -1,41 +1,45 @@
-from fastapi import APIRouter
-import boto3
-from uuid import uuid4
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
+import cloudinary
+import cloudinary.uploader
+import os
+from app.services.auth_service import get_current_user
 
-router = APIRouter(
-    prefix="/upload",
-    tags=["Upload"]
+router = APIRouter(prefix="/upload", tags=["Upload"])
+
+# Initialize Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
-s3 = boto3.client("s3")
+@router.post("/")
+async def upload_file(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    # Optional permission check if needed
+    # if "manage_notes" not in current_user.get("permissions", []) and "manage_quizzes" not in current_user.get("permissions", []):
+    #    raise HTTPException(status_code=403, detail="Not authorized to upload files")
 
-MEDIA_BUCKET = "mission-vardi-media"
+    try:
+        # Determine resource type
+        # For PDF files, Cloudinary often requires resource_type="raw" or "auto"
+        resource_type = "auto"
+        if file.filename.endswith(".pdf"):
+            resource_type = "image" # Cloudinary handles PDFs as images sometimes for thumbnails, but 'auto' is safest.
 
-@router.get("/url")
-async def get_upload_url():
-
-    file_name = f"profile/{uuid4()}.jpg"
-
-    upload_url = s3.generate_presigned_url(
-        "put_object",
-        Params={
-            "Bucket": MEDIA_BUCKET,
-            "Key": file_name,
-            "ContentType": "image/jpeg"
-        },
-        ExpiresIn=300
-    )
-
-    file_url = (
-        f"https://{MEDIA_BUCKET}.s3.amazonaws.com/"
-        f"{file_name}"
-    )
-
-    return {
-        "status": True,
-        "message": "URL generated successfully",
-        "data": {
-            "uploadUrl": upload_url,
-            "fileUrl": file_url
+        result = cloudinary.uploader.upload(
+            file.file,
+            resource_type="auto",
+            folder="mission_vardi/uploads"
+        )
+        
+        return {
+            "status": True, 
+            "message": "File uploaded successfully", 
+            "data": {
+                "fileUrl": result.get("secure_url"),
+                "public_id": result.get("public_id")
+            }
         }
-    }
+    except Exception as e:
+        print(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to upload file")

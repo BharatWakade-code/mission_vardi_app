@@ -38,15 +38,15 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       style={{
-        background: "rgba(11, 17, 32, 0.75)",
+        background: "rgba(255, 255, 255, 0.9)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.04)",
         position: "sticky",
         top: 0,
         zIndex: 100,
         width: "100%",
-        boxShadow: "0 10px 40px -10px rgba(0,0,0,0.5)"
+        boxShadow: "0 10px 40px -10px rgba(0,0,0,0.1)"
       }}
     >
       <div className="container" style={{
@@ -64,18 +64,18 @@ export default function Navbar() {
               width: "52px",
               height: "52px",
               borderRadius: "12px",
-              background: "rgba(255,255,255,0.05)",
+              background: "rgba(0,0,0,0.02)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid rgba(0,0,0,0.06)",
               overflow: "hidden"
             }}>
             <img src="/logo.png" alt="MH Mock Test Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </motion.div>
           <div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#ffffff", letterSpacing: "-0.5px", lineHeight: "1.1" }}>
-              MH<span style={{ color: "#f97316" }}>MockTest</span>
+            <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#0f172a", letterSpacing: "-0.5px", lineHeight: "1.1" }}>
+              MH<span style={{ color: "#2563eb" }}>MockTest</span>
             </div>
             <div style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase" }}>
               Premium Mock Portal
@@ -91,7 +91,7 @@ export default function Navbar() {
           background: "rgba(255, 255, 255, 0.03)",
           padding: "6px",
           borderRadius: "16px",
-          border: "1px solid rgba(255, 255, 255, 0.05)"
+          border: "1px solid rgba(0, 0, 0, 0.02)"
         }} className="desktop-nav">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -107,14 +107,14 @@ export default function Navbar() {
                   borderRadius: "12px",
                   fontSize: "0.95rem",
                   fontWeight: 600,
-                  color: isActive ? "#ffffff" : "#cbd5e1",
-                  background: isActive ? "rgba(249, 115, 22, 0.15)" : "transparent",
-                  boxShadow: isActive ? "inset 0 0 0 1px rgba(249, 115, 22, 0.4)" : "none",
+                  color: isActive ? "#0f172a" : "#475569",
+                  background: isActive ? "rgba(37, 99, 235, 0.1)" : "transparent",
+                  boxShadow: isActive ? "inset 0 0 0 1px rgba(37, 99, 235, 0.15)" : "none",
                   transition: "all 0.3s ease"
                 }}
                 className="nav-link-hover"
               >
-                <span style={{ color: isActive ? "#fb923c" : "#94a3b8" }}>{link.icon}</span>
+                <span style={{ color: isActive ? "#2563eb" : "#94a3b8" }}>{link.icon}</span>
                 {link.name}
               </Link>
             );
@@ -123,27 +123,27 @@ export default function Navbar() {
 
         {/* Right CTA Button & Badge */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div className="desktop-badge" style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.3)", padding: "6px 12px", borderRadius: "100px", color: "#34d399", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-            <span style={{ width: "8px", height: "8px", background: "#10b981", borderRadius: "50%", boxShadow: "0 0 10px #10b981" }} className="animate-pulse"></span>
+          <div className="desktop-badge" style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.3)", padding: "6px 12px", borderRadius: "100px", color: "#059669", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <span style={{ width: "8px", height: "8px", background: "#059669", borderRadius: "50%", boxShadow: "0 0 10px #059669" }} className="animate-pulse"></span>
             100% Free
           </div>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="#all-tests" style={{
+            <Link href="/pricing" style={{
               display: "flex",
               alignItems: "center",
               gap: "8px",
               padding: "10px 22px",
               fontSize: "0.95rem",
               fontWeight: 700,
-              background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+              background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
               color: "#fff",
               borderRadius: "12px",
               textDecoration: "none",
-              boxShadow: "0 10px 25px -5px rgba(249, 115, 22, 0.5), inset 0 2px 4px rgba(255,255,255,0.2)"
+              boxShadow: "0 10px 25px -5px rgba(37, 99, 235, 0.1), inset 0 2px 4px rgba(0,0,0,0.1)"
             }}>
               <Zap size={18} fill="#fff" />
-              सराव सुरू करा
+              Premium Tests
             </Link>
           </motion.div>
 
@@ -151,9 +151,9 @@ export default function Navbar() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              color: "#ffffff",
+              background: "rgba(0, 0, 0, 0.02)",
+              border: "1px solid rgba(0, 0, 0, 0.06)",
+              color: "#0f172a",
               padding: "10px",
               borderRadius: "12px",
               cursor: "pointer",
@@ -178,9 +178,9 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             style={{
-              background: "rgba(15, 23, 42, 0.98)",
+              background: "#ffffff",
               backdropFilter: "blur(20px)",
-              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+              borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
               padding: "20px",
               display: "flex",
               flexDirection: "column",
@@ -202,13 +202,13 @@ export default function Navbar() {
                     borderRadius: "12px",
                     fontSize: "1.05rem",
                     fontWeight: 600,
-                    color: isActive ? "#ffffff" : "#cbd5e1",
-                    background: isActive ? "rgba(249, 115, 22, 0.15)" : "rgba(255, 255, 255, 0.03)",
-                    border: isActive ? "1px solid rgba(249, 115, 22, 0.3)" : "1px solid transparent",
+                    color: isActive ? "#0f172a" : "#475569",
+                    background: isActive ? "rgba(37, 99, 235, 0.1)" : "rgba(255, 255, 255, 0.03)",
+                    border: isActive ? "1px solid rgba(37, 99, 235, 0.1)" : "1px solid transparent",
                     textDecoration: "none"
                   }}
                 >
-                  <span style={{ color: isActive ? "#fb923c" : "#94a3b8" }}>{link.icon}</span>
+                  <span style={{ color: isActive ? "#2563eb" : "#94a3b8" }}>{link.icon}</span>
                   {link.name}
                 </Link>
               );
@@ -219,7 +219,7 @@ export default function Navbar() {
 
       <style jsx>{`
         .nav-link-hover:hover {
-          background: rgba(255, 255, 255, 0.08) !important;
+          background: rgba(0, 0, 0, 0.04) !important;
           color: #fff !important;
         }
         @media (max-width: 1024px) {

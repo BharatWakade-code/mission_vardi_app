@@ -11,3 +11,5 @@ class NoteCreate(BaseModel):
     subject: Optional[str] = None
     content: Optional[str] = None
     content_mr: Optional[str] = None
+    is_premium: Optional[bool] = False
+    price: Optional[float] = 0.0

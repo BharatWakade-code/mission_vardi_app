@@ -11,7 +11,7 @@ export default function TermsOfService() {
     <div className="container" style={{ padding: "100px 20px 60px" }}>
       <h1 style={{ marginBottom: "30px", fontSize: "2.5rem" }}>Terms of Service</h1>
       
-      <div style={{ lineHeight: "1.8", color: "#e2e8f0" }}>
+      <div style={{ lineHeight: "1.8", color: "#475569" }}>
         <p><strong>Effective Date:</strong> {new Date().toLocaleDateString()}</p>
         
         <h2 style={{ marginTop: "30px", marginBottom: "15px", fontSize: "1.5rem" }}>1. Acceptance of Terms</h2>

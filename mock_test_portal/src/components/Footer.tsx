@@ -15,7 +15,7 @@ export default function Footer() {
   return (
     <footer style={{
       background: "#070c17",
-      borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+      borderTop: "1px solid rgba(0, 0, 0, 0.06)",
       padding: "60px 0 30px 0",
       marginTop: "80px",
       color: "#94a3b8"
@@ -43,7 +43,7 @@ export default function Footer() {
               }}>
                 🛡️
               </div>
-              <span style={{ fontSize: "1.3rem", fontWeight: 700, color: "#ffffff" }}>
+              <span style={{ fontSize: "1.3rem", fontWeight: 700, color: "#0f172a" }}>
                 MH<span className="gradient-text">MockTest</span>
               </span>
             </div>
@@ -58,13 +58,13 @@ export default function Footer() {
 
           {/* Col 2: Exam Categories */}
           <div>
-            <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
+            <h4 style={{ color: "#0f172a", marginBottom: "18px", fontSize: "1.1rem" }}>
               📋 मुख्य परीक्षा (Exam Categories)
             </h4>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
               {EXAM_CATEGORIES.slice(0, 5).map((cat) => (
                 <li key={cat.slug}>
-                  <Link href={`/mock-test/${cat.slug}`} style={{ color: "#cbd5e1", transition: "var(--transition)", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Link href={`/mock-test/${cat.slug}`} style={{ color: "#475569", transition: "var(--transition)", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "8px" }}>
                     <span>{cat.icon}</span>
                     <span>{cat.name}</span>
                   </Link>
@@ -75,34 +75,34 @@ export default function Footer() {
 
           {/* Col 3: Quick Links & SEO */}
           <div>
-            <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
+            <h4 style={{ color: "#0f172a", marginBottom: "18px", fontSize: "1.1rem" }}>
               ⚡ महत्वाच्या लिंक्स (Important Links)
             </h4>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
               <li>
-                <Link href="/" style={{ color: "#cbd5e1" }}>🏠 सर्व मोफत सराव प्रश्नपत्रिका (All Free Tests)</Link>
+                <Link href="/" style={{ color: "#475569" }}>🏠 सर्व मोफत सराव प्रश्नपत्रिका (All Free Tests)</Link>
               </li>
               <li>
-                <Link href="/mock-test/police-bharti" style={{ color: "#cbd5e1" }}>🛡️ पोलीस भरती अभ्यासक्रम व टेस्ट सिरीज २०२६</Link>
+                <Link href="/mock-test/police-bharti" style={{ color: "#475569" }}>🛡️ पोलीस भरती अभ्यासक्रम व टेस्ट सिरीज २०२६</Link>
               </li>
               <li>
-                <Link href="/mock-test/talathi-bharti" style={{ color: "#cbd5e1" }}>📜 तलाठी भरती TCS पॅटर्न ऑनलाइन टेस्ट</Link>
+                <Link href="/mock-test/talathi-bharti" style={{ color: "#475569" }}>📜 तलाठी भरती TCS पॅटर्न ऑनलाइन टेस्ट</Link>
               </li>
               <li>
-                <Link href="/#faq-section" style={{ color: "#cbd5e1" }}>❓ वारंवार विचारले जाणारे प्रश्न (FAQ)</Link>
+                <Link href="/#faq-section" style={{ color: "#475569" }}>❓ वारंवार विचारले जाणारे प्रश्न (FAQ)</Link>
               </li>
             </ul>
           </div>
 
           {/* Col 4: Disclaimer & Support */}
           <div>
-            <h4 style={{ color: "#ffffff", marginBottom: "18px", fontSize: "1.1rem" }}>
+            <h4 style={{ color: "#0f172a", marginBottom: "18px", fontSize: "1.1rem" }}>
               ⚠️ कायदेशीर सूचना (Disclaimer)
             </h4>
-            <p style={{ fontSize: "0.85rem", lineHeight: "1.5", color: "#64748b", marginBottom: "12px" }}>
+            <p style={{ fontSize: "0.85rem", lineHeight: "1.5", color: "#94a3b8", marginBottom: "12px" }}>
               हे एक स्वतंत्र शैक्षणिक पोर्टल असून याचा कोणत्याही सरकारी संस्थेशी किंवा आयोगाशी अधिकृत संबंध नाही. आम्ही विद्यार्थ्यांना स्पर्धा परीक्षेच्या सरावासाठी मोफत प्रश्नपत्रिका व मार्गदर्शन उपलब्ध करून देतो.
             </p>
-            <div style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>
+            <div style={{ fontSize: "0.85rem", color: "#475569" }}>
               📧 सपोर्ट संपर्क: <strong>bharatwakade012@gmail.com</strong>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div style={{
-          borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+          borderTop: "1px solid rgba(0, 0, 0, 0.02)",
           paddingTop: "24px",
           display: "flex",
           flexWrap: "wrap",
@@ -118,7 +118,7 @@ export default function Footer() {
           alignItems: "center",
           gap: "16px",
           fontSize: "0.85rem",
-          color: "#64748b"
+          color: "#94a3b8"
         }}>
           <div>
             © {new Date().getFullYear()} <strong>MH Mock Test Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.

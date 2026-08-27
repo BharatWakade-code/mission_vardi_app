@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { ConditionalNavbar, ConditionalFooter } from "@/components/ConditionalLayout";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
     "majhi naukri mock test alternative",
     "MH Mock Test online",
     "पोलीस भरती मोफत सराव परीक्षा",
-    "तलाठी भरती ऑनलाइन टेस्ट",
+    "तलाठी भरती ऑनलाइन টেস্ট",
     "mpsc rajyaseva mock test free",
     "mh cet mock test",
     "maharashtra competitive exams mock test",
@@ -103,18 +102,17 @@ export default function RootLayout({
         <link rel="icon" href="/logo.png" />
       </head>
       <body>
-        {/* Google AdSense Script - Requires next/script for proper hydration */}
-        <Script 
+        {/* Google AdSense Script */}
+        <script 
           async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5035062638976485"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-        <Navbar />
-        <main className="main-content">
+        ></script>
+        <ConditionalNavbar />
+        <main className="main-content" style={{ padding: 0, margin: 0, width: "100%", overflowX: "hidden" }}>
           {children}
         </main>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );
