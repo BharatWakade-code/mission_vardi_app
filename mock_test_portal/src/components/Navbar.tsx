@@ -5,15 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Home,
-  ShieldCheck,
   FileText,
-  Landmark,
-  Building2,
+  Trophy,
+  Crown,
+  BookOpen,
   Menu,
   X,
   Zap,
-  Award
+  User
 } from "lucide-react";
 
 export default function Navbar() {
@@ -25,11 +24,10 @@ export default function Navbar() {
   if (isTestPage) return null;
 
   const navLinks = [
-    { name: "मुख्य पृष्ठ", href: "/", icon: <Home size={12} /> },
-    { name: "पोलीस भरती", href: "/mock-test/police-bharti", icon: <ShieldCheck size={12} /> },
-    { name: "तलाठी भरती", href: "/mock-test/talathi-bharti", icon: <FileText size={12} /> },
-    { name: "MPSC राज्यसेवा", href: "/mock-test/mpsc-rajyaseva", icon: <Landmark size={12} /> },
-    { name: "ZP भरती", href: "/mock-test/zilla-parishad", icon: <Building2 size={12} /> },
+    { name: "Mock Tests", href: "/mock-test", icon: <FileText size={14} /> },
+    { name: "Test Series", href: "/pricing", icon: <Trophy size={14} /> },
+    { name: "Subscription", href: "/pricing", icon: <Crown size={14} /> },
+    { name: "Books", href: "/#packages", icon: <BookOpen size={14} /> },
   ];
 
   return (
@@ -53,7 +51,10 @@ export default function Navbar() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        height: "80px"
+        height: "80px",
+        padding: "0 32px",
+        maxWidth: "1280px",
+        margin: "0 auto"
       }}>
         {/* Brand Logo - Ultra Premium */}
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "14px", textDecoration: "none" }}>
@@ -147,6 +148,23 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/profile" style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "44px",
+              height: "44px",
+              background: "rgba(0, 0, 0, 0.03)",
+              color: "#0f172a",
+              borderRadius: "50%",
+              textDecoration: "none",
+              border: "1px solid rgba(0,0,0,0.08)"
+            }} title="My Profile">
+              <User size={20} />
+            </Link>
+          </motion.div>
+
           {/* Mobile Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -219,8 +237,8 @@ export default function Navbar() {
 
       <style jsx>{`
         .nav-link-hover:hover {
-          background: rgba(0, 0, 0, 0.04) !important;
-          color: #fff !important;
+          background: rgba(37, 99, 235, 0.08) !important;
+          color: #2563eb !important;
         }
         @media (max-width: 1024px) {
           .desktop-nav { display: none !important; }

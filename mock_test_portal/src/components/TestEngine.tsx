@@ -2,6 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { 
+  Clock, CheckCircle2, XCircle, AlertCircle, Bookmark, ChevronLeft, ChevronRight, 
+  RotateCcw, Home, Award, Sparkles, HelpCircle, FileText, Check, X, Send
+} from "lucide-react";
 import { MockTest, Question } from "@/data/mockTests";
 import { submitLiveQuizResult } from "@/services/api";
 import AdSlot from "@/components/AdSlot";
@@ -16,14 +20,15 @@ export default function TestEngine({ test }: TestEngineProps) {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<number, number>>({});
   const [questionStatuses, setQuestionStatuses] = useState<Record<number, QuestionStatus>>({});
-  const [timeRemaining, setTimeRemaining] = useState<number>(test.durationMinutes * 60);
+  const [timeRemaining, setTimeRemaining] = useState<number>((test.durationMinutes || 15) * 60);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
 
-  const currentQuestion = test.questions[currentIdx];
+  const currentQuestion = test.questions?.[currentIdx] || test.questions?.[0];
 
   // Initialize status on mount
   useEffect(() => {
+    if (!test.questions) return;
     const initialStatus: Record<number, QuestionStatus> = {};
     test.questions.forEach((q) => {
       initialStatus[q.id] = "unvisited";
@@ -70,11 +75,9 @@ export default function TestEngine({ test }: TestEngineProps) {
 
     setQuestionStatuses((prev) => {
       const copy = { ...prev };
-      // If we are leaving current question without answering, set as unanswered
       if (copy[currentQuestion.id] === "unvisited") {
         copy[currentQuestion.id] = selectedOptions[currentQuestion.id] !== undefined ? "answered" : "unanswered";
       }
-      // If target question is unvisited, mark it as unanswered now
       if (copy[targetQId] === "unvisited") {
         copy[targetQId] = "unanswered";
       }
@@ -107,18 +110,18 @@ export default function TestEngine({ test }: TestEngineProps) {
     setShowConfirmModal(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Calculate scorecard and submit asynchronously to real FastAPI / MongoDB backend
     const res = calculateResults();
-    const timeSpent = test.durationMinutes * 60 - timeRemaining;
-    submitLiveQuizResult(test.id, res.score, test.totalMarks, timeSpent > 0 ? timeSpent : 0);
+    const duration = test.durationMinutes || 15;
+    const timeSpent = duration * 60 - timeRemaining;
+    submitLiveQuizResult(test.id, res.score, test.totalMarks || (test.questions.length * 2), timeSpent > 0 ? timeSpent : 0);
   };
 
-  // Calculate stats for scorecard
   const calculateResults = () => {
     let correctCount = 0;
     let incorrectCount = 0;
     let unattemptedCount = 0;
     let score = 0;
+    const totalMarks = test.totalMarks || (test.questions.length * 2);
 
     test.questions.forEach((q) => {
       const userAns = selectedOptions[q.id];
@@ -126,7 +129,7 @@ export default function TestEngine({ test }: TestEngineProps) {
         unattemptedCount++;
       } else if (userAns === q.correctOptionIndex) {
         correctCount++;
-        score += q.marks;
+        score += q.marks || 2;
       } else {
         incorrectCount++;
       }
@@ -134,76 +137,85 @@ export default function TestEngine({ test }: TestEngineProps) {
 
     const totalAttempted = correctCount + incorrectCount;
     const accuracy = totalAttempted > 0 ? Math.round((correctCount / totalAttempted) * 100) : 0;
-    const percentage = Math.round((score / test.totalMarks) * 100);
+    const percentage = totalMarks > 0 ? Math.round((score / totalMarks) * 100) : 0;
 
-    return { correctCount, incorrectCount, unattemptedCount, score, accuracy, percentage };
+    return { correctCount, incorrectCount, unattemptedCount, score, totalMarks, accuracy, percentage };
   };
 
-  // Render Post-Test Result Scorecard & Solution Review Mode
+  // Counting Question Statuses
+  const answeredCount = Object.values(questionStatuses).filter(s => s === "answered").length;
+  const unansweredCount = Object.values(questionStatuses).filter(s => s === "unanswered").length;
+  const markedCount = Object.values(questionStatuses).filter(s => s === "marked").length;
+  const unvisitedCount = test.questions.length - (answeredCount + unansweredCount + markedCount);
+
+  // --- POST-TEST RESULT SCORECARD & SOLUTION REVIEW ---
   if (isSubmitted) {
     const res = calculateResults();
     return (
-      <div className="container animate-fade" style={{ paddingBottom: "60px" }}>
-        {/* Scorecard Header */}
-        <div className="glass-card" style={{
-          padding: "32px",
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "20px 20px 80px 20px" }}>
+        
+        {/* Scorecard Hero Card */}
+        <div style={{
+          background: "#ffffff",
+          borderRadius: "24px",
+          padding: "40px 32px",
           textAlign: "center",
-          marginBottom: "30px",
-          borderTop: "4px solid #059669",
+          marginBottom: "32px",
+          border: "1px solid rgba(0,0,0,0.06)",
+          boxShadow: "0 20px 50px -10px rgba(0,0,0,0.06)",
           position: "relative",
           overflow: "hidden"
         }}>
           <div style={{
-            position: "absolute",
-            top: 0,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "300px",
-            height: "150px",
-            background: "radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%)",
+            position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)",
+            width: "350px", height: "180px",
+            background: "radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)",
             pointerEvents: "none"
           }} />
 
-          <div style={{ fontSize: "3rem", marginBottom: "10px" }}>🏆</div>
-          <h1 style={{ fontSize: "2rem", marginBottom: "8px", color: "#0f172a" }}>
-            अभिनंदन! परीक्षा निकाल व विश्लेषण (Test Scorecard)
+          <div style={{ width: "64px", height: "64px", borderRadius: "20px", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto" }}>
+            <Award size={36} color="#059669" />
+          </div>
+
+          <h1 style={{ fontSize: "1.9rem", fontWeight: 800, color: "#0f172a", marginBottom: "6px" }}>
+            परीक्षा निकाल व अचूक स्पष्टीकरण (Test Result & Scorecard)
           </h1>
-          <p style={{ color: "#94a3b8", fontSize: "1.05rem", marginBottom: "28px" }}>
-            {test.title} • {test.titleEn}
+          <p style={{ color: "#64748b", fontSize: "1rem", marginBottom: "32px" }}>
+            {test.title} • {test.categoryName || "Daily Challenge"}
           </p>
 
           {/* Metrics Grid */}
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "20px",
+            gap: "16px",
             maxWidth: "900px",
-            margin: "0 auto 30px auto"
+            margin: "0 auto 32px auto"
           }}>
-            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>एकूण प्राप्त गुण (Score)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#059669" }}>
-                {res.score} <span style={{ fontSize: "1rem", color: "#94a3b8" }}>/ {test.totalMarks}</span>
+            <div style={{ background: "rgba(16, 185, 129, 0.05)", padding: "20px", borderRadius: "18px", border: "1px solid rgba(16, 185, 129, 0.15)" }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#059669", marginBottom: "4px" }}>एकूण प्राप्त गुण (Score)</div>
+              <div style={{ fontSize: "2.1rem", fontWeight: 800, color: "#0f172a" }}>
+                {res.score} <span style={{ fontSize: "1rem", color: "#94a3b8", fontWeight: 600 }}>/ {res.totalMarks}</span>
               </div>
             </div>
 
-            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>अचूकता (Accuracy %)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#2563eb" }}>
+            <div style={{ background: "rgba(37, 99, 235, 0.05)", padding: "20px", borderRadius: "18px", border: "1px solid rgba(37, 99, 235, 0.15)" }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#2563eb", marginBottom: "4px" }}>अचूकता (Accuracy %)</div>
+              <div style={{ fontSize: "2.1rem", fontWeight: 800, color: "#2563eb" }}>
                 {res.accuracy}%
               </div>
             </div>
 
-            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>बरोबर उत्तरे (Correct)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#059669" }}>
+            <div style={{ background: "rgba(16, 185, 129, 0.05)", padding: "20px", borderRadius: "18px", border: "1px solid rgba(16, 185, 129, 0.15)" }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#16a34a", marginBottom: "4px" }}>बरोबर उत्तरे (Correct)</div>
+              <div style={{ fontSize: "2.1rem", fontWeight: 800, color: "#16a34a" }}>
                 {res.correctCount}
               </div>
             </div>
 
-            <div style={{ background: "#0f172a", padding: "20px", borderRadius: "14px", border: "1px solid rgba(0, 0, 0, 0.04)" }}>
-              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "4px" }}>चुकलेली उत्तरे (Incorrect)</div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#f43f5e" }}>
+            <div style={{ background: "rgba(239, 68, 68, 0.05)", padding: "20px", borderRadius: "18px", border: "1px solid rgba(239, 68, 68, 0.15)" }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#ef4444", marginBottom: "4px" }}>चुकलेली उत्तरे (Incorrect)</div>
+              <div style={{ fontSize: "2.1rem", fontWeight: 800, color: "#ef4444" }}>
                 {res.incorrectCount}
               </div>
             </div>
@@ -214,26 +226,28 @@ export default function TestEngine({ test }: TestEngineProps) {
               onClick={() => {
                 setSelectedOptions({});
                 setIsSubmitted(false);
-                setTimeRemaining(test.durationMinutes * 60);
+                setTimeRemaining((test.durationMinutes || 15) * 60);
                 setCurrentIdx(0);
-                
-                const initialStatus: Record<number, QuestionStatus> = {};
-                test.questions.forEach((q) => {
-                  initialStatus[q.id] = "unvisited";
-                });
-                if (test.questions[0]) {
-                  initialStatus[test.questions[0].id] = "unanswered";
-                }
-                setQuestionStatuses(initialStatus);
-
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="btn btn-primary"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px", padding: "14px 28px",
+                borderRadius: "12px", background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                color: "#ffffff", fontWeight: 700, border: "none", cursor: "pointer",
+                boxShadow: "0 10px 20px -5px rgba(37, 99, 235, 0.3)"
+              }}
             >
-              🔄 पुन्हा टेस्ट सोडवा (Re-attempt Test)
+              <RotateCcw size={18} /> पुन्हा टेस्ट सोडवा (Re-attempt Test)
             </button>
-            <Link href="/" className="btn btn-outline">
-              📋 इतर मोफत टेस्ट पहा (All Mock Tests)
+            <Link
+              href="/profile"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px", padding: "14px 28px",
+                borderRadius: "12px", background: "#f1f5f9", color: "#334155", fontWeight: 700,
+                textDecoration: "none", border: "1px solid rgba(0,0,0,0.06)"
+              }}
+            >
+              <Home size={18} /> माझ्या प्रोफाइलवर जा (View My Analytics)
             </Link>
           </div>
         </div>
@@ -241,223 +255,189 @@ export default function TestEngine({ test }: TestEngineProps) {
         {/* Ad Placement */}
         <AdSlot type="leaderboard" title="Google AdSense Banner - High RPM Education Placement" />
 
-        {/* Solution & Pedagogical Explanation Review Mode */}
-        <h2 style={{ fontSize: "1.6rem", marginBottom: "20px", color: "#0f172a", borderLeft: "4px solid #2563eb", paddingLeft: "12px" }}>
-          📖 सर्व प्रश्नांची अचूक उत्तरे व सविस्तर स्पष्टीकरण (Detailed Solutions)
+        {/* Detailed Solutions Review */}
+        <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#0f172a", marginBottom: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+          <Sparkles size={22} color="#2563eb" /> सर्व प्रश्नांची अचूक उत्तरे व सविस्तर स्पष्टीकरण (Detailed Solutions)
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           {test.questions.map((q, idx) => {
             const userAns = selectedOptions[q.id];
             const isCorrect = userAns === q.correctOptionIndex;
             const isUnattempted = userAns === undefined;
 
             return (
-              <div key={q.id} className="glass-card" style={{
-                padding: "24px",
-                borderLeft: `4px solid ${isCorrect ? "#059669" : isUnattempted ? "#94a3b8" : "#f43f5e"}`
+              <div key={q.id} style={{
+                background: "#ffffff", borderRadius: "18px", padding: "28px",
+                border: "1px solid rgba(0,0,0,0.06)", boxShadow: "0 10px 30px -5px rgba(0,0,0,0.04)",
+                borderLeft: `5px solid ${isCorrect ? "#10b981" : isUnattempted ? "#94a3b8" : "#ef4444"}`
               }}>
-                {/* Question Top Bar */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-                  <span className="badge" style={{ background: "rgba(0, 0, 0, 0.04)", color: "#475569", fontSize: "0.9rem" }}>
-                    प्रश्न क्रमांक {idx + 1}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
+                  <span style={{ fontWeight: 800, color: "#2563eb", background: "rgba(37,99,235,0.08)", padding: "4px 12px", borderRadius: "8px", fontSize: "0.85rem" }}>
+                    प्रश्न {idx + 1}
                   </span>
                   <div>
-                    {isCorrect && <span className="badge badge-green">✓ बरोबर उत्तर (Correct) +{q.marks} गुण</span>}
-                    {isUnattempted && <span className="badge" style={{ background: "rgba(148, 163, 184, 0.1)", color: "#94a3b8" }}>⚠ सोडवला नाही (Unattempted) 0 गुण</span>}
-                    {!isCorrect && !isUnattempted && <span className="badge" style={{ background: "rgba(244, 63, 94, 0.15)", color: "#f43f5e" }}>✕ चुकले (Incorrect) 0 गुण</span>}
+                    {isCorrect && <span style={{ background: "#dcfce7", color: "#15803d", padding: "4px 12px", borderRadius: "100px", fontSize: "0.8rem", fontWeight: 700 }}>✓ बरोबर उत्तर (Correct) +{q.marks || 2} गुण</span>}
+                    {isUnattempted && <span style={{ background: "#f1f5f9", color: "#64748b", padding: "4px 12px", borderRadius: "100px", fontSize: "0.8rem", fontWeight: 700 }}>⚠ सोडवला नाही (Unattempted)</span>}
+                    {!isCorrect && !isUnattempted && <span style={{ background: "#fee2e2", color: "#b91c1c", padding: "4px 12px", borderRadius: "100px", fontSize: "0.8rem", fontWeight: 700 }}>✕ चुकलेले उत्तर (Incorrect)</span>}
                   </div>
                 </div>
 
-                {/* Question Text */}
-                <h3 style={{ fontSize: "1.2rem", color: "#0f172a", marginBottom: "6px", lineHeight: "1.5" }}>
+                <h3 style={{ fontSize: "1.15rem", color: "#0f172a", marginBottom: "6px", lineHeight: "1.5", fontWeight: 700 }}>
                   {q.questionText}
                 </h3>
                 {q.questionTextEn && (
-                  <div style={{ fontSize: "0.95rem", color: "#94a3b8", marginBottom: "18px" }}>
-                    {q.questionTextEn}
-                  </div>
+                  <p style={{ fontSize: "0.95rem", color: "#64748b", marginBottom: "18px" }}>{q.questionTextEn}</p>
                 )}
 
                 {/* Options List */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "12px", marginBottom: "20px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", marginBottom: "20px" }}>
                   {q.options.map((opt, oIdx) => {
                     const isTheCorrectAns = oIdx === q.correctOptionIndex;
                     const isUserAns = oIdx === userAns;
 
-                    let bgStyle = "#ffffff";
-                    let borderStyle = "1px solid rgba(0, 0, 0, 0.04)";
+                    let bgStyle = "#f8fafc";
+                    let borderStyle = "1px solid rgba(0,0,0,0.05)";
                     let textCol = "#475569";
 
                     if (isTheCorrectAns) {
-                      bgStyle = "rgba(16, 185, 129, 0.1)";
-                      borderStyle = "1px solid rgba(16, 185, 129, 0.6)";
-                      textCol = "#059669";
+                      bgStyle = "#dcfce7";
+                      borderStyle = "1px solid #86efac";
+                      textCol = "#15803d";
                     } else if (isUserAns && !isTheCorrectAns) {
-                      bgStyle = "rgba(244, 63, 94, 0.15)";
-                      borderStyle = "1px solid rgba(244, 63, 94, 0.6)";
-                      textCol = "#fb7185";
+                      bgStyle = "#fee2e2";
+                      borderStyle = "1px solid #fca5a5";
+                      textCol = "#b91c1c";
                     }
 
                     return (
                       <div key={oIdx} style={{
-                        padding: "12px 16px",
-                        borderRadius: "10px",
-                        background: bgStyle,
-                        border: borderStyle,
-                        color: textCol,
-                        fontWeight: isTheCorrectAns || isUserAns ? 600 : 400,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px"
+                        padding: "12px 16px", borderRadius: "12px", background: bgStyle,
+                        border: borderStyle, color: textCol, fontWeight: isTheCorrectAns || isUserAns ? 700 : 500,
+                        display: "flex", alignItems: "center", gap: "10px", fontSize: "0.95rem"
                       }}>
-                        <span style={{
-                          width: "28px",
-                          height: "28px",
-                          borderRadius: "6px",
-                          background: "rgba(0, 0, 0, 0.02)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "0.85rem",
-                          fontWeight: 700
-                        }}>
+                        <span style={{ width: "26px", height: "26px", borderRadius: "6px", background: "rgba(0,0,0,0.04)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", fontWeight: 800 }}>
                           {String.fromCharCode(65 + oIdx)}
                         </span>
                         <span style={{ flex: 1 }}>{opt}</span>
-                        {isTheCorrectAns && <span>✓</span>}
-                        {isUserAns && !isTheCorrectAns && <span>✕</span>}
+                        {isTheCorrectAns && <Check size={18} color="#15803d" />}
+                        {isUserAns && !isTheCorrectAns && <X size={18} color="#b91c1c" />}
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Explanation Box */}
-                <div style={{
-                  background: "rgba(37, 99, 235, 0.03)",
-                  border: "1px solid rgba(59, 130, 246, 0.3)",
-                  borderRadius: "10px",
-                  padding: "16px",
-                  color: "#475569",
-                  fontSize: "0.95rem",
-                  lineHeight: "1.6"
-                }}>
-                  <div style={{ fontWeight: 700, color: "#2563eb", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span>💡 सविस्तर स्पष्टीकरण (Solution Explanation):</span>
+                {/* Solution Explanation Box */}
+                {q.explanation && (
+                  <div style={{ background: "rgba(37, 99, 235, 0.04)", border: "1px solid rgba(37, 99, 235, 0.15)", borderRadius: "14px", padding: "16px", color: "#334155", fontSize: "0.95rem", lineHeight: "1.6" }}>
+                    <div style={{ fontWeight: 700, color: "#2563eb", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>💡 सविस्तर स्पष्टीकरण (Solution):</span>
+                    </div>
+                    {q.explanation}
                   </div>
-                  {q.explanation}
-                </div>
+                )}
               </div>
             );
           })}
-        </div>
-
-        <div style={{ marginTop: "40px", textAlign: "center" }}>
-          <Link href="/" className="btn btn-primary" style={{ padding: "14px 28px", fontSize: "1.05rem" }}>
-            🏠 मुख्य पृष्ठावर जा (Back to Home)
-          </Link>
         </div>
       </div>
     );
   }
 
-  // Active Quiz Mode Engine
-  const isTimeLow = timeRemaining <= 300; // Less than 5 mins
+  // --- ACTIVE QUIZ TEST TAKING MODE ---
+  const isTimeLow = timeRemaining <= 300;
 
   return (
-    <div className="container animate-fade" style={{ paddingBottom: "60px" }}>
-      {/* Top Test Header Bar */}
-      <div className="glass-card" style={{
-        padding: "16px 24px",
+    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
+      
+      {/* Top Test Header Card */}
+      <div style={{
+        background: "#ffffff",
+        borderRadius: "20px",
+        padding: "20px 28px",
         marginBottom: "24px",
+        border: "1px solid rgba(0,0,0,0.06)",
+        boxShadow: "0 10px 30px -5px rgba(0,0,0,0.04)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         flexWrap: "wrap",
-        gap: "16px",
-        background: "#0f172a"
+        gap: "16px"
       }}>
         <div>
-          <span className="badge badge-blue" style={{ marginBottom: "4px", background: "#ffffff", border: "none" }}>
-            {test.categoryName} • TCS Pattern
+          <span style={{ background: "rgba(37, 99, 235, 0.08)", color: "#2563eb", padding: "4px 12px", borderRadius: "100px", fontSize: "0.8rem", fontWeight: 700 }}>
+            {test.categoryName || "Daily Challenge"} • TCS Pattern Test
           </span>
-          <h1 style={{ fontSize: "1.25rem", color: "#ffffff", margin: 0, marginTop: "8px" }}>
+          <h1 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#0f172a", margin: "6px 0 0 0" }}>
             {test.title}
           </h1>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Live Countdown Timer */}
+          {/* Live Countdown Timer Pill */}
           <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: isTimeLow ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.1)",
-            border: `1px solid ${isTimeLow ? "rgba(244, 63, 94, 0.5)" : "rgba(16, 185, 129, 0.5)"}`,
-            padding: "8px 16px",
-            borderRadius: "10px",
-            color: isTimeLow ? "#f43f5e" : "#059669",
-            fontWeight: 700,
-            fontSize: "1.1rem"
+            display: "flex", alignItems: "center", gap: "8px",
+            background: isTimeLow ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)",
+            border: `1px solid ${isTimeLow ? "rgba(239, 68, 68, 0.3)" : "rgba(16, 185, 129, 0.3)"}`,
+            padding: "8px 18px", borderRadius: "12px",
+            color: isTimeLow ? "#ef4444" : "#059669", fontWeight: 800, fontSize: "1.1rem"
           }}>
-            <span className={isTimeLow ? "animate-pulse" : ""}>⏱️ उरलेला वेळ:</span>
+            <Clock size={18} className={isTimeLow ? "animate-pulse" : ""} />
             <span>{formatTime(timeRemaining)}</span>
           </div>
 
           <button
             onClick={() => setShowConfirmModal(true)}
-            className="btn btn-success"
-            style={{ padding: "10px 20px" }}
+            style={{
+              padding: "10px 22px", borderRadius: "12px",
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "#ffffff", fontWeight: 700, border: "none", cursor: "pointer",
+              boxShadow: "0 8px 16px -4px rgba(16, 185, 129, 0.3)", fontSize: "0.95rem",
+              display: "flex", alignItems: "center", gap: "6px"
+            }}
           >
-            ✓ टेस्ट सबमिट करा (Submit)
+            <Send size={16} /> सबमिट करा (Submit)
           </button>
         </div>
       </div>
 
-      {/* Main 2-Column Quiz Interface */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 340px",
-        gap: "24px",
-        alignItems: "start"
-      }} className="quiz-grid">
-        {/* Left Column: Question Card */}
-        <div className="glass-card" style={{ padding: "30px", minHeight: "480px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      {/* Main 2-Column Quiz Layout */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "24px", alignItems: "start" }} className="quiz-grid">
+        
+        {/* Left Column: Active Question Card */}
+        <div style={{
+          background: "#ffffff", borderRadius: "20px", padding: "32px",
+          border: "1px solid rgba(0,0,0,0.06)", boxShadow: "0 10px 30px -5px rgba(0,0,0,0.04)",
+          minHeight: "480px", display: "flex", flexDirection: "column", justifyContent: "space-between"
+        }}>
           <div>
-            {/* Question Top Specs */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(0, 0, 0, 0.04)", paddingBottom: "14px" }}>
+            {/* Question Top Specs Bar */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(0,0,0,0.06)", paddingBottom: "14px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{
-                  background: "var(--primary-gradient)",
-                  color: "#fff",
-                  fontWeight: 800,
-                  fontSize: "1rem",
-                  padding: "6px 12px",
-                  borderRadius: "8px"
-                }}>
+                <span style={{ background: "#2563eb", color: "#ffffff", fontWeight: 800, fontSize: "0.9rem", padding: "4px 12px", borderRadius: "8px" }}>
                   प्रश्न {currentIdx + 1} / {test.questions.length}
                 </span>
-                <span className="badge" style={{ background: "rgba(0, 0, 0, 0.02)", color: "#475569" }}>
-                  +{currentQuestion.marks} गुण (Marks)
+                <span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600 }}>
+                  +{currentQuestion.marks || 2} गुण (Marks)
                 </span>
               </div>
-              <span style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
-                🎯 नकारात्मक गुण (Negative Marking): नाही (No)
+              <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
+                🎯 नकारात्क गुण नाही (No Negative Marks)
               </span>
             </div>
 
             {/* Question Text */}
-            <h2 style={{ fontSize: "1.35rem", color: "#0f172a", marginBottom: "8px", lineHeight: "1.5", fontWeight: 600 }}>
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 700, color: "#0f172a", marginBottom: "8px", lineHeight: "1.5" }}>
               {currentQuestion.questionText}
             </h2>
             {currentQuestion.questionTextEn && (
-              <div style={{ fontSize: "1rem", color: "#94a3b8", marginBottom: "24px" }}>
+              <p style={{ fontSize: "0.95rem", color: "#64748b", marginBottom: "24px" }}>
                 {currentQuestion.questionTextEn}
-              </div>
+              </p>
             )}
 
-            {/* Options List */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "24px" }}>
+            {/* Option Cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "24px" }}>
               {currentQuestion.options.map((opt, oIdx) => {
                 const isSelected = selectedOptions[currentQuestion.id] === oIdx;
                 return (
@@ -466,148 +446,132 @@ export default function TestEngine({ test }: TestEngineProps) {
                     onClick={() => handleOptionSelect(currentQuestion.id, oIdx)}
                     style={{
                       padding: "16px 20px",
-                      borderRadius: "12px",
-                      background: isSelected ? "rgba(37, 99, 235, 0.1)" : "#ffffff",
-                      border: isSelected ? "2px solid #2563eb" : "1px solid rgba(0, 0, 0, 0.04)",
+                      borderRadius: "14px",
+                      background: isSelected ? "rgba(37, 99, 235, 0.08)" : "#ffffff",
+                      border: isSelected ? "2px solid #2563eb" : "1px solid rgba(0,0,0,0.08)",
                       color: isSelected ? "#0f172a" : "#475569",
-                      fontSize: "1.05rem",
-                      fontWeight: isSelected ? 600 : 400,
+                      fontSize: "1rem",
+                      fontWeight: isSelected ? 700 : 500,
                       textAlign: "left",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
                       gap: "14px",
-                      transition: "var(--transition)",
-                      boxShadow: isSelected ? "0 0 15px rgba(37, 99, 235, 0.1)" : "none"
+                      transition: "all 0.2s"
                     }}
                   >
                     <span style={{
-                      width: "32px",
-                      height: "32px",
-                      borderRadius: "8px",
-                      background: isSelected ? "#2563eb" : "rgba(0, 0, 0, 0.02)",
-                      color: isSelected ? "#fff" : "#94a3b8",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "0.95rem",
-                      fontWeight: 700
+                      width: "32px", height: "32px", borderRadius: "10px",
+                      background: isSelected ? "#2563eb" : "rgba(0,0,0,0.04)",
+                      color: isSelected ? "#ffffff" : "#64748b",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "0.9rem", fontWeight: 800
                     }}>
                       {String.fromCharCode(65 + oIdx)}
                     </span>
                     <span style={{ flex: 1 }}>{opt}</span>
-                    {isSelected && <span style={{ color: "#2563eb", fontSize: "1.2rem" }}>✓</span>}
+                    {isSelected && <CheckCircle2 size={20} color="#2563eb" />}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Navigation Action Buttons */}
+          {/* Navigation Action Buttons Bar */}
           <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "36px",
-            paddingTop: "20px",
-            borderTop: "1px solid rgba(0, 0, 0, 0.04)",
-            flexWrap: "wrap",
-            gap: "12px"
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            marginTop: "36px", paddingTop: "20px", borderTop: "1px solid rgba(0,0,0,0.06)", flexWrap: "wrap", gap: "12px"
           }}>
             <button
               onClick={() => handleNavigateQuestion(currentIdx - 1)}
               disabled={currentIdx === 0}
-              className="btn btn-outline"
-              style={{ opacity: currentIdx === 0 ? 0.5 : 1, cursor: currentIdx === 0 ? "not-allowed" : "pointer" }}
+              style={{
+                display: "flex", alignItems: "center", gap: "6px", padding: "12px 18px",
+                borderRadius: "12px", border: "1px solid rgba(0,0,0,0.1)", background: "#ffffff",
+                color: currentIdx === 0 ? "#cbd5e1" : "#475569", fontWeight: 600, fontSize: "0.9rem",
+                cursor: currentIdx === 0 ? "not-allowed" : "pointer"
+              }}
             >
-              ⬅ मागील प्रश्न (Previous)
+              <ChevronLeft size={18} /> मागील प्रश्न
             </button>
 
             <div style={{ display: "flex", gap: "10px" }}>
               <button
                 onClick={handleMarkForReview}
-                className="btn"
-                style={{ background: "rgba(245, 158, 11, 0.15)", color: "#fbbf24", border: "1px solid rgba(245, 158, 11, 0.4)" }}
+                style={{
+                  display: "flex", alignItems: "center", gap: "6px", padding: "12px 18px",
+                  borderRadius: "12px", background: "rgba(245, 158, 11, 0.1)", color: "#b45309",
+                  border: "1px solid rgba(245, 158, 11, 0.3)", fontWeight: 700, fontSize: "0.9rem", cursor: "pointer"
+                }}
               >
-                🔖 रिव्ह्यूसाठी ठेवा (Mark for Review)
+                <Bookmark size={18} /> रिव्ह्यूसाठी ठेवा
               </button>
 
               <button
                 onClick={handleSaveAndNext}
-                className="btn btn-primary"
+                style={{
+                  display: "flex", alignItems: "center", gap: "6px", padding: "12px 22px",
+                  borderRadius: "12px", background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                  color: "#ffffff", fontWeight: 700, border: "none", fontSize: "0.9rem", cursor: "pointer",
+                  boxShadow: "0 8px 16px -4px rgba(37, 99, 235, 0.3)"
+                }}
               >
-                पुढील प्रश्न (Next) ➡
+                पुढील प्रश्न <ChevronRight size={18} />
               </button>
             </div>
           </div>
+
         </div>
 
-        {/* Right Column: Question Palette & Navigation Grid */}
-        <div className="glass-card" style={{ padding: "20px", position: "sticky", top: "165px" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "#0f172a", marginBottom: "14px", borderBottom: "1px solid rgba(0, 0, 0, 0.04)", paddingBottom: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span>📊 प्रश्न पॅलेट (Question Grid)</span>
-            <span className="badge badge-orange">{test.questions.length} प्रश्न</span>
+        {/* Right Column: Question Palette Grid */}
+        <div style={{
+          background: "#ffffff", borderRadius: "20px", padding: "24px",
+          border: "1px solid rgba(0,0,0,0.06)", boxShadow: "0 10px 30px -5px rgba(0,0,0,0.04)",
+          position: "sticky", top: "100px"
+        }}>
+          <h3 style={{ fontSize: "1.05rem", fontWeight: 800, color: "#0f172a", marginBottom: "14px", borderBottom: "1px solid rgba(0,0,0,0.06)", paddingBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>📊 प्रश्न पॅलेट</span>
+            <span style={{ fontSize: "0.8rem", color: "#2563eb", background: "rgba(37,99,235,0.08)", padding: "2px 8px", borderRadius: "100px" }}>{test.questions.length} Questions</span>
           </h3>
 
           {/* Palette Color Legend */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "8px",
-            fontSize: "0.75rem",
-            marginBottom: "18px",
-            background: "#ffffff",
-            padding: "10px",
-            borderRadius: "8px"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
-              <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#059669" }} />
-              <span>सोडवले (Answered)</span>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", fontSize: "0.75rem", marginBottom: "18px", background: "#f8fafc", padding: "10px", borderRadius: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#059669", fontWeight: 600 }}>
+              <span style={{ width: "10px", height: "10px", borderRadius: "3px", background: "#10b981" }} />
+              <span>{answeredCount} सोडवले</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
-              <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#f43f5e" }} />
-              <span>सोडवले नाही (Not Ans)</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#ef4444", fontWeight: 600 }}>
+              <span style={{ width: "10px", height: "10px", borderRadius: "3px", background: "#ef4444" }} />
+              <span>{unansweredCount} सोडवले नाही</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
-              <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#fbbf24" }} />
-              <span>रिव्ह्यू (Marked)</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#d97706", fontWeight: 600 }}>
+              <span style={{ width: "10px", height: "10px", borderRadius: "3px", background: "#f59e0b" }} />
+              <span>{markedCount} रिव्ह्यू</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#475569" }}>
-              <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: "#475569" }} />
-              <span>पाहिले नाही (Unvisited)</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#64748b", fontWeight: 600 }}>
+              <span style={{ width: "10px", height: "10px", borderRadius: "3px", background: "#cbd5e1" }} />
+              <span>{unvisitedCount} पाहिले नाही</span>
             </div>
           </div>
 
-          {/* Question Number Buttons Grid */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
-            gap: "8px",
-            maxHeight: "300px",
-            overflowY: "auto",
-            paddingRight: "4px"
-          }}>
+          {/* Question Number Pills Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "8px", maxHeight: "280px", overflowY: "auto" }}>
             {test.questions.map((q, idx) => {
               const status = questionStatuses[q.id] || "unvisited";
               const isCurrent = idx === currentIdx;
 
-              let bgCol = "#475569"; // default unvisited slate
-              let textCol = "#ffffff";
-              let borderCol = "transparent";
+              let bgCol = "#f1f5f9";
+              let textCol = "#64748b";
 
               if (status === "answered") {
-                bgCol = "#059669"; // emerald
+                bgCol = "#10b981";
                 textCol = "#ffffff";
               } else if (status === "unanswered") {
-                bgCol = "#f43f5e"; // rose/red
+                bgCol = "#ef4444";
                 textCol = "#ffffff";
               } else if (status === "marked") {
-                bgCol = "#fbbf24"; // amber
-                textCol = "#0f172a";
-              }
-
-              if (isCurrent) {
-                borderCol = "#0f172a";
+                bgCol = "#f59e0b";
+                textCol = "#ffffff";
               }
 
               return (
@@ -615,19 +579,10 @@ export default function TestEngine({ test }: TestEngineProps) {
                   key={q.id}
                   onClick={() => handleNavigateQuestion(idx)}
                   style={{
-                    height: "40px",
-                    borderRadius: "8px",
-                    background: bgCol,
-                    color: textCol,
-                    fontWeight: 700,
-                    fontSize: "0.95rem",
-                    border: `2px solid ${borderCol}`,
-                    cursor: "pointer",
-                    transition: "var(--transition)",
-                    boxShadow: isCurrent ? "0 0 10px rgba(255, 255, 255, 0.5)" : "none",
-                    transform: isCurrent ? "scale(1.08)" : "scale(1)"
+                    height: "38px", borderRadius: "10px", background: bgCol, color: textCol,
+                    fontWeight: 800, fontSize: "0.9rem", border: isCurrent ? "2px solid #0f172a" : "none",
+                    cursor: "pointer", transform: isCurrent ? "scale(1.08)" : "scale(1)", transition: "all 0.15s"
                   }}
-                  title={`प्रश्न ${idx + 1} (${status})`}
                 >
                   {idx + 1}
                 </button>
@@ -637,66 +592,60 @@ export default function TestEngine({ test }: TestEngineProps) {
 
           <button
             onClick={() => setShowConfirmModal(true)}
-            className="btn btn-success"
-            style={{ width: "100%", marginTop: "20px", padding: "12px", fontSize: "1rem" }}
+            style={{
+              width: "100%", marginTop: "20px", padding: "12px", borderRadius: "12px",
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "#ffffff",
+              fontWeight: 700, fontSize: "0.95rem", border: "none", cursor: "pointer",
+              boxShadow: "0 8px 16px -4px rgba(16, 185, 129, 0.3)"
+            }}
           >
-            ✓ टेस्ट सबमिट करा (Submit Test)
+            ✓ सबमिट करा (Submit Test)
           </button>
         </div>
+
       </div>
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
         <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "rgba(0, 0, 0, 0.1)",
-          backdropFilter: "blur(8px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          padding: "20px"
+          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+          background: "rgba(0,0,0,0.3)", backdropFilter: "blur(6px)",
+          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px"
         }}>
-          <div className="glass-card animate-fade" style={{
-            maxWidth: "480px",
-            width: "100%",
-            padding: "30px",
-            textAlign: "center",
-            borderTop: "4px solid #2563eb"
+          <div style={{
+            maxWidth: "440px", width: "100%", background: "#ffffff", borderRadius: "24px",
+            padding: "32px", textAlign: "center", boxShadow: "0 25px 60px -15px rgba(0,0,0,0.15)"
           }}>
-            <div style={{ fontSize: "3rem", marginBottom: "12px" }}>⚠️</div>
-            <h3 style={{ fontSize: "1.4rem", color: "#0f172a", marginBottom: "10px" }}>
+            <div style={{ width: "56px", height: "56px", borderRadius: "16px", background: "rgba(245, 158, 11, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto" }}>
+              <AlertCircle size={28} color="#d97706" />
+            </div>
+
+            <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a", marginBottom: "8px" }}>
               तुम्हाला नक्की टेस्ट सबमिट करायची आहे का?
             </h3>
-            <p style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "24px" }}>
-              एकदा टेस्ट सबमिट केल्यानंतर तुम्ही उत्तरे बदलू शकणार नाही. लगेच तुमचे गुण व स्पष्टीकरण (Scorecard) स्क्रीनवर दिसेल.
+            <p style={{ fontSize: "0.9rem", color: "#64748b", marginBottom: "24px" }}>
+              सबमिट केल्यानंतर गुण व अचूक स्पष्टीकरण लगेच दिसेल.
             </p>
 
-            <div style={{ display: "flex", gap: "14px", justifyContent: "center" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="btn btn-outline"
-                style={{ flex: 1 }}
+                style={{ padding: "12px", borderRadius: "12px", border: "1px solid rgba(0,0,0,0.1)", background: "#ffffff", color: "#475569", fontWeight: 600, cursor: "pointer" }}
               >
-                ✕ रद्द करा (Cancel)
+                रद्द करा (Cancel)
               </button>
               <button
                 onClick={handleSubmitTest}
-                className="btn btn-success"
-                style={{ flex: 1 }}
+                style={{ padding: "12px", borderRadius: "12px", border: "none", background: "#10b981", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}
               >
-                ✓ सबमिट करा (Yes, Submit)
+                सबमिट करा (Submit)
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Inline Styles for Responsive Grid */}
+      {/* Responsive Grid */}
       <style jsx>{`
         @media (max-width: 900px) {
           .quiz-grid {
@@ -704,6 +653,7 @@ export default function TestEngine({ test }: TestEngineProps) {
           }
         }
       `}</style>
+
     </div>
   );
 }

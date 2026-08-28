@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Check, Shield, Zap, Award } from "lucide-react";
-import Navbar from "@/components/Navbar";
 
 // Define pricing plans based on test series
 const PRICING_PLANS = [
