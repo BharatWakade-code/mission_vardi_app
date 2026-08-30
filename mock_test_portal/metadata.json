@@ -1,0 +1,6 @@
+{
+  "name": "ParikshaSetu - Online Mock Test Portal",
+  "description": "Production-ready mock test and test series portal for MPSC, Police Bharti, Talathi, Banking, SSC, and competitive exams with Marathi & English bilingual support, real exam engine, analytics, and admin control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

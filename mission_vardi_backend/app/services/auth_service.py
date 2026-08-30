@@ -95,17 +95,7 @@ async def get_current_user(
         {"id": user_id}, {"_id": 0, "hashed_password": 0}
     )
     if not user:
-        from app.services.mongodb_service import admins_collection
-        user = admins_collection.find_one(
-            {"id": user_id}, {"_id": 0, "hashed_password": 0}
-        )
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-    
-    # Inject permissions from payload if available and missing in db
-    if "permissions" in payload and "permissions" not in user:
-        user["permissions"] = payload["permissions"]
-        
+        raise HTTPException(status_code=404, detail="User not found")
     return user
 
 

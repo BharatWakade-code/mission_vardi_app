@@ -1,7 +1,5 @@
 from datetime import datetime
 from uuid import uuid4
-from typing import Optional
-from pydantic import BaseModel
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -90,34 +88,24 @@ async def login(data: EmailLogin):
 
 @router.post("/admin-login", summary="Admin Login")
 async def admin_login(data: AdminLoginRequest):
-    from app.services.mongodb_service import admins_collection
-    from app.services.auth_service import verify_password
+    import os
+    # Read strictly from environment variables without hardcoded defaults
+    admin_username = os.getenv("ADMIN_USERNAME")
+    admin_password = os.getenv("ADMIN_PASSWORD")
     
-    admin = admins_collection.find_one({"username": data.username})
-    if not admin:
-        raise HTTPException(status_code=401, detail="Invalid admin credentials")
+    if not admin_username or not admin_password:
+        raise HTTPException(status_code=500, detail="Admin credentials not configured on the server")
         
-    hashed = admin.get("hashed_password")
-    if not hashed or not verify_password(data.password, hashed):
-        raise HTTPException(status_code=401, detail="Invalid admin credentials")
-
-    token = create_access_token({
-        "user_id": admin["id"],
-        "username": admin["username"],
-        "role": admin.get("role", "admin"),
-        "permissions": admin.get("permissions", [])
-    })
-    
-    return {
-        "status": True,
-        "message": "Admin login successful",
-        "data": {
-            "access_token": token,
-            "token_type": "bearer",
-            "role": admin.get("role", "admin"),
-            "permissions": admin.get("permissions", [])
+    if data.username == admin_username and data.password == admin_password:
+        return {
+            "status": True,
+            "message": "Admin login successful",
+            "data": {
+                "role": "admin"
+            }
         }
-    }
+    
+    raise HTTPException(status_code=401, detail="Invalid admin credentials")
 
 
 # ─── Google / Firebase Social Login ──────────────────────────────────────────
@@ -217,28 +205,4 @@ async def forgot_password(data: ForgotPasswordRequest):
         "status": True,
         "message": "Password reset link sent to your email. Please check your inbox.",
         "data": None,
-    }
-
-class UserUpdate(BaseModel):
-    name: Optional[str] = None
-    mobile: Optional[str] = None
-    district: Optional[str] = None
-    target_exam: Optional[str] = None
-
-@router.put("/me", summary="Update current user profile")
-async def update_me(data: UserUpdate, current_user: dict = Depends(get_current_user)):
-    update_data = {}
-    if data.name is not None: update_data["name"] = data.name
-    if data.mobile is not None: update_data["mobile"] = data.mobile
-    if data.district is not None: update_data["district"] = data.district
-    if data.target_exam is not None: update_data["target_exam"] = data.target_exam
-
-    if update_data:
-        users_collection.update_one({"id": current_user["id"]}, {"$set": update_data})
-        current_user.update(update_data)
-
-    return {
-        "status": True,
-        "message": "Profile updated successfully",
-        "data": _safe_user(current_user),
     }

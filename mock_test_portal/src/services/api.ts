@@ -1,531 +1,260 @@
-import { MockTest, Question, ExamCategory, EXAM_CATEGORIES, MOCK_TESTS } from "@/data/mockTests";
+// Client API Service for ParikshaSetu Mock Test Portal
 
-// Strict Environment Variable for API URL (Standard Practice)
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE = '/api';
 
-// Interface matching Backend FastAPI Response
-interface ApiResponse<T> {
-  status: boolean;
-  message: string;
-  data: T;
+function getAuthHeader(): Record<string, string> {
+  const token = localStorage.getItem('parikshasetu_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-interface BackendQuestion {
-  id: string | number;
-  text: string;
-  text_mr?: string;
-  options: string[];
-  options_mr?: string[];
-  correctAnswer: string;
+async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...getAuthHeader(),
+    ...(options.headers || {}),
+  };
+
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error = new Error(data.error || 'An unexpected error occurred') as any;
+    error.code = data.code;
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+
+  return data as T;
 }
 
-interface BackendQuiz {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  type: string;
-  totalQuestions?: number;
-  createdAt?: string;
-  questions?: BackendQuestion[];
-}
+export const api = {
+  // Auth
+  register: (payload: { name: string; email: string; mobile: string; password: string; role?: string }) =>
+    request<{ user: any; token: string }>('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
+  login: (payload: { email: string; password: string }) =>
+    request<{ user: any; token: string }>('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+  getMe: () => request<{ user: any }>('/auth/me'),
+  updateProfile: (payload: any) => request<{ user: any }>('/auth/profile', { method: 'PUT', body: JSON.stringify(payload) }),
 
-// Convert category string from API to slug
-export function categoryToSlug(category: string): string {
-  if (!category) return "general";
-  const lower = category.toLowerCase().trim();
-  if (lower === "srpf") return "srpf";
-  if (lower === "forest guard") return "forest-guard";
-  if (lower === "daily challenge") return "daily-challenge";
-  if (lower === "police bharti" || lower === "police") return "police-bharti";
-  if (lower === "talathi" || lower === "talathi bharti") return "talathi-bharti";
-  return lower.replace(/\s+/g, "-").replace(/[^\w\u0900-\u097F\-]+/g, "").replace(/^-|-$/g, "") || "cat-" + Math.random().toString(36).substr(2, 5);
-}
+  // Exams & Meta
+  getMainCategories: () => request<{ mainCategories: any[] }>('/main-categories'),
+  getMainCategoryById: (id: string) => request<{ mainCategory: any }>(`/main-categories/${id}`),
+  getSubCategories: (mainCategoryId?: string) =>
+    request<{ subCategories: any[] }>(mainCategoryId ? `/sub-categories?mainCategoryId=${encodeURIComponent(mainCategoryId)}` : '/sub-categories'),
+  getSubCategoryById: (id: string) => request<{ subCategory: any }>(`/sub-categories/${id}`),
+  getExams: () => request<{ exams: any[] }>('/exams'),
+  getCategories: (examId?: string) => request<{ categories: any[] }>(examId ? `/categories?examId=${examId}` : '/categories'),
+  getSubjects: () => request<{ subjects: any[] }>('/subjects'),
+  getTopics: (subjectId?: string) => request<{ topics: any[] }>(subjectId ? `/topics?subjectId=${subjectId}` : '/topics'),
 
-// Helper to convert backend question format to Frontend Question format
-function mapBackendQuestion(q: BackendQuestion, idx: number): Question {
-  const options = q.options_mr && q.options_mr.length > 0 ? q.options_mr : q.options || ["A", "B", "C", "D"];
+  // Tests & Series
+  getTests: (params: Record<string, any> = {}) => {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([key, val]) => {
+      if (val !== undefined && val !== null && val !== '') query.append(key, String(val));
+    });
+    return request<{ tests: any[] }>(`/tests?${query.toString()}`);
+  },
+  getTestById: (id: string) => request<{ test: any }>(`/tests/${id}`),
+  getTestSeries: () => request<{ testSeries: any[] }>('/test-series'),
+  getTestSeriesById: (id: string) => request<{ testSeries: any }>(`/test-series/${id}`),
 
-  // Find correct option index from correctAnswer string
-  let correctIdx = 0;
-  if (q.correctAnswer) {
-    // Try finding exact text match in options_mr or options
-    const mrIndex = q.options_mr ? q.options_mr.indexOf(q.correctAnswer) : -1;
-    const enIndex = q.options ? q.options.indexOf(q.correctAnswer) : -1;
+  // Test Engine & Attempts
+  startAttempt: (testId: string) => request<{ attempt: any }>(`/tests/${testId}/start`, { method: 'POST' }),
+  getAttempt: (attemptId: string) => request<{ attempt: any }>(`/attempts/${attemptId}`),
+  saveAnswer: (attemptId: string, payload: { questionId: string; selectedOption?: string | string[]; isMarkedForReview?: boolean; timeSpentSeconds?: number }) =>
+    request<{ success: boolean; answers: any }>(`/attempts/${attemptId}/answer`, { method: 'POST', body: JSON.stringify(payload) }),
+  submitAttempt: (attemptId: string) => request<{ result: any }>(`/attempts/${attemptId}/submit`, { method: 'POST' }),
 
-    if (mrIndex !== -1) {
-      correctIdx = mrIndex;
-    } else if (enIndex !== -1) {
-      correctIdx = enIndex;
+  // Results & Dashboard
+  getResult: (resultId: string) => request<{ result: any; attempt: any; test: any }>(`/results/${resultId}`),
+  getStudentDashboard: () => request<{ stats: any }>('/student/dashboard'),
+  getStudentResults: () => request<{ results: any[] }>('/student/results'),
+  getStudentPurchases: () => request<{ purchases: any[] }>('/student/purchases'),
+
+  // Payments & Coupons
+  applyCoupon: (code: string, amount: number) =>
+    request<{ coupon: any; discount: number; finalAmount: number }>('/coupons/apply', { method: 'POST', body: JSON.stringify({ code, amount }) }),
+  createOrder: (payload: { productId: string; productType: string; couponCode?: string }) =>
+    request<{ order: any; razorpayKey: string }>('/payments/create-order', { method: 'POST', body: JSON.stringify(payload) }),
+  verifyPayment: (payload: { orderId: string; razorpayPaymentId: string; razorpaySignature?: string }) =>
+    request<{ success: boolean; order: any; purchase: any }>('/payments/verify', { method: 'POST', body: JSON.stringify(payload) }),
+
+  // Notifications & Settings
+  getNotifications: () => request<{ notifications: any[] }>('/notifications'),
+  markNotificationRead: (id: string) => request<{ success: boolean }>(`/notifications/${id}/read`, { method: 'PUT' }),
+  getSettings: () => request<{ settings: any }>('/settings'),
+
+  // Mission Vardi: Fitness Tracker & Physical Exam Calculator
+  getFitnessLogs: (userId?: string) =>
+    request<{ status: boolean; data: any[] }>(userId ? `/fitness/${userId}` : '/fitness'),
+  createFitnessLog: (payload: { user_id?: string; run_1600m_seconds?: number; run_100m_seconds?: number; shot_put_meters?: number; date?: string; notes?: string }) =>
+    request<{ status: boolean; message: string; data: any }>('/fitness', { method: 'POST', body: JSON.stringify(payload) }),
+  saveFitnessLog: (payload: any) =>
+    request<{ status: boolean; message: string; data: any }>('/fitness', { method: 'POST', body: JSON.stringify(payload) }),
+  updateFitnessLog: (id: string, payload: any) =>
+    request<{ status: boolean; message: string; data: any }>(`/fitness/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteFitnessLog: (id: string) =>
+    request<{ status: boolean; message: string }>(`/fitness/${id}`, { method: 'DELETE' }),
+
+  // Mission Vardi: PYQ (Previous Year Question Papers)
+  getPYQs: (params: { year?: number; category?: string; search?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (params.year) q.append('year', String(params.year));
+    if (params.category) q.append('category', params.category);
+    if (params.search) q.append('search', params.search);
+    return request<{ status: boolean; data: any[] }>(`/pyqs?${q.toString()}`);
+  },
+  createPYQ: (payload: any) =>
+    request<{ status: boolean; message: string; data: any }>('/pyqs', { method: 'POST', body: JSON.stringify(payload) }),
+  deletePYQ: (id: string) =>
+    request<{ status: boolean; message: string }>(`/pyqs/${id}`, { method: 'DELETE' }),
+
+  // Mission Vardi: Study Notes & e-Books
+  getNotes: (params: { subject?: string; category?: string; isFree?: boolean } = {}) => {
+    const q = new URLSearchParams();
+    if (params.subject) q.append('subject', params.subject);
+    if (params.category) q.append('category', params.category);
+    if (params.isFree !== undefined) q.append('isFree', String(params.isFree));
+    return request<{ status: boolean; data: any[] }>(`/notes?${q.toString()}`);
+  },
+  createNote: (payload: any) =>
+    request<{ status: boolean; message: string; data: any }>('/notes', { method: 'POST', body: JSON.stringify(payload) }),
+  deleteNote: (id: string) =>
+    request<{ status: boolean; message: string }>(`/notes/${id}`, { method: 'DELETE' }),
+
+  // Mission Vardi: Govt Bharti Alerts & Notifications
+  getAlerts: (params: { category?: string; status?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (params.category) q.append('category', params.category);
+    if (params.status) q.append('status', params.status);
+    return request<{ status: boolean; data: any[] }>(`/alerts?${q.toString()}`);
+  },
+  getGovtAlerts: (params: { category?: string; status?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (params.category) q.append('category', params.category);
+    if (params.status) q.append('status', params.status);
+    return request<{ status: boolean; data: any[] }>(`/alerts?${q.toString()}`);
+  },
+  createAlert: (payload: any) =>
+    request<{ status: boolean; message: string; data: any }>('/alerts', { method: 'POST', body: JSON.stringify(payload) }),
+
+  // Mission Vardi: Leaderboard (Statewide & District-Wise)
+  getGlobalLeaderboard: (limitOrParams: number | { limit?: number; userId?: string } = 25, userId?: string) => {
+    const q = new URLSearchParams();
+    if (typeof limitOrParams === 'number') {
+      q.append('limit', String(limitOrParams));
+      if (userId) q.append('user_id', userId);
     } else {
-      // Try parsing as integer (0-indexed or 1-indexed)
-      const num = parseInt(q.correctAnswer, 10);
-      if (!isNaN(num)) {
-        correctIdx = num > 3 ? 0 : num;
-      }
+      if (limitOrParams.limit) q.append('limit', String(limitOrParams.limit));
+      if (limitOrParams.userId) q.append('user_id', limitOrParams.userId);
     }
-  }
-
-  return {
-    id: typeof q.id === "number" ? q.id : idx + 1,
-    questionText: q.text_mr || q.text || `प्रश्न क्रमांक ${idx + 1}`,
-    questionTextEn: q.text || q.text_mr,
-    options: options,
-    correctOptionIndex: correctIdx,
-    explanation: `बरोबर उत्तर: ${q.correctAnswer}`,
-    marks: 2,
-  };
-}
-
-// Convert Backend Quiz to Frontend MockTest format
-function mapBackendQuizToMockTest(bq: BackendQuiz): MockTest {
-  const slug = categoryToSlug(bq.category);
-  const questions = (bq.questions || []).map((q, idx) => mapBackendQuestion(q, idx));
-
-  // Estimate difficulty based on type/category
-  let diff: "Easy" | "Medium" | "Hard" | "MPSC Level" = "Medium";
-  if (bq.type === "challenge") diff = "Hard";
-  if (bq.category?.toLowerCase().includes("mpsc")) diff = "MPSC Level";
-
-  // Match existing category name if present
-  const existingCat = EXAM_CATEGORIES.find((c) => c.slug === slug);
-  const catName = existingCat ? existingCat.name : bq.category || "सराव परीक्षा";
-  const catNameEn = existingCat ? existingCat.nameEn : bq.category || "Practice Test";
-
-  const totalQuestions = bq.totalQuestions || (questions.length > 0 ? questions.length : 25); // default 25 if listed without questions and backend didn't provide totalQuestions
-  const totalMarks = totalQuestions * 2;
-  const durationMinutes = Math.max(15, Math.ceil(totalQuestions * 1.2));
-
-  return {
-    id: bq.id,
-    title: bq.title,
-    titleEn: bq.title,
-    categorySlug: slug,
-    categoryName: catName,
-    categoryNameEn: catNameEn,
-    testSlug: bq.id, // Using ID as testSlug for dynamic routes
-    durationMinutes: durationMinutes,
-    totalMarks: totalMarks,
-    totalQuestions: totalQuestions,
-    difficulty: diff,
-    badge: bq.type === "challenge" ? "⚡ Daily Challenge" : undefined,
-    rating: 0,
-    reviewsCount: 0,
-    questions: questions,
-  };
-}
-
-/**
- * Fetch all quizzes from live API (with fallback to static MOCK_TESTS)
- */
-export async function fetchLiveQuizzes(): Promise<MockTest[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/quiz`, {
-      next: { revalidate: 60 }, // Cache and revalidate every 60 seconds for SEO & speed
-    });
-
-    if (!res.ok) {
-      throw new Error(`API returned status ${res.status}`);
+    return request<{ status: boolean; message: string; data: any[]; user_rank?: any }>(`/leaderboard/global?${q.toString()}`);
+  },
+  getDistrictLeaderboard: (districtName: string, limitOrParams: number | { limit?: number; userId?: string } = 25, userId?: string) => {
+    const q = new URLSearchParams();
+    if (typeof limitOrParams === 'number') {
+      q.append('limit', String(limitOrParams));
+      if (userId) q.append('user_id', userId);
+    } else {
+      if (limitOrParams.limit) q.append('limit', String(limitOrParams.limit));
+      if (limitOrParams.userId) q.append('user_id', limitOrParams.userId);
     }
+    return request<{ status: boolean; message: string; data: any[]; user_rank?: any }>(`/leaderboard/global/district/${encodeURIComponent(districtName)}?${q.toString()}`);
+  },
 
-    const json: ApiResponse<BackendQuiz[]> = await res.json();
-    if (json.status && Array.isArray(json.data)) {
-      return json.data.map(mapBackendQuizToMockTest);
-    }
-  } catch (error) {
-    console.warn("Failed to fetch live quizzes from API:", error);
-  }
-  return [];
-}
+  // Mission Vardi: Current Affairs & Home Stats
+  getCurrentAffairs: (params: { date?: string; category?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (params.date) q.append('date', params.date);
+    if (params.category) q.append('category', params.category);
+    return request<{ status: boolean; data: any[] }>(`/current-affairs?${q.toString()}`);
+  },
+  getHomeStats: () =>
+    request<{ status: boolean; data: any }>('/home/stats'),
+  getQuoteOfTheDay: () =>
+    request<{ status: boolean; data: any }>('/home/quote-of-the-day'),
 
-/**
- * Fetch a single quiz by ID/slug from live API (with no static fallback)
- */
-export async function fetchLiveQuizById(idOrSlug: string): Promise<MockTest | undefined> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/quiz/${idOrSlug}`, {
-      cache: "no-store", // Always fetch fresh questions for live tests/daily challenge
-    });
+  // Admin APIs
+  getAdminAnalytics: () => request<{ analytics: any }>('/admin/analytics'),
+  getAdminStudents: () => request<{ students: any[] }>('/admin/students'),
+  getAdminOrders: () => request<{ orders: any[] }>('/admin/orders'),
+  getAdminCoupons: () => request<{ coupons: any[] }>('/admin/coupons'),
+  createAdminCoupon: (payload: any) => request<{ coupon: any }>('/admin/coupons', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminCoupon: (id: string, payload: any) => request<{ coupon: any }>(`/admin/coupons/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminCoupon: (id: string) => request<{ success: boolean }>(`/admin/coupons/${id}`, { method: 'DELETE' }),
 
-    if (res.ok) {
-      const json: ApiResponse<BackendQuiz> = await res.json();
-      if (json.status && json.data) {
-        return mapBackendQuizToMockTest(json.data);
-      }
-    }
-  } catch (error) {
-    console.warn(`Failed to fetch quiz ${idOrSlug} from live API:`, error);
-  }
+  getAdminQuestionBanks: () => request<{ questionBanks: any[] }>('/admin/question-banks'),
+  getAdminQuestions: (params: any = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request<{ questions: any[] }>(`/admin/questions?${q}`);
+  },
+  createAdminQuestion: (payload: any) => request<{ question: any }>('/admin/questions', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminQuestion: (id: string, payload: any) => request<{ question: any }>(`/admin/questions/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminQuestion: (id: string) => request<{ success: boolean }>(`/admin/questions/${id}`, { method: 'DELETE' }),
+  bulkImportQuestions: (questions: any[]) => request<{ created: any[]; count: number }>('/admin/questions/bulk', { method: 'POST', body: JSON.stringify({ questions }) }),
+  getQuestionAnalytics: () => request<{ analytics: any[] }>('/admin/questions/analytics'),
 
-  return undefined;
-}
+  getAdminTests: () => request<{ tests: any[] }>('/admin/tests'),
+  createAdminTest: (payload: any) => request<{ test: any }>('/admin/tests', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminTest: (id: string, payload: any) => request<{ test: any }>(`/admin/tests/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminTest: (id: string) => request<{ success: boolean }>(`/admin/tests/${id}`, { method: 'DELETE' }),
 
-export async function fetchLiveCategories(): Promise<ExamCategory[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/category`, { next: { revalidate: 30 } });
-    const json = await res.json();
-    
-    if (res.ok && json.status && Array.isArray(json.data)) {
-      // 1. Fetch live tests to calculate actual counts
-      const tests = await fetchLiveQuizzes();
-      const testCounts: Record<string, number> = {};
-      for (const t of tests) {
-        testCounts[t.categorySlug] = (testCounts[t.categorySlug] || 0) + 1;
-      }
+  createAdminTestSeries: (payload: any) => request<{ series: any }>('/admin/test-series', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminTestSeries: (id: string, payload: any) => request<{ series: any }>(`/admin/test-series/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminTestSeries: (id: string) => request<{ success: boolean }>(`/admin/test-series/${id}`, { method: 'DELETE' }),
 
-      // 2. Map backend Categories to Frontend ExamCategory interface
-      const dynamicCategories: ExamCategory[] = json.data
-        .filter((cat: any) => cat.isActive !== false) // Hide inactive categories
-        .map((cat: any) => {
-          const slug = categoryToSlug(cat.name);
-          
-          // Determine Icon and Color dynamically or randomly based on name
-          let icon = "📝";
-          let colorTheme = "#0369a1"; // Default sky blue
-          
-          const nameStr = cat.name.toLowerCase();
-          if (nameStr.includes("पोलीस") || slug.includes("police")) { icon = "🛡️"; colorTheme = "#eff6ff"; }
-          else if (nameStr.includes("तलाठी") || slug.includes("talathi")) { icon = "📜"; colorTheme = "#047857"; }
-          else if (nameStr.includes("एमपीएससी") || nameStr.includes("mpsc") || slug.includes("mpsc")) { icon = "🏛️"; colorTheme = "#b45309"; }
-          else if (nameStr.includes("जिल्हा") || slug.includes("zilla") || slug.includes("zp")) { icon = "🏢"; colorTheme = "#6d28d9"; }
-          else if (nameStr.includes("आरोग्य") || slug.includes("arogya")) { icon = "🏥"; colorTheme = "#be123c"; }
-          else if (nameStr.includes("नगर") || slug.includes("nagar")) { icon = "🏙️"; colorTheme = "#0369a1"; }
-          else if (slug.includes("srpf")) { icon = "🛡️"; colorTheme = "#eff6ff"; }
-          else if (slug.includes("forest")) { icon = "🌲"; colorTheme = "#047857"; }
-          else if (slug.includes("challenge")) { icon = "⚡"; colorTheme = "#b45309"; }
+  // Admin Main Categories CRUD (Option 1)
+  getAdminMainCategories: () => request<{ mainCategories: any[] }>('/admin/main-categories'),
+  createAdminMainCategory: (payload: any) => request<{ mainCategory: any }>('/admin/main-categories', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminMainCategory: (id: string, payload: any) => request<{ mainCategory: any }>(`/admin/main-categories/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminMainCategory: (id: string) => request<{ success: boolean }>(`/admin/main-categories/${id}`, { method: 'DELETE' }),
 
-          return {
-            slug: slug,
-            name: cat.name,
-            nameEn: cat.name, // Can be improved if translation provided
-            description: cat.description || `${cat.name} साठी टीसीएस (TCS) व आयबीपीएस (IBPS) पॅटर्नवर आधारित मोफत ऑनलाइन सराव परीक्षा.`,
-            icon: icon,
-            totalTests: testCounts[slug] || 0,
-            colorTheme: colorTheme,
-          };
-        });
+  // Admin Sub Categories CRUD (Option 2 - mandatory mainCategoryId)
+  getAdminSubCategories: (mainCategoryId?: string) =>
+    request<{ subCategories: any[] }>(mainCategoryId ? `/admin/sub-categories?mainCategoryId=${encodeURIComponent(mainCategoryId)}` : '/admin/sub-categories'),
+  createAdminSubCategory: (payload: any) => request<{ subCategory: any }>('/admin/sub-categories', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminSubCategory: (id: string, payload: any) => request<{ subCategory: any }>(`/admin/sub-categories/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminSubCategory: (id: string) => request<{ success: boolean }>(`/admin/sub-categories/${id}`, { method: 'DELETE' }),
 
-      return dynamicCategories;
-    }
-  } catch (error) {
-    console.warn("Failed to fetch categories from API:", error);
-  }
+  // Admin Exams & Categories & Subjects
+  getAdminExams: () => request<{ exams: any[] }>('/admin/exams'),
+  createAdminExam: (payload: any) => request<{ exam: any }>('/admin/exams', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminExam: (id: string, payload: any) => request<{ exam: any }>(`/admin/exams/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminExam: (id: string) => request<{ success: boolean }>(`/admin/exams/${id}`, { method: 'DELETE' }),
 
-  // Fallback to empty if DB fetch fails
-  return [];
-}
+  getAdminCategories: (examId?: string) => request<{ categories: any[] }>(examId ? `/admin/categories?examId=${examId}` : '/admin/categories'),
+  createAdminCategory: (payload: any) => request<{ category: any }>('/admin/categories', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminCategory: (id: string, payload: any) => request<{ category: any }>(`/admin/categories/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminCategory: (id: string) => request<{ success: boolean }>(`/admin/categories/${id}`, { method: 'DELETE' }),
 
-/**
- * Submit test result to real FastAPI backend (MongoDB)
- */
-export async function submitLiveQuizResult(
-  quizId: string,
-  score: number,
-  total: number,
-  timeSpentSeconds: number
-): Promise<boolean> {
-  try {
-    const userId = "web_user_" + Math.random().toString(36).substring(2, 10);
-    const res = await fetch(`${API_BASE_URL}/quiz/${quizId}/result`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: userId,
-        score: score,
-        total: total,
-        time_spent_seconds: timeSpentSeconds,
-        answers: [],
-      }),
-    });
+  getAdminSubjects: () => request<{ subjects: any[] }>('/admin/subjects'),
+  createAdminSubject: (payload: any) => request<{ subject: any }>('/admin/subjects', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminSubject: (id: string, payload: any) => request<{ subject: any }>(`/admin/subjects/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminSubject: (id: string) => request<{ success: boolean }>(`/admin/subjects/${id}`, { method: 'DELETE' }),
 
-    if (res.ok) {
-      const json = await res.json();
-      console.log("Result successfully saved to backend MongoDB:", json);
-      return true;
-    }
-  } catch (error) {
-    console.error("Error submitting quiz result to backend API:", error);
-  }
-  return false;
-}
+  getAdminPYQs: () => request<{ pyqs: any[] }>('/admin/pyqs'),
+  updateAdminPYQ: (id: string, payload: any) => request<{ pyq: any }>(`/admin/pyqs/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminPYQ: (id: string) => request<{ status: boolean }>(`/pyqs/${id}`, { method: 'DELETE' }),
 
-// --- Additional Backend API Interfaces (Dashboard, Leaderboard, Notes, PYQs, Alerts) ---
+  getAdminNotes: () => request<{ notes: any[] }>('/admin/notes'),
+  updateAdminNote: (id: string, payload: any) => request<{ note: any }>(`/admin/notes/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminNote: (id: string) => request<{ status: boolean }>(`/notes/${id}`, { method: 'DELETE' }),
 
-export interface DailyQuote {
-  en: string;
-  mr: string;
-}
+  getAdminAlerts: () => request<{ alerts: any[] }>('/admin/alerts'),
+  createAdminAlert: (payload: any) => request<{ status: boolean; data: any }>('/alerts', { method: 'POST', body: JSON.stringify(payload) }),
+  updateAdminAlert: (id: string, payload: any) => request<{ alert: any }>(`/admin/alerts/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAdminAlert: (id: string) => request<{ success: boolean }>(`/admin/alerts/${id}`, { method: 'DELETE' }),
 
-export interface CountdownConfig {
-  title: string;
-  daysLeft: number;
-  hoursLeft: number;
-  minutesLeft: number;
-  secondsLeft: number;
-}
+  updateAdminStudentRole: (id: string, role: string) => request<{ user: any }>(`/admin/students/${id}/role`, { method: 'PUT', body: JSON.stringify({ role }) }),
+  deleteAdminStudent: (id: string) => request<{ success: boolean }>(`/admin/students/${id}`, { method: 'DELETE' }),
 
-export interface DashboardData {
-  daily_quotes: DailyQuote[];
-  countdown?: CountdownConfig;
-}
-
-export interface LeaderboardEntry {
-  user_id: string;
-  name: string;
-  district?: string;
-  avatar_url?: string;
-  points: number;
-  score_str: string;
-}
-
-export interface NoteItem {
-  id: string;
-  title: string;
-  description: string;
-  pdfUrl?: string | null;
-  category?: string;
-  content?: string;
-  createdAt?: string;
-}
-
-export interface PYQItem {
-  id: string;
-  title: string;
-  year: number;
-  description?: string | null;
-  pdfUrl?: string | null;
-  category?: string;
-  createdAt?: string;
-}
-
-export interface AlertItem {
-  id: string;
-  message_mr: string;
-  message_en: string;
-  timestamp: string;
-}
-
-// --- Fetch Functions for Web Portal Integration ---
-
-export async function fetchDashboardData(): Promise<DashboardData | null> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/home/dashboard`, { next: { revalidate: 60 } });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.status && json.data) {
-        return json.data as DashboardData;
-      }
-    }
-  } catch (error) {
-    console.warn("Failed to fetch dashboard data:", error);
-  }
-  return null;
-}
-
-export async function fetchGlobalLeaderboard(limit = 10): Promise<LeaderboardEntry[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/leaderboard/global?limit=${limit}`, { next: { revalidate: 30 } });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.status && Array.isArray(json.data)) {
-        return json.data as LeaderboardEntry[];
-      }
-    }
-  } catch (error) {
-    console.warn("Failed to fetch global leaderboard:", error);
-  }
-  return [];
-}
-
-export async function fetchNotes(category?: string, search?: string): Promise<NoteItem[]> {
-  try {
-    let url = `${API_BASE_URL}/notes`;
-    const params = new URLSearchParams();
-    if (category && category !== "all") params.append("category", category);
-    if (search) params.append("search", search);
-    if (params.toString()) url += `?${params.toString()}`;
-
-    const res = await fetch(url, { next: { revalidate: 60 } });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.status && Array.isArray(json.data)) {
-        return json.data as NoteItem[];
-      }
-    }
-  } catch (error) {
-    console.warn("Failed to fetch notes:", error);
-  }
-  return [];
-}
-
-export async function fetchPYQs(year?: number, category?: string): Promise<PYQItem[]> {
-  try {
-    let url = `${API_BASE_URL}/pyqs`;
-    const params = new URLSearchParams();
-    if (year) params.append("year", year.toString());
-    if (category && category !== "all") params.append("category", category);
-    if (params.toString()) url += `?${params.toString()}`;
-
-    const res = await fetch(url, { next: { revalidate: 60 } });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.status && Array.isArray(json.data)) {
-        return json.data as PYQItem[];
-      }
-    }
-  } catch (error) {
-    console.warn("Failed to fetch PYQs:", error);
-  }
-  return [];
-}
-
-export async function fetchGlobalAlerts(): Promise<AlertItem[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/alerts/global`, { next: { revalidate: 60 } });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.status && Array.isArray(json.data)) {
-        return json.data as AlertItem[];
-      }
-    }
-  } catch (error) {
-    console.warn("Failed to fetch global alerts:", error);
-  }
-  return [];
-}
-
-// --- Auth, Profile & Fitness Interfaces ---
-
-export interface UserProfile {
-  id?: string;
-  user_id?: string;
-  name: string;
-  email?: string;
-  mobile?: string;
-  district?: string;
-  avatar_url?: string;
-  points?: number;
-  target_exam?: string;
-}
-
-export interface FitnessLog {
-  id?: string;
-  _id?: string;
-  user_id: string;
-  run_1600m_seconds?: number | null;
-  run_100m_seconds?: number | null;
-  shot_put_meters?: number | null;
-  date?: string | null;
-  notes?: string | null;
-  created_at?: string;
-}
-
-// --- Auth & Profile API Functions ---
-
-export async function loginUserApi(email: string, password: string): Promise<{ success: boolean; user?: UserProfile; message?: string }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const json = await res.json();
-    if (res.ok && (json.status || json.user || json.data)) {
-      return { success: true, user: json.user || json.data || json };
-    }
-    return { success: false, message: json.detail || json.message || "लॉगिन अयशस्वी. कृपया ईमेल आणि पासवर्ड तपासा." };
-  } catch (error) {
-    console.error("Login API Error:", error);
-    return { success: false, message: "सर्व्हरशी संपर्क होऊ शकला नाही. कृपया इंटरनेट तपासा." };
-  }
-}
-
-export async function registerUserApi(name: string, email: string, password: string, mobile?: string, district?: string): Promise<{ success: boolean; user?: UserProfile; message?: string }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, mobile: mobile || "", district: district || "" }),
-    });
-    const json = await res.json();
-    if (res.ok && (json.status || json.user || json.data || res.status === 200)) {
-      return { success: true, user: json.user || json.data || { name, email, mobile, district } };
-    }
-    return { success: false, message: json.detail || json.message || "रजिस्ट्रेशन अयशस्वी." };
-  } catch (error) {
-    console.error("Register API Error:", error);
-    return { success: false, message: "सर्व्हरशी संपर्क होऊ शकला नाही." };
-  }
-}
-
-export async function fetchUserProfileApi(userId: string): Promise<UserProfile | null> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/user/getProfile?user_id=${userId}`);
-    if (res.ok) {
-      const json = await res.json();
-      return json.data || json.user || json;
-    }
-  } catch (error) {
-    console.warn("Fetch Profile Error:", error);
-  }
-  return null;
-}
-
-export async function updateUserProfileApi(userId: string, data: Partial<UserProfile>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/user/updateProfile/${userId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch (error) {
-    console.error("Update Profile Error:", error);
-    return false;
-  }
-}
-
-// --- Fitness Logs API Functions ---
-
-export async function fetchFitnessLogsApi(userId: string): Promise<FitnessLog[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/fitness/${userId}`);
-    if (res.ok) {
-      const json = await res.json();
-      if (Array.isArray(json.data || json)) {
-        return (json.data || json) as FitnessLog[];
-      }
-    }
-  } catch (error) {
-    console.warn("Fetch Fitness Logs Error:", error);
-  }
-  return [];
-}
-
-export async function createFitnessLogApi(logData: FitnessLog): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/fitness`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(logData),
-    });
-    return res.ok;
-  } catch (error) {
-    console.error("Create Fitness Log Error:", error);
-    return false;
-  }
-}
-
-export async function deleteFitnessLogApi(logId: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/fitness/${logId}`, {
-      method: "DELETE",
-    });
-    return res.ok;
-  } catch (error) {
-    console.error("Delete Fitness Log Error:", error);
-    return false;
-  }
-}
+  getAdminSettings: () => request<{ settings: any }>('/admin/settings'),
+  updateAdminSettings: (payload: any) => request<{ settings: any }>('/admin/settings', { method: 'PUT', body: JSON.stringify(payload) }),
+  broadcastNotification: (payload: { title: string; message: string; link?: string }) =>
+    request<{ notification: any }>('/admin/notifications/broadcast', { method: 'POST', body: JSON.stringify(payload) }),
+};

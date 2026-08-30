@@ -1,34 +1,7 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "@/services/api";
-import { BarChart3, BookOpen, Boxes, CheckCircle2, ChevronRight, CreditCard, FileText, LayoutDashboard, LogOut, Package, Plus, Search, Settings, ShieldCheck, ShoppingBag, Tags, Trophy, Users, X } from "lucide-react";
+import App from '../../App';
 
-const nav = [
-  ["overview","Overview",LayoutDashboard], ["students","Students",Users], ["tests","Mock Tests",FileText], ["series","Test Series",Boxes], ["packages","Packages",Package], ["questions","Questions",BookOpen], ["orders","Orders",ShoppingBag], ["payments","Payments",CreditCard], ["analytics","Analytics",BarChart3], ["coupons","Coupons",Tags], ["settings","Settings",Settings]
-] as const;
-
-export default function AdminMain(){
-  const [authenticated,setAuthenticated]=useState(false); const [username,setUsername]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [loading,setLoading]=useState(false);
-  useEffect(()=>{ if(document.cookie.includes("admin_token=")) setAuthenticated(true)},[]);
-  async function login(e:React.FormEvent){e.preventDefault();setLoading(true);setError("");try{const r=await fetch(`${API_BASE_URL}/auth/admin-login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});const j=await r.json();if(r.ok&&j.status&&j.data?.access_token){document.cookie=`admin_token=${j.data.access_token}; max-age=172800; path=/; samesite=strict`;localStorage.setItem("admin_permissions",JSON.stringify(j.data.permissions||[]));setAuthenticated(true)}else setError(j.detail||j.message||"Invalid credentials")}catch{setError("Unable to connect to the API.")}setLoading(false)}
-  function logout(){document.cookie="admin_token=; max-age=0; path=/";setAuthenticated(false)}
-  if(!authenticated) return <div className="admin-login"><div className="login-card"><div className="admin-logo"><ShieldCheck/></div><span className="section-kicker">ADMIN CONSOLE</span><h1>Welcome back</h1><p>Sign in to manage tests, students, packages and revenue.</p>{error&&<div className="admin-error">{error}</div>}<form onSubmit={login}><label>Username<input value={username} onChange={e=>setUsername(e.target.value)} placeholder="Admin username" required/></label><label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" required/></label><button className="admin-primary" disabled={loading}>{loading?"Signing in…":"Sign in to Admin"}</button></form></div></div>;
-  return <AdminDashboard onLogout={logout}/>;
+export default function AdminPage() {
+  return <App />;
 }
-
-function AdminDashboard({onLogout}:{onLogout:()=>void}){
- const [active,setActive]=useState("overview"); const [sidebar,setSidebar]=useState(true);
- return <div className="admin-app">
-  <aside className={`admin-sidebar ${sidebar?"":"collapsed"}`}><div className="admin-brand"><img src="/logo.png"/><div><b>MH<span>MockTest</span></b><small>ADMIN</small></div></div><nav>{nav.map(([id,label,Icon])=><button key={id} className={active===id?"active":""} onClick={()=>setActive(id)} title={label}><Icon size={18}/><span>{label}</span></button>)}</nav><button className="admin-logout" onClick={onLogout}><LogOut size={18}/><span>Sign out</span></button></aside>
-  <section className="admin-main"><header className="admin-top"><button className="sidebar-toggle" onClick={()=>setSidebar(!sidebar)}>{sidebar?<X size={18}/>:<LayoutDashboard size={18}/>}</button><div className="admin-search"><Search size={17}/><input placeholder="Search students, tests, orders..."/></div><div className="admin-user"><span>Admin</span><div>AD</div></div></header><main className="admin-content">{active==="overview"?<Overview/>:<Placeholder title={nav.find(x=>x[0]===active)?.[1]||"Dashboard"}/>}</main></section>
- </div>
-}
-
-function Overview(){return <>
- <div className="admin-page-head"><div><span className="section-kicker">OVERVIEW</span><h1>Good evening, Admin 👋</h1><p>Here’s what is happening across your platform today.</p></div><button className="admin-primary"><Plus size={16}/> Create product</button></div>
- <div className="admin-stats">{[["Total Students","12,450","+12.8%",Users],["Total Revenue","₹8,42,500","+18.4%",CreditCard],["Tests Attempted","2,340","+9.6%",FileText],["Active Products","186","+6.2%",Package]].map(([a,b,c,I])=>{const Icon=I as any;return <div className="admin-stat" key={String(a)}><div className="admin-stat-icon"><Icon size={19}/></div><small>{a}</small><strong>{b}</strong><em>{c} this month</em></div>})}</div>
- <div className="admin-grid-2"><div className="admin-panel"><div className="panel-head"><div><h2>Revenue overview</h2><p>Last 30 days</p></div><button>Last 30 days <ChevronRight size={14}/></button></div><div className="revenue-chart"><div className="chart-bars">{[34,46,42,58,49,67,55,72,64,82,76,91,79,96].map((v,i)=><i key={i} style={{height:`${v}%`}}/>)}</div><div className="chart-axis"><span>1 Aug</span><span>8 Aug</span><span>15 Aug</span><span>22 Aug</span><span>28 Aug</span></div></div></div><div className="admin-panel"><div className="panel-head"><div><h2>Product mix</h2><p>Sales by product type</p></div></div><div className="mix-list">{[["Individual Tests","34%","#2563eb"],["Test Series","41%","#7c3aed"],["Packages","25%","#0f766e"]].map(([a,b,c])=><div key={a}><span><i style={{background:c}}/>{a}</span><b>{b}</b><div className="mix-track"><i style={{width:b,background:c}}/></div></div>)}</div></div></div>
- <div className="admin-grid-2"><div className="admin-panel"><div className="panel-head"><div><h2>Recent orders</h2><p>Latest successful purchases</p></div><button>View all <ChevronRight size={14}/></button></div><div className="order-list">{[["MPSC Complete Package","Bharat W.","₹999","SUCCESS"],["Police Bharti Series","Sneha P.","₹399","SUCCESS"],["Polity Mock Test #12","Rahul K.","₹49","SUCCESS"],["Talathi Series","Amit S.","₹299","SUCCESS"]].map((o,i)=><div className="order-row" key={i}><div className="order-avatar">{o[1][0]}</div><div className="order-title"><b>{o[0]}</b><small>{o[1]}</small></div><strong>{o[2]}</strong><span>{o[3]}</span></div>)}</div></div><div className="admin-panel"><div className="panel-head"><div><h2>Quick actions</h2><p>Manage your learning catalog</p></div></div><div className="quick-grid">{[[Plus,"Create Mock Test"],[Boxes,"Build Test Series"],[Package,"Create Package"],[BookOpen,"Add Questions"]].map(([I,t])=>{const Icon=I as any;return <button key={String(t)}><Icon size={18}/><span>{String(t)}</span><ChevronRight size={15}/></button>})}</div></div></div>
- </>}
-function Placeholder({title}:{title:string}){return <div className="admin-placeholder"><div><div className="admin-placeholder-icon"><Package/></div><h1>{title}</h1><p>This section is ready for your existing management functionality. The redesigned navigation and visual system are in place.</p><button className="admin-primary"><Plus size={16}/> Add new</button></div></div>}

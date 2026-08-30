@@ -1,136 +1,156 @@
-"use client";
+import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { GraduationCap, ShieldCheck, Mail, Phone, MapPin, Heart } from 'lucide-react';
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { EXAM_CATEGORIES } from "@/data/mockTests";
-
-export default function Footer() {
-  const pathname = usePathname();
-
-  // Hide Footer when on a specific mock test page
-  const isTestPage = pathname.startsWith("/mock-test/") && pathname.split("/").length >= 4;
-  if (isTestPage) return null;
+export const Footer: React.FC<{
+  onSelectCategory: (examId: string) => void;
+  onNavigateAdmin?: () => void;
+}> = ({ onSelectCategory, onNavigateAdmin }) => {
+  const { t } = useLanguage();
 
   return (
-    <footer style={{
-      background: "#070c17",
-      borderTop: "1px solid rgba(0, 0, 0, 0.06)",
-      padding: "60px 0 30px 0",
-      marginTop: "80px",
-      color: "#94a3b8"
-    }}>
-      <div className="container" style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 32px" }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "40px",
-          marginBottom: "50px"
-        }}>
-          {/* Col 1: About */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-              <div style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "8px",
-                background: "var(--primary-gradient)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1.2rem",
-                color: "#fff"
-              }}>
-                🛡️
+    <footer className="bg-slate-900 text-slate-300 pt-12 pb-8 border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+          {/* Column 1: Brand Info */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-600/30">
+                <GraduationCap className="w-6 h-6" />
               </div>
-              <span style={{ fontSize: "1.3rem", fontWeight: 700, color: "#f8fafc" }}>
-                MH<span className="gradient-text">MockTest</span>
+              <span className="text-xl font-bold text-white tracking-tight">
+                Pariksha<span className="text-indigo-400">Setu</span>
               </span>
             </div>
-            <p style={{ fontSize: "0.9rem", lineHeight: "1.6", marginBottom: "16px", color: "#94a3b8" }}>
-              महाराष्ट्रातील पोलीस भरती, तलाठी भरती, MPSC राज्यसेवा व जिल्हा परिषद परीक्षांची तयारी करणाऱ्या विद्यार्थ्यांसाठी <strong>मराठीतील नंबर १ मोफत मॉक टेस्ट पोर्टल</strong> (Majhi Naukri Mock Test Alternative).
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm font-devanagari">
+              {t(
+                'India’s leading mock examination platform tailored for Maharashtra Competitive Exams (MPSC, Police Bharti, Talathi, ZP, MahaIT) and Central Exams (SSC, Banking, Railway, UPSC) with Marathi & English bilingual solutions.',
+                'महाराष्ट्र लोकसेवा आयोग (MPSC), पोलीस भरती, तलाठी, सरळसेवा, बँकिंग व SSC परीक्षांसाठी उच्च दर्जाची मॉक टेस्ट सिरीज आणि परिपूर्ण स्पष्टीकरणे.'
+              )}
             </p>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <span className="badge badge-orange">TCS / IBPS Pattern</span>
-              <span className="badge badge-green">100% Free</span>
+            <div className="flex items-center gap-4 text-xs text-slate-400 pt-2">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <ShieldCheck className="w-4 h-4" /> {t('Verified TCS / IBPS Exam Pattern', 'TCS / IBPS पॅटर्ननुसार आधारित')}
+              </span>
             </div>
           </div>
 
-          {/* Col 2: Exam Categories */}
+          {/* Column 2: Maharashtra Exams */}
           <div>
-            <h4 style={{ color: "#f8fafc", marginBottom: "18px", fontSize: "1.1rem" }}>
-              📋 मुख्य परीक्षा (Exam Categories)
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3.5">
+              {t('Maharashtra Exams', 'महाराष्ट्र परीक्षा')}
             </h4>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
-              {EXAM_CATEGORIES.slice(0, 5).map((cat) => (
-                <li key={cat.slug}>
-                  <Link href={`/mock-test/${cat.slug}`} style={{ color: "#cbd5e1", transition: "var(--transition)", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span>{cat.icon}</span>
-                    <span>{cat.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 3: Quick Links & SEO */}
-          <div>
-            <h4 style={{ color: "#f8fafc", marginBottom: "18px", fontSize: "1.1rem" }}>
-              ⚡ महत्वाच्या लिंक्स (Important Links)
-            </h4>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", padding: 0 }}>
+            <ul className="space-y-2 text-xs text-slate-400">
               <li>
-                <Link href="/" style={{ color: "#cbd5e1" }}>🏠 सर्व मोफत सराव प्रश्नपत्रिका (All Free Tests)</Link>
+                <button onClick={() => onSelectCategory('exam-mpsc')} className="hover:text-indigo-400 transition text-left">
+                  MPSC Rajyaseva (राज्यसेवा)
+                </button>
               </li>
               <li>
-                <Link href="/mock-test/police-bharti" style={{ color: "#cbd5e1" }}>🛡️ पोलीस भरती अभ्यासक्रम व टेस्ट सिरीज २०२६</Link>
+                <button onClick={() => onSelectCategory('exam-mpsc')} className="hover:text-indigo-400 transition text-left">
+                  MPSC Combine Group B & C
+                </button>
               </li>
               <li>
-                <Link href="/mock-test/talathi-bharti" style={{ color: "#cbd5e1" }}>📜 तलाठी भरती TCS पॅटर्न ऑनलाइन टेस्ट</Link>
+                <button onClick={() => onSelectCategory('exam-police')} className="hover:text-indigo-400 transition text-left">
+                  Maharashtra Police Bharti (पोलीस भरती)
+                </button>
               </li>
               <li>
-                <Link href="/#faq-section" style={{ color: "#cbd5e1" }}>❓ वारंवार विचारले जाणारे प्रश्न (FAQ)</Link>
+                <button onClick={() => onSelectCategory('exam-talathi')} className="hover:text-indigo-400 transition text-left">
+                  Talathi Bharti TCS Pattern (तलाठी)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('exam-maha-gov')} className="hover:text-indigo-400 transition text-left">
+                  Zilla Parishad & Arogya Vibhag
+                </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Disclaimer & Support */}
+          {/* Column 3: Central Exams */}
           <div>
-            <h4 style={{ color: "#f8fafc", marginBottom: "18px", fontSize: "1.1rem" }}>
-              ⚠️ कायदेशीर सूचना (Disclaimer)
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3.5">
+              {t('National Exams', 'राष्ट्रीय परीक्षा')}
             </h4>
-            <p style={{ fontSize: "0.85rem", lineHeight: "1.5", color: "#94a3b8", marginBottom: "12px" }}>
-              हे एक स्वतंत्र शैक्षणिक पोर्टल असून याचा कोणत्याही सरकारी संस्थेशी किंवा आयोगाशी अधिकृत संबंध नाही. आम्ही विद्यार्थ्यांना स्पर्धा परीक्केच्या सरावासाठी मोफत प्रश्नपत्रिका व मार्गदर्शन उपलब्ध करून देतो.
-            </p>
-            <div style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>
-              📧 सपोर्ट संपर्क: <strong>bharatwakade012@gmail.com</strong>
-            </div>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li>
+                <button onClick={() => onSelectCategory('exam-ssc')} className="hover:text-indigo-400 transition text-left">
+                  SSC CGL / CHSL / MTS
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('exam-banking')} className="hover:text-indigo-400 transition text-left">
+                  IBPS PO & Clerk Mocks
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('exam-railway')} className="hover:text-indigo-400 transition text-left">
+                  RRB NTPC & Group D
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('exam-upsc')} className="hover:text-indigo-400 transition text-left">
+                  UPSC Civil Services Prelims
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('exam-teaching')} className="hover:text-indigo-400 transition text-left">
+                  MahaTET & TAIT Teacher Exam
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Help & Contact */}
+          <div>
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3.5">
+              {t('Support & Contact', 'मदत व संपर्क')}
+            </h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>support@parikshasetu.in</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>+91 98230 00000 (Mon-Sat)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>FC Road, Shivajinagar, Pune 411005</span>
+              </li>
+              <li className="pt-2">
+                <span className="inline-block px-2.5 py-1 text-[11px] font-bold bg-slate-800 text-slate-300 rounded-md border border-slate-700">
+                  Razorpay Secured • 100% Guaranteed Solutions
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div style={{
-          borderTop: "1px solid rgba(0, 0, 0, 0.02)",
-          paddingTop: "24px",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "16px",
-          fontSize: "0.85rem",
-          color: "#94a3b8"
-        }}>
-          <div>
-            © {new Date().getFullYear()} <strong>MH Mock Test Portal</strong>. All rights reserved. Designed for Maharashtra Police & Civil Services Aspirants.
+        <div className="pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <p>© {new Date().getFullYear()} ParikshaSetu EdTech Pvt Ltd. All rights reserved.</p>
+            {onNavigateAdmin && (
+              <button
+                id="footer-admin-link"
+                onClick={onNavigateAdmin}
+                className="text-slate-500 hover:text-slate-300 transition text-[11px] font-medium underline underline-offset-2 cursor-pointer"
+              >
+                Faculty / Admin Portal (/admin)
+              </button>
+            )}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-            <Link href="/about-us" style={{ color: "inherit", textDecoration: "none" }}>About Us</Link>
-            <Link href="/contact-us" style={{ color: "inherit", textDecoration: "none" }}>Contact Us</Link>
-            <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "none" }}>Privacy Policy</Link>
-            <Link href="/terms-of-service" style={{ color: "inherit", textDecoration: "none" }}>Terms of Service</Link>
+          <div className="flex items-center gap-1 text-slate-400">
+            <span>Built with</span>
+            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+            <span>for Maharashtra & Indian Civil Aspirants</span>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
