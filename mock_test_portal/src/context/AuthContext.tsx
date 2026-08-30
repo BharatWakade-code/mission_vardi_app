@@ -86,10 +86,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const switchDemoRole = async (role: Role) => {
+    // Demo convenience login — credentials come from environment variables, not hardcoded.
+    // Remove this function entirely before production deployment.
+    const adminEmail = process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL || '';
+    const adminPass = process.env.NEXT_PUBLIC_DEMO_ADMIN_PASSWORD || '';
+    const studentEmail = process.env.NEXT_PUBLIC_DEMO_STUDENT_EMAIL || '';
+    const studentPass = process.env.NEXT_PUBLIC_DEMO_STUDENT_PASSWORD || '';
+
     if (role === 'admin') {
-      await login('admin@parikshasetu.in', 'Admin@123');
+      await login(adminEmail, adminPass);
     } else {
-      await login('bharatwakade012@gmail.com', 'Student@123');
+      await login(studentEmail, studentPass);
     }
   };
 

@@ -22,6 +22,7 @@ def _safe_user(user: dict) -> dict:
     user = dict(user)
     user.pop("_id", None)
     user.pop("hashed_password", None)
+    user.pop("passwordHash", None)
     return user
 
 
@@ -52,14 +53,17 @@ async def register(data: EmailRegister):
 
     users_collection.insert_one(user_doc)
     token = create_access_token({"user_id": user_id, "email": data.email})
+    safe_user_obj = _safe_user(user_doc)
 
     return {
         "status": True,
         "message": "Registration successful",
+        "user": safe_user_obj,
+        "token": token,
         "data": {
             "access_token": token,
             "token_type": "bearer",
-            "user": _safe_user(user_doc),
+            "user": safe_user_obj,
         },
     }
 
@@ -70,26 +74,36 @@ async def login(data: EmailLogin):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    hashed = user.get("hashed_password")
-    if not hashed or not verify_password(data.password, hashed):
+    hashed = user.get("hashed_password") or user.get("passwordHash") or user.get("password")
+    
+    is_valid = False
+    if hashed:
+        try:
+            is_valid = verify_password(data.password, hashed)
+        except Exception:
+            is_valid = False
+
+    if not is_valid:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token({"user_id": user["id"], "email": user["email"]})
+    safe_user_obj = _safe_user(user)
 
     return {
         "status": True,
         "message": "Login successful",
+        "user": safe_user_obj,
+        "token": token,
         "data": {
             "access_token": token,
             "token_type": "bearer",
-            "user": _safe_user(user),
+            "user": safe_user_obj,
         },
     }
 
 @router.post("/admin-login", summary="Admin Login")
 async def admin_login(data: AdminLoginRequest):
     import os
-    # Read strictly from environment variables without hardcoded defaults
     admin_username = os.getenv("ADMIN_USERNAME")
     admin_password = os.getenv("ADMIN_PASSWORD")
     
@@ -160,14 +174,17 @@ async def google_login(data: GoogleLoginRequest):
         users_collection.insert_one(user)
 
     token = create_access_token({"user_id": user["id"], "email": email})
+    safe_user_obj = _safe_user(user)
 
     return {
         "status": True,
         "message": "Google login successful",
+        "user": safe_user_obj,
+        "token": token,
         "data": {
             "access_token": token,
             "token_type": "bearer",
-            "user": _safe_user(user),
+            "user": safe_user_obj,
         },
     }
 
@@ -175,11 +192,35 @@ async def google_login(data: GoogleLoginRequest):
 # ─── Protected ────────────────────────────────────────────────────────────────
 @router.get("/me", summary="Get currently authenticated user")
 async def get_me(current_user: dict = Depends(get_current_user)):
+    safe_u = _safe_user(current_user)
     return {
         "status": True,
         "message": "Current user fetched",
-        "data": current_user,
+        "user": safe_u,
+        "data": safe_u,
     }
+
+
+@router.put("/profile", summary="Update profile of current user")
+async def update_current_user_profile(payload: dict, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["id"]
+    allowed_fields = ["name", "mobile", "avatar", "avatar_url", "district", "bio", "target_exam", "study_goal_minutes"]
+    updates = {k: v for k, v in payload.items() if k in allowed_fields and v is not None}
+    
+    if updates:
+        users_collection.update_one({"id": user_id}, {"$set": updates})
+        user = users_collection.find_one({"id": user_id})
+    else:
+        user = current_user
+
+    safe_u = _safe_user(user)
+    return {
+        "status": True,
+        "message": "Profile updated successfully",
+        "user": safe_u,
+        "data": safe_u,
+    }
+
 
 
 # ─── Forgot Password ──────────────────────────────────────────────────────────

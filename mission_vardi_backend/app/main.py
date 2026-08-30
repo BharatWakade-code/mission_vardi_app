@@ -28,10 +28,7 @@ from app.routes.pyq import router as pyq_router
 app = FastAPI(
     title="Mission Vardi API",
     version="2.0.0",
-    description="Backend for Mission Vardi — Police Bharti Exam Prep App",
-    docs_url=None,
-    redoc_url=None,
-    openapi_url=None
+    description="Backend for Mission Vardi — Police Bharti Exam Prep App"
 )
 
 app.state.limiter = limiter
@@ -62,6 +59,10 @@ app.include_router(study_router)
 
 from app.routes.alert import router as alert_router
 from app.routes.home import router as home_router
+from app.routes.meta import router as meta_router
+from app.routes.test_portal import router as test_portal_router
+from app.routes.payment import router as payment_router
+from app.routes.admin_portal import router as admin_portal_router
 
 # Supporting
 app.include_router(upload_router)
@@ -72,6 +73,10 @@ app.include_router(alert_router)
 app.include_router(fitness_router)
 app.include_router(home_router)
 app.include_router(pyq_router)
+app.include_router(meta_router)
+app.include_router(test_portal_router)
+app.include_router(payment_router)
+app.include_router(admin_portal_router)
 
 
 @app.get("/")
@@ -85,7 +90,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     logging.error(f"Unhandled exception: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
-        content={"status": False, "message": "An unexpected error occurred on the server.", "error": str(exc)}
+        content={"status": False, "message": "An unexpected internal server error occurred."}
     )
 
 @app.exception_handler(StarletteHTTPException)
