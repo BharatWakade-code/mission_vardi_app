@@ -1,0 +1,251 @@
+# ============================================================
+# OS / IDE
+# ============================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
+
+# Linux
+*~
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ============================================================
+# ENVIRONMENT / SECRETS
+# ============================================================
+
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.keystore
+
+# Firebase / Google credentials
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+firebase-debug.log
+
+# ============================================================
+# FLUTTER / DART
+# ============================================================
+
+# Flutter/Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Generated localization / files
+*.g.dart
+*.freezed.dart
+
+# Coverage
+coverage/
+
+# Dart tool
+.dart_tool/
+
+# Flutter web
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Android
+android/.gradle/
+android/local.properties
+android/.idea/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/app/build/
+android/build/
+android/.cxx/
+
+# Android generated
+*.apk
+*.aab
+*.apks
+*.ipa
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Runner/GeneratedPluginRegistrant.*
+ios/Runner.xcworkspace/
+ios/Podfile.lock
+
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# ============================================================
+# PYTHON BACKEND
+# ============================================================
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Wheel
+*.whl
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# ============================================================
+# PYTHON BACKEND DATABASE / LOCAL DATA
+# ============================================================
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# Local uploads
+uploads/
+media/
+
+# Generated files
+tmp/
+temp/
+
+# ============================================================
+# NEXT.JS / NODE.JS FRONTEND
+# ============================================================
+
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Production
+dist/
+
+# Vercel
+.vercel/
+
+# Turbo
+.turbo/
+
+# npm
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeScript
+*.tsbuildinfo
+
+# ============================================================
+# LOGS
+# ============================================================
+
+logs/
+*.log
+
+# ============================================================
+# TEMPORARY FILES
+# ============================================================
+
+tmp/
+temp/
+.cache/
+.parcel-cache/
+
+# ============================================================
+# GENERATED / USER DATA
+# ============================================================
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ============================================================
+# DOCKER
+# ============================================================
+
+# Local Docker overrides
+docker-compose.override.yml
+
+# ============================================================
+# BACKUP FILES
+# ============================================================
+
+*.orig
+*.rej
